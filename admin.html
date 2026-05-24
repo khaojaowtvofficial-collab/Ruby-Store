@@ -634,17 +634,11 @@ const STORE_NAMES = { pet:'Ruby Pet Shop', computer:'Ruby Computer', toy:'Ruby T
 const STATUS_LABELS = { pending:'🕐 รอยืนยัน', confirmed:'✅ ยืนยันแล้ว', completed:'📦 สำเร็จ', cancelled:'❌ ยกเลิก' };
 const STATUS_RAW = { pending:'รอยืนยัน', confirmed:'ยืนยันแล้ว', completed:'สำเร็จ', cancelled:'ยกเลิก' };
 
-const MOCK_ORDERS = [
-  { orderNo:'RB240001', name:'คุณสมใจ รักดี', phone:'081-234-5678', address:'123 ถ.สุขุมวิท กรุงเทพฯ', delivery:'Kerry Express', items:[{name:'Royal Canin Adult 15kg',price:1290,qty:2}], total:2580, channel:'wa', status:'pending', note:'', createdAt:'2026-05-24T09:12:00' },
-  { orderNo:'RB240002', name:'คุณณัฐ พลอยงาม', phone:'089-876-5432', address:'456 ถ.พหลโยธิน เชียงใหม่', delivery:'Flash Express', items:[{name:'Gaming Mouse 16000 DPI',price:890,qty:1}], total:890, channel:'msg', status:'confirmed', note:'', createdAt:'2026-05-24T08:55:00' },
-  { orderNo:'RB240003', name:'คุณมาลี สุขใส', phone:'083-111-2233', address:'789 ถ.นิมมาน เชียงใหม่', delivery:'Kerry Express', items:[{name:'LEGO Classic 500 ชิ้น',price:1290,qty:1},{name:'Mechanical Keyboard RGB TKL',price:2490,qty:1}], total:3780, channel:'wa', status:'completed', note:'', createdAt:'2026-05-23T17:30:00' },
-  { orderNo:'RB240004', name:'คุณวิชัย นานา', phone:'062-999-8877', address:'321 ถ.ราชดำเนิน กรุงเทพฯ', delivery:'ไปรษณีย์ไทย', items:[{name:'Whiskas ปลาแซลมอน 1.2kg',price:299,qty:3}], total:897, channel:'wa', status:'pending', note:'', createdAt:'2026-05-23T15:00:00' },
-  { orderNo:'RB240005', name:'คุณนงนุช ดีใจ', phone:'091-555-6677', address:'654 ถ.สีลม กรุงเทพฯ', delivery:'Flash Express', items:[{name:'ตุ๊กตาหมีน้อย 30cm',price:350,qty:2}], total:700, channel:'msg', status:'cancelled', note:'เปลี่ยนใจ', createdAt:'2026-05-23T11:22:00' },
-];
+const MOCK_ORDERS = [];
 
 function getAdminOrders() {
   const local = JSON.parse(localStorage.getItem('ruby_orders') || '[]');
-  const source = local.length > 0 ? local : MOCK_ORDERS;
+  const source = local;
   return source.map(o => ({
     orderNo: o.orderNo || o.no || '',
     name: o.name || 'ไม่ระบุ',
