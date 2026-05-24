@@ -20,8 +20,8 @@ const RUBY_LANGS = {
     // Hero
     hero_title1:    'สั่งง่าย จ่ายสะดวก',
     hero_title2:    'ผ่าน WhatsApp & Messenger',
-    hero_sub:       'เลือกสินค้าที่ชอบ แล้วส่งออเดอร์ผ่านแชท\nง่ายๆ ไม่ต้องสมัครสมาชิก ไม่ต้องจำรหัสผ่าน',
-    hero_btn_shop:  'ดูสินค้าทั้งหมด',
+    hero_sub:       'เลือกสินค้าที่ชอบ แล้วส่งออเดอร์ผ่านแชท ง่ายๆ ไม่ต้องสมัครสมาชิก ไม่ต้องจำรหัสผ่าน',
+    hero_btn_shop:  'ช้อปเลย',
     hero_btn_how:   'วิธีสั่งซื้อ',
 
     // Stats
@@ -68,7 +68,7 @@ const RUBY_LANGS = {
     prod_trust4:    'ตอบเร็ว',
 
     // Checkout
-    co_step1:       'ข้อมูล',
+    co_step1:       'ข้อมูลส่ง',
     co_step2:       'ช่องทาง',
     co_step3:       'ยืนยัน',
     co_shipping:    'ข้อมูลการจัดส่ง',
@@ -107,6 +107,41 @@ const RUBY_LANGS = {
     loading:        'กำลังโหลด...',
     error_required: 'กรุณากรอกข้อมูล',
     currency:       '฿',
+    // Index extras
+    hero_tag:        'Social Commerce สำหรับร้านค้า',
+    hero_btn_stores: 'ดูร้านค้า',
+    stat_items_lbl:  'สินค้า',
+    stat_in_sys:     'ในระบบ',
+    stat_rating_lbl: 'คะแนนเฉลี่ย',
+    sec_bestseller:  'สินค้าขายดี',
+    sec_view_all:    'ดูทั้งหมด →',
+    sec_stores:      'เลือกร้านค้า',
+    sec_how:         'วิธีการสั่งซื้อ',
+    how_step1:       'เลือกสินค้า',
+    how_step2:       'กรอกที่อยู่',
+    how_step3:       'ส่งผ่านแชท',
+    how_step4:       'รอรับสินค้า',
+    filter_all:      'ทั้งหมด',
+    filter_pet:      'สัตว์เลี้ยง',
+    filter_computer: 'คอมพิวเตอร์',
+    filter_toy:      'ของเล่น',
+    nav_account:     'บัญชี',
+    // Shop extras
+    shop_price_range: 'ช่วงราคา',
+    shop_cat_section: 'หมวดหมู่',
+    shop_filter_apply:'กรอง',
+    sort_default:    'เรียง: ค่าเริ่มต้น',
+    // Product extras
+    prod_tab_desc_full:'รายละเอียดสินค้า',
+    prod_tab_specs:  'ข้อมูลเพิ่มเติม',
+    prod_related:    'สินค้าที่เกี่ยวข้อง',
+    // Checkout extras
+    co_back_shop:    '← กลับซื้อต่อ',
+    co_secure:       'ปลอดภัย',
+    // Profile extras
+    prof_account:    'บัญชีของฉัน',
+    prof_history:    'ประวัติการสั่งซื้อ',
+    prof_start_shop: 'เริ่มเลือกสินค้าได้เลย!',
   },
 
   /* ── LAO ────────────────────────────────────────────── */
@@ -121,8 +156,8 @@ const RUBY_LANGS = {
     // Hero
     hero_title1:    'ສັ່ງງ່າຍ ຈ່າຍສະດວກ',
     hero_title2:    'ຜ່ານ WhatsApp & Messenger',
-    hero_sub:       'ເລືອກສິນຄ້າທີ່ຊອບ ແລ້ວສົ່ງອໍເດີຜ່ານແຊດ\nງ່າຍໆ ບໍ່ຕ້ອງສະໝັກສະມາຊິກ ບໍ່ຕ້ອງຈຳລະຫັດຜ່ານ',
-    hero_btn_shop:  'ເບິ່ງສິນຄ້າທັງໝົດ',
+    hero_sub:       'ເລືອກສິນຄ້າທີ່ຊອບ ແລ້ວສົ່ງອໍເດີຜ່ານແຊດ ງ່າຍໆ ບໍ່ຕ້ອງສະໝັກສະມາຊິກ ບໍ່ຕ້ອງຈຳລະຫັດຜ່ານ',
+    hero_btn_shop:  'ຊື້ເລີຍ',
     hero_btn_how:   'ວິທີສັ່ງຊື້',
 
     // Stats
@@ -169,7 +204,7 @@ const RUBY_LANGS = {
     prod_trust4:    'ຕອບໄວ',
 
     // Checkout
-    co_step1:       'ຂໍ້ມູນ',
+    co_step1:       'ຂໍ້ມູນສົ່ງ',
     co_step2:       'ຊ່ອງທາງ',
     co_step3:       'ຢືນຢັນ',
     co_shipping:    'ຂໍ້ມູນການຈັດສົ່ງ',
@@ -208,6 +243,41 @@ const RUBY_LANGS = {
     loading:        'ກຳລັງໂຫຼດ...',
     error_required: 'ກະລຸນາກອກຂໍ້ມູນ',
     currency:       '₭',
+    // Index extras
+    hero_tag:        'ທຸລະກຳໂຊຊຽນສຳລັບຮ້ານ',
+    hero_btn_stores: 'ເບິ່ງຮ້ານຄ້າ',
+    stat_items_lbl:  'ສິນຄ້າ',
+    stat_in_sys:     'ໃນລະບົບ',
+    stat_rating_lbl: 'ຄະແນນສະເລ່ຍ',
+    sec_bestseller:  'ສິນຄ້າຂາຍດີ',
+    sec_view_all:    'ເບິ່ງທັງໝົດ →',
+    sec_stores:      'ເລືອກຮ້ານຄ້າ',
+    sec_how:         'ວິທີສັ່ງຊື້',
+    how_step1:       'ເລືອກສິນຄ້າ',
+    how_step2:       'ຕື່ມທີ່ຢູ່',
+    how_step3:       'ສົ່ງຜ່ານແຊດ',
+    how_step4:       'ລໍຖ້າສິນຄ້າ',
+    filter_all:      'ທັງໝົດ',
+    filter_pet:      'ສັດລ້ຽງ',
+    filter_computer: 'ຄອມພິວເຕີ',
+    filter_toy:      'ຂອງຫຼິ້ນ',
+    nav_account:     'ບັນຊີ',
+    // Shop extras
+    shop_price_range: 'ຊ່ວງລາຄາ',
+    shop_cat_section: 'ໝວດໝູ່',
+    shop_filter_apply:'ກອງ',
+    sort_default:    'ຮຽງ: ຄ່າເລີ່ມຕົ້ນ',
+    // Product extras
+    prod_tab_desc_full:'ລາຍລະອຽດສິນຄ້າ',
+    prod_tab_specs:  'ຂໍ້ມູນເພີ່ມເຕີມ',
+    prod_related:    'ສິນຄ້າທີ່ກ່ຽວຂ້ອງ',
+    // Checkout extras
+    co_back_shop:    '← ກັບໄປຊື້ຕໍ່',
+    co_secure:       'ປອດໄພ',
+    // Profile extras
+    prof_account:    'ບັນຊີຂອງຂ້ອຍ',
+    prof_history:    'ປະຫວັດການສັ່ງຊື້',
+    prof_start_shop: 'ເລີ່ມເລືອກສິນຄ້າໄດ້ເລີຍ!',
   },
 
   /* ── ENGLISH ────────────────────────────────────────── */
@@ -222,8 +292,8 @@ const RUBY_LANGS = {
     // Hero
     hero_title1:    'Easy Order, Easy Pay',
     hero_title2:    'via WhatsApp & Messenger',
-    hero_sub:       'Pick what you love and send your order via chat.\nNo sign-up. No password needed.',
-    hero_btn_shop:  'Browse All Products',
+    hero_sub:       'Pick what you love and send your order via chat. No sign-up. No password needed.',
+    hero_btn_shop:  'Shop Now',
     hero_btn_how:   'How to Order',
 
     // Stats
@@ -270,7 +340,7 @@ const RUBY_LANGS = {
     prod_trust4:    'Fast Reply',
 
     // Checkout
-    co_step1:       'Info',
+    co_step1:       'Shipping',
     co_step2:       'Channel',
     co_step3:       'Confirm',
     co_shipping:    'Shipping Information',
@@ -309,6 +379,41 @@ const RUBY_LANGS = {
     loading:        'Loading...',
     error_required: 'This field is required',
     currency:       '฿',
+    // Index extras
+    hero_tag:        'Social Commerce',
+    hero_btn_stores: 'Browse Stores',
+    stat_items_lbl:  'Products',
+    stat_in_sys:     'available',
+    stat_rating_lbl: 'avg rating',
+    sec_bestseller:  'Best Sellers',
+    sec_view_all:    'View All →',
+    sec_stores:      'Our Stores',
+    sec_how:         'How to Order',
+    how_step1:       'Pick Items',
+    how_step2:       'Fill Address',
+    how_step3:       'Send via Chat',
+    how_step4:       'Await Delivery',
+    filter_all:      'All',
+    filter_pet:      'Pets',
+    filter_computer: 'Computer',
+    filter_toy:      'Toys',
+    nav_account:     'Account',
+    // Shop extras
+    shop_price_range: 'Price Range',
+    shop_cat_section: 'Category',
+    shop_filter_apply:'Filter',
+    sort_default:    'Sort: Default',
+    // Product extras
+    prod_tab_desc_full:'Product Details',
+    prod_tab_specs:  'More Info',
+    prod_related:    'Related Products',
+    // Checkout extras
+    co_back_shop:    '← Keep Shopping',
+    co_secure:       'Secure',
+    // Profile extras
+    prof_account:    'My Account',
+    prof_history:    'Order History',
+    prof_start_shop: 'Start shopping now!',
   },
 };
 

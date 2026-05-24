@@ -210,7 +210,7 @@
     <!-- Hero -->
     <div class="profile-hero">
       <div class="profile-avatar">👤</div>
-      <div style="font-size:1.1rem;font-weight:800;margin-bottom:6px;">บัญชีของฉัน</div>
+      <div style="font-size:1.1rem;font-weight:800;margin-bottom:6px;" data-i18n="prof_account">บัญชีของฉัน</div>
       <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
         <div class="profile-uid-chip" id="uidChip" title="กด copy">
           🔑 <span id="uidDisplay">--------</span>
@@ -222,24 +222,24 @@
 
     <!-- ── ORDER HISTORY ── -->
     <div class="section-head">
-      <div class="section-title">📦 ประวัติการสั่งซื้อ</div>
+      <div class="section-title">📦 <span data-i18n="prof_history">ประวัติการสั่งซื้อ</span></div>
       <button class="btn btn-outline btn-sm" id="refreshBtn" onclick="loadOrders()">🔄 รีเฟรช</button>
     </div>
 
-    <div id="ordersLoading" style="text-align:center;padding:20px;color:var(--muted);font-size:0.875rem;">
+    <div id="ordersLoading" style="text-align:center;padding:20px;color:var(--muted);font-size:0.875rem;" data-i18n="loading">
       กำลังโหลด...
     </div>
     <div id="ordersList" style="display:none;"></div>
     <div id="ordersEmpty" class="order-empty" style="display:none;">
       <div class="order-empty-icon">📭</div>
-      <div style="font-weight:700;margin-bottom:6px;">ยังไม่มีประวัติการสั่งซื้อ</div>
-      <div style="font-size:0.82rem;margin-bottom:20px;">เริ่มเลือกสินค้าได้เลย!</div>
+      <div style="font-weight:700;margin-bottom:6px;" data-i18n="prof_no_order">ยังไม่มีประวัติการสั่งซื้อ</div>
+      <div style="font-size:0.82rem;margin-bottom:20px;" data-i18n="prof_start_shop">เริ่มเลือกสินค้าได้เลย!</div>
       <a href="shop.html" class="btn btn-primary">🛍️ ไปเลือกสินค้า</a>
     </div>
 
     <!-- ── QUICK LINKS ── -->
     <div class="ql-card" style="margin-top:24px;">
-      <div class="ql-title">ร้านค้า</div>
+      <div class="ql-title" data-i18n="nav_stores">ร้านค้า</div>
       <a href="shop.html" class="ql-row">
         <div class="ql-icon red">🛍️</div>
         <div class="ql-body"><div class="ql-label">เลือกซื้อสินค้า</div><div class="ql-desc">สินค้าจาก 3 ร้านในระบบ</div></div>
@@ -263,7 +263,7 @@
     </div>
 
     <div class="ql-card">
-      <div class="ql-title">ติดต่อร้านค้า</div>
+      <div class="ql-title" data-i18n="prof_contact">ติดต่อร้านค้า</div>
       <a href="https://wa.me/8562078926245" target="_blank" class="ql-row">
         <div class="ql-icon green">💬</div>
         <div class="ql-body"><div class="ql-label">WhatsApp</div><div class="ql-desc">สอบถาม / ติดตามออเดอร์</div></div>
@@ -277,7 +277,7 @@
     </div>
 
     <div class="ql-card">
-      <div class="ql-title">ตะกร้า</div>
+      <div class="ql-title" data-i18n="nav_cart">ตะกร้า</div>
       <div class="ql-row" id="profileCartBtn" style="cursor:pointer;">
         <div class="ql-icon red">🛒</div>
         <div class="ql-body"><div class="ql-label">ดูตะกร้าสินค้า</div><div class="ql-desc" id="profileCartDesc">ยังไม่มีสินค้าในตะกร้า</div></div>
@@ -295,43 +295,43 @@
 <div class="cart-overlay" id="cartOverlay"></div>
 <div class="cart-sidebar" id="cartSidebar">
   <div class="cart-header">
-    <h3>🛒 ตะกร้าสินค้า</h3>
+    <h3>🛒 <span data-i18n="cart_title">ตะกร้าสินค้า</span></h3>
     <button class="cart-close" id="cartClose">×</button>
   </div>
   <div class="cart-items" id="cartItems">
     <div class="cart-empty" id="cartEmpty">
       <div class="cart-empty-icon">🛒</div>
-      <p>ตะกร้าว่างเปล่า</p>
+      <p><span data-i18n="cart_empty">ตะกร้าว่างเปล่า</span></p>
     </div>
   </div>
   <div class="cart-footer" id="cartFooter" style="display:none;">
     <div class="cart-subtotal">
-      <span class="label">ราคาสินค้า</span>
+      <span class="label" data-i18n="cart_subtotal">ราคาสินค้า</span>
       <span class="value" id="cartSubtotalVal">฿0</span>
     </div>
     <div class="cart-total">
-      <span>รวมทั้งหมด</span>
+      <span data-i18n="cart_total">รวมทั้งหมด</span>
       <span class="price" id="cartTotalVal">฿0</span>
     </div>
-    <a href="checkout.html" class="btn btn-primary btn-block">ดำเนินการสั่งซื้อ →</a>
+    <a href="checkout.html" class="btn btn-primary btn-block" data-i18n="cart_checkout">ดำเนินการสั่งซื้อ →</a>
   </div>
 </div>
 
 <!-- ===================== MOBILE BOTTOM NAV ===================== -->
 <nav class="mobile-bottom-nav">
   <a href="index.html" class="nav-item">
-    <span class="icon">🏠</span><span>หน้าแรก</span>
+    <span class="icon">🏠</span><span data-i18n="nav_home">หน้าแรก</span>
   </a>
   <a href="shop.html" class="nav-item">
-    <span class="icon">🛍️</span><span>ร้านค้า</span>
+    <span class="icon">🛍️</span><span data-i18n="nav_stores">ร้านค้า</span>
   </a>
   <a href="#" class="nav-item" id="mobileCartBtn">
     <span class="icon">🛒</span>
     <div class="cart-dot" id="mobileCartDot"></div>
-    <span>ตะกร้า</span>
+    <span data-i18n="nav_cart">ตะกร้า</span>
   </a>
   <a href="profile.html" class="nav-item active">
-    <span class="icon">👤</span><span>บัญชี</span>
+    <span class="icon">👤</span><span data-i18n="nav_account">บัญชี</span>
   </a>
 </nav>
 

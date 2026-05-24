@@ -78,9 +78,9 @@
     <!-- Product Tabs (description/details) -->
     <div style="background:var(--card);border-radius:var(--radius-card);padding:20px;margin-bottom:32px;box-shadow:var(--shadow-sm);" id="productTabsSection">
       <div class="product-tabs">
-        <button class="product-tab active" data-tab="desc" onclick="switchTab('desc')">รายละเอียดสินค้า</button>
-        <button class="product-tab" data-tab="specs" onclick="switchTab('specs')">ข้อมูลเพิ่มเติม</button>
-        <button class="product-tab" data-tab="reviews" onclick="switchTab('reviews')">รีวิว</button>
+        <button class="product-tab active" data-tab="desc" onclick="switchTab('desc')" data-i18n="prod_tab_desc_full">รายละเอียดสินค้า</button>
+        <button class="product-tab" data-tab="specs" onclick="switchTab('specs')" data-i18n="prod_tab_specs">ข้อมูลเพิ่มเติม</button>
+        <button class="product-tab" data-tab="reviews" onclick="switchTab('reviews')" data-i18n="prod_tab_rev">รีวิว</button>
       </div>
       <div class="product-tab-content active" id="tab-desc">
         <p id="tabDescText">-</p>
@@ -97,7 +97,7 @@
 
     <!-- Related Products -->
     <div class="mb-32" id="relatedSection">
-      <h2 style="font-size:1.1rem;font-weight:800;margin-bottom:16px;">สินค้าที่เกี่ยวข้อง</h2>
+      <h2 style="font-size:1.1rem;font-weight:800;margin-bottom:16px;" data-i18n="prod_related">สินค้าที่เกี่ยวข้อง</h2>
       <div class="related-row" id="relatedRow"></div>
     </div>
 
@@ -134,25 +134,25 @@
 <div class="cart-overlay" id="cartOverlay"></div>
 <div class="cart-sidebar" id="cartSidebar">
   <div class="cart-header">
-    <h3>🛒 ตะกร้าสินค้า</h3>
+    <h3>🛒 <span data-i18n="cart_title">ตะกร้าสินค้า</span></h3>
     <button class="cart-close" id="cartClose">×</button>
   </div>
   <div class="cart-items" id="cartItems">
     <div class="cart-empty" id="cartEmpty">
       <div class="cart-empty-icon">🛒</div>
-      <p>ตะกร้าว่างเปล่า</p>
+      <p><span data-i18n="cart_empty">ตะกร้าว่างเปล่า</span></p>
     </div>
   </div>
   <div class="cart-footer" id="cartFooter" style="display:none;">
     <div class="cart-subtotal">
-      <span class="label">ราคาสินค้า</span>
+      <span class="label" data-i18n="cart_subtotal">ราคาสินค้า</span>
       <span class="value" id="cartSubtotalVal">฿0</span>
     </div>
     <div class="cart-total">
-      <span>รวมทั้งหมด</span>
+      <span data-i18n="cart_total">รวมทั้งหมด</span>
       <span class="price" id="cartTotalVal">฿0</span>
     </div>
-    <a href="checkout.html" class="btn btn-primary btn-block">ดำเนินการสั่งซื้อ →</a>
+    <a href="checkout.html" class="btn btn-primary btn-block" data-i18n="cart_checkout">ดำเนินการสั่งซื้อ →</a>
   </div>
 </div>
 
@@ -191,18 +191,18 @@
 
 <nav class="mobile-bottom-nav">
   <a href="index.html" class="nav-item">
-    <span class="icon">🏠</span><span>หน้าแรก</span>
+    <span class="icon">🏠</span><span data-i18n="nav_home">หน้าแรก</span>
   </a>
   <a href="shop.html" class="nav-item active">
-    <span class="icon">🛍️</span><span>ร้านค้า</span>
+    <span class="icon">🛍️</span><span data-i18n="nav_stores">ร้านค้า</span>
   </a>
   <a href="#" class="nav-item" id="mobileCartBtn">
     <span class="icon">🛒</span>
     <div class="cart-dot" id="mobileCartDot"></div>
-    <span>ตะกร้า</span>
+    <span data-i18n="nav_cart">ตะกร้า</span>
   </a>
   <a href="profile.html" class="nav-item">
-    <span class="icon">👤</span><span>บัญชี</span>
+    <span class="icon">👤</span><span data-i18n="nav_account">บัญชี</span>
   </a>
 </nav>
 

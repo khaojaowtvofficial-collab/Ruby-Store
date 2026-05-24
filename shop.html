@@ -76,7 +76,7 @@
     <!-- Search Bar -->
     <div style="position:relative;margin-bottom:16px;">
       <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="searchInput" placeholder="ค้นหาสินค้า..." autocomplete="off"
+      <input type="text" id="searchInput" placeholder="ค้นหาสินค้า..." autocomplete="off" data-i18n="shop_search" data-i18n-attr="placeholder"
         style="width:100%;padding:11px 40px 11px 42px;border:1.5px solid var(--border);border-radius:100px;font-size:0.9rem;font-family:inherit;outline:none;background:var(--card);box-sizing:border-box;transition:border .15s;"
         oninput="_searchQuery=this.value.trim();renderShopProducts(getStoreFromHash())"
         onfocus="this.style.borderColor='var(--red)'" onblur="this.style.borderColor='var(--border)'">
@@ -100,16 +100,16 @@
       <!-- Sidebar Filters (desktop only) -->
       <aside class="shop-filters">
         <div class="filter-section">
-          <div class="filter-section-title">ช่วงราคา</div>
+          <div class="filter-section-title" data-i18n="shop_price_range">ช่วงราคา</div>
           <div class="price-range">
             <input type="number" id="priceMin" placeholder="ต่ำสุด" min="0" value="0">
             <span class="dash">—</span>
             <input type="number" id="priceMax" placeholder="สูงสุด" min="0" value="10000">
           </div>
-          <button class="btn btn-outline btn-sm btn-block" style="margin-top:10px;" onclick="applyPriceFilter()">กรอง</button>
+          <button class="btn btn-outline btn-sm btn-block" style="margin-top:10px;" onclick="applyPriceFilter()" data-i18n="shop_filter_apply">กรอง</button>
         </div>
         <div class="filter-section">
-          <div class="filter-section-title">หมวดหมู่</div>
+          <div class="filter-section-title" data-i18n="shop_cat_section">หมวดหมู่</div>
           <label class="filter-check">
             <input type="checkbox" checked onchange="toggleCatFilter('pet')"> สัตว์เลี้ยง
           </label>
@@ -139,9 +139,9 @@
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
           <p style="font-size:0.85rem; color:var(--muted);" id="productCount">แสดง 0 รายการ</p>
           <select class="co-input" style="width:auto; padding:6px 12px; font-size:0.82rem;" id="sortSelect" onchange="sortProducts()">
-            <option value="default">เรียงตาม: ค่าเริ่มต้น</option>
-            <option value="price-asc">ราคา: น้อย → มาก</option>
-            <option value="price-desc">ราคา: มาก → น้อย</option>
+            <option value="default" data-i18n="sort_default">เรียงตาม: ค่าเริ่มต้น</option>
+            <option value="price-asc" data-i18n="shop_sort_low">ราคา: น้อย → มาก</option>
+            <option value="price-desc" data-i18n="shop_sort_high">ราคา: มาก → น้อย</option>
             <option value="name">ชื่อสินค้า A-Z</option>
           </select>
         </div>
@@ -198,43 +198,43 @@
 <div class="cart-overlay" id="cartOverlay"></div>
 <div class="cart-sidebar" id="cartSidebar">
   <div class="cart-header">
-    <h3>🛒 ตะกร้าสินค้า</h3>
+    <h3>🛒 <span data-i18n="cart_title">ตะกร้าสินค้า</span></h3>
     <button class="cart-close" id="cartClose">×</button>
   </div>
   <div class="cart-items" id="cartItems">
     <div class="cart-empty" id="cartEmpty">
       <div class="cart-empty-icon">🛒</div>
-      <p>ตะกร้าว่างเปล่า</p>
+      <p><span data-i18n="cart_empty">ตะกร้าว่างเปล่า</span></p>
     </div>
   </div>
   <div class="cart-footer" id="cartFooter" style="display:none;">
     <div class="cart-subtotal">
-      <span class="label">ราคาสินค้า</span>
+      <span class="label" data-i18n="cart_subtotal">ราคาสินค้า</span>
       <span class="value" id="cartSubtotalVal">฿0</span>
     </div>
     <div class="cart-total">
-      <span>รวมทั้งหมด</span>
+      <span data-i18n="cart_total">รวมทั้งหมด</span>
       <span class="price" id="cartTotalVal">฿0</span>
     </div>
-    <a href="checkout.html" class="btn btn-primary btn-block">ดำเนินการสั่งซื้อ →</a>
+    <a href="checkout.html" class="btn btn-primary btn-block" data-i18n="cart_checkout">ดำเนินการสั่งซื้อ →</a>
   </div>
 </div>
 
 <!-- ===================== MOBILE BOTTOM NAV ===================== -->
 <nav class="mobile-bottom-nav">
   <a href="index.html" class="nav-item">
-    <span class="icon">🏠</span><span>หน้าแรก</span>
+    <span class="icon">🏠</span><span data-i18n="nav_home">หน้าแรก</span>
   </a>
   <a href="shop.html" class="nav-item active">
-    <span class="icon">🛍️</span><span>ร้านค้า</span>
+    <span class="icon">🛍️</span><span data-i18n="nav_stores">ร้านค้า</span>
   </a>
   <a href="#" class="nav-item" id="mobileCartBtn">
     <span class="icon">🛒</span>
     <div class="cart-dot" id="mobileCartDot"></div>
-    <span>ตะกร้า</span>
+    <span data-i18n="nav_cart">ตะกร้า</span>
   </a>
   <a href="profile.html" class="nav-item">
-    <span class="icon">👤</span><span>บัญชี</span>
+    <span class="icon">👤</span><span data-i18n="nav_account">บัญชี</span>
   </a>
 </nav>
 
