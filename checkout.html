@@ -104,6 +104,14 @@
             <input type="text" class="co-input" id="fieldNote" placeholder="ข้อความถึงร้านค้า">
           </div>
 
+          <!-- ── BOT HONEYPOT (ซ่อนจากคนจริง, bot จะกรอก) ── -->
+          <div style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="true" tabindex="-1">
+            <label for="_hp_website">Website</label>
+            <input type="text" id="_hp_website" name="website" autocomplete="off" tabindex="-1">
+            <label for="_hp_email">Email address</label>
+            <input type="email" id="_hp_email" name="email_confirm" autocomplete="off" tabindex="-1">
+          </div>
+
           <!-- Delivery Options -->
           <div class="co-form-title" style="margin-top:24px;">🚚 วิธีจัดส่ง</div>
           <div class="delivery-opts" id="deliveryOpts">
@@ -381,12 +389,54 @@
     gotoStep(3);
   }
 
+  /* ══ BOT PROTECTION ══════════════════════════════════════
+     3 layers: honeypot + timing + user-agent
+  ═══════════════════════════════════════════════════════ */
+  const _formOpenedAt = Date.now();
+  let _mouseMovedCount = 0;
+  let _keyPressCount = 0;
+  document.addEventListener('mousemove', () => { if (_mouseMovedCount < 50) _mouseMovedCount++; }, { passive: true });
+  document.addEventListener('keydown',   () => { if (_keyPressCount   < 50) _keyPressCount++;   }, { passive: true });
+
+  function _checkBotProtection() {
+    // Layer 1: Honeypot — bot กรอก field ที่ซ่อน
+    const hp1 = document.getElementById('_hp_website')?.value || '';
+    const hp2 = document.getElementById('_hp_email')?.value   || '';
+    if (hp1 || hp2) {
+      console.warn('[Security] Honeypot triggered');
+      return { blocked: true, reason: 'honeypot' };
+    }
+
+    // Layer 2: Timing — form กรอกเร็วเกินไป (< 4 วินาที)
+    const elapsed = (Date.now() - _formOpenedAt) / 1000;
+    if (elapsed < 4) {
+      console.warn('[Security] Form submitted too fast:', elapsed.toFixed(1) + 's');
+      return { blocked: true, reason: 'too_fast' };
+    }
+
+    // Layer 3: Human activity — ไม่มีการเคลื่อนไหวเลย
+    if (_mouseMovedCount === 0 && _keyPressCount < 3) {
+      console.warn('[Security] No human activity detected');
+      return { blocked: true, reason: 'no_activity' };
+    }
+
+    return { blocked: false };
+  }
+
   async function confirmOrder() {
     const terms = document.getElementById('termsCheck');
     document.getElementById('errTerms').textContent = '';
     if (!terms.checked) {
       document.getElementById('errTerms').textContent = 'กรุณายอมรับเงื่อนไขก่อน';
       showToast('กรุณายอมรับเงื่อนไขก่อน', 'error');
+      return;
+    }
+
+    // ── Bot protection check ──
+    const botCheck = _checkBotProtection();
+    if (botCheck.blocked) {
+      console.warn('[Security] Order blocked — reason:', botCheck.reason);
+      showToast('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง', 'error');
       return;
     }
 
