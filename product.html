@@ -241,12 +241,14 @@
       <!-- Left: images -->
       <div>
         <div class="product-main-img" style="background:${p.bg}">
-          <span style="font-size:6rem;">${p.emoji}</span>
+          ${p.imgUrl
+            ? `<img src="${p.imgUrl}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
+            : `<span style="font-size:6rem;">${p.emoji}</span>`}
         </div>
         <div class="product-thumbs">
-          <div class="product-thumb active" style="background:${p.bg}">${p.emoji}</div>
-          <div class="product-thumb" style="background:${p.bg};opacity:.6">${p.emoji}</div>
-          <div class="product-thumb" style="background:${p.bg};opacity:.4">${p.emoji}</div>
+          <div class="product-thumb active" style="background:${p.bg}">
+            ${p.imgUrl ? `<img src="${p.imgUrl}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">` : p.emoji}
+          </div>
         </div>
       </div>
 
