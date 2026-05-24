@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script src="i18n.js"></script>
   <style>
     /* Fix: prevent phone-prefix grid blowout on mobile */
     .co-form-row > * { min-width: 0; }
@@ -30,6 +31,7 @@
       Ruby <span>Store</span>
     </a>
     <div class="navbar-spacer"></div>
+    <div id="langSwitcherMount"></div>
     <div class="navbar-secure-badge">🔒 ปลอดภัย</div>
   </div>
 </nav>
@@ -581,6 +583,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
+    RubyI18n.injectLangSwitcher('#langSwitcherMount');
     renderSidebar();
     renderMobileSummary();
     // Show mobile summary only on small screens

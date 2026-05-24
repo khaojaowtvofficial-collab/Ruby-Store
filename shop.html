@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script src="i18n.js"></script>
 </head>
 <body>
 
@@ -23,12 +24,13 @@
       Ruby <span>Store</span>
     </a>
     <nav class="navbar-nav">
-      <a href="index.html">หน้าแรก</a>
-      <a href="shop.html" class="active">สินค้า</a>
-      <a href="index.html#stores">ร้านค้า</a>
-      <a href="index.html#about">เกี่ยวกับ</a>
+      <a href="index.html" data-i18n="nav_home">หน้าแรก</a>
+      <a href="shop.html" class="active" data-i18n="nav_shop">สินค้า</a>
+      <a href="index.html#stores" data-i18n="nav_stores">ร้านค้า</a>
+      <a href="index.html#about" data-i18n="nav_about">เกี่ยวกับ</a>
     </nav>
     <div class="navbar-spacer"></div>
+    <div id="langSwitcherMount"></div>
     <div class="navbar-actions">
       <button class="nav-cart-btn" id="cartBtn" aria-label="ตะกร้าสินค้า">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -271,10 +273,14 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
+    RubyI18n.injectLangSwitcher('#langSwitcherMount');
     applyStore(getStoreFromHash());
 
     // React to tab clicks without page reload
     window.addEventListener('hashchange', () => applyStore(getStoreFromHash()));
+
+    // Re-render when language changes
+    window.addEventListener('langchange', () => renderShopProducts(getStoreFromHash()));
 
     // Cat chip → filter products
     document.querySelectorAll('.cat-chip').forEach(chip => {

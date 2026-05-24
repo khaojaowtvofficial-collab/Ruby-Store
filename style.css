@@ -173,6 +173,35 @@ input, textarea, select {
   gap: 8px;
 }
 
+/* ── Language Switcher ── */
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--bg);
+  border-radius: 20px;
+  padding: 3px;
+}
+.lang-btn {
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-family: var(--font-th);
+  color: var(--text-m);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.lang-btn:hover { background: var(--card); color: var(--text); }
+.lang-btn.active {
+  background: var(--card);
+  color: var(--red);
+  box-shadow: var(--shadow-sm);
+}
+
 .nav-cart-btn {
   position: relative;
   display: flex;
