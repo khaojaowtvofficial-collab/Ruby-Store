@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruby Store — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── Admin Modals ── */
+    .admin-modal-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,.52);
+      z-index:2000; display:none; align-items:center; justify-content:center; padding:16px;
+    }
+    .admin-modal-overlay.open { display:flex; }
+    .admin-modal {
+      background:#fff; border-radius:18px;
+      width:min(560px,100%); max-height:92vh; overflow-y:auto;
+      box-shadow:0 24px 80px rgba(0,0,0,.28);
+    }
+    .admin-modal-hd {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:20px 24px; border-bottom:1px solid var(--border);
+      position:sticky; top:0; background:#fff; z-index:1; border-radius:18px 18px 0 0;
+    }
+    .admin-modal-hd h3 { font-size:1rem; font-weight:800; margin:0; }
+    .admin-modal-close { background:none; border:none; font-size:1.7rem; cursor:pointer; color:var(--muted); line-height:1; padding:0 4px; }
+    .admin-modal-body { padding:24px; }
+    .admin-modal-footer {
+      padding:16px 24px; border-top:1px solid var(--border);
+      display:flex; gap:10px; justify-content:flex-end;
+      position:sticky; bottom:0; background:#fff; border-radius:0 0 18px 18px;
+    }
+    /* Status buttons */
+    .status-btn-group { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .status-btn {
+      padding:8px 18px; border-radius:100px; border:2px solid var(--border);
+      background:#fff; font-size:0.83rem; font-weight:700;
+      cursor:pointer; font-family:inherit; transition:all .15s; opacity:.7;
+    }
+    .status-btn:hover { opacity:1; }
+    .status-btn.sel { opacity:1; }
+    .status-btn.sel.s-pending  { border-color:#F59E0B; background:#FEF3C7; color:#92400E; }
+    .status-btn.sel.s-confirmed { border-color:#3B82F6; background:#EFF6FF; color:#1D4ED8; }
+    .status-btn.sel.s-completed { border-color:#10B981; background:#ECFDF5; color:#065F46; }
+    .status-btn.sel.s-cancelled { border-color:#EF4444; background:#FEF2F2; color:#991B1B; }
+    /* Order detail */
+    .order-detail-grid { display:grid; grid-template-columns:110px 1fr; gap:8px 14px; font-size:.875rem; }
+    .odg-label { color:var(--muted); font-weight:600; }
+    .odg-val { font-weight:500; }
+    .order-items-box { background:var(--bg); border-radius:10px; padding:12px 14px; margin-top:4px; }
+    .order-item-row { display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid var(--border); font-size:.83rem; }
+    .order-item-row:last-child { border:none; }
+    /* Product form */
+    .admin-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .admin-form-group { display:flex; flex-direction:column; gap:6px; }
+    .admin-form-group.full { grid-column:1/-1; }
+    .admin-form-label { font-size:.8rem; font-weight:700; color:var(--text-m); }
+    .admin-form-input {
+      padding:9px 12px; border:1.5px solid var(--border); border-radius:10px;
+      font-size:.875rem; font-family:inherit; outline:none;
+      transition:border .15s; background:var(--bg);
+    }
+    .admin-form-input:focus { border-color:var(--red); background:#fff; }
+    select.admin-form-input { cursor:pointer; }
+    textarea.admin-form-input { resize:vertical; min-height:70px; }
+    /* Emoji picker */
+    .emoji-picker-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+    .emoji-opt {
+      width:38px; height:38px; border-radius:9px; border:2px solid var(--border);
+      background:#fff; font-size:1.25rem; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; transition:all .15s;
+    }
+    .emoji-opt:hover { border-color:var(--red); }
+    .emoji-opt.sel { border-color:var(--red); background:#FFF5F5; }
+    /* Store cards */
+    .store-cards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; }
+    .store-card-admin {
+      background:var(--card); border:1.5px solid var(--border);
+      border-radius:16px; padding:22px 20px; transition:all .2s;
+    }
+    .store-card-admin:hover { border-color:var(--red); box-shadow:0 4px 24px rgba(229,57,53,.1); }
+    .sca-icon { font-size:2.4rem; margin-bottom:10px; }
+    .sca-name { font-size:1rem; font-weight:800; margin-bottom:4px; }
+    .sca-count { font-size:.82rem; color:var(--muted); margin-bottom:14px; }
+    .sca-actions { display:flex; gap:8px; }
+    /* Store products section */
+    .store-section {
+      background:var(--card); border:1.5px solid var(--border);
+      border-radius:16px; overflow:hidden; margin-top:22px;
+    }
+    .store-section-hd {
+      padding:16px 20px; border-bottom:1px solid var(--border);
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    }
+    .store-section-hd h3 { font-size:.95rem; font-weight:800; margin:0; flex:1; }
+    /* Danger */
+    .btn-danger { color:#DC2626 !important; border-color:#FECACA !important; }
+    .btn-danger:hover { background:#DC2626 !important; color:#fff !important; }
+    /* Filter bar */
+    .orders-filter-bar { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:16px; row-gap:10px; }
+    .orders-filter-bar h2 { font-size:1.05rem; font-weight:800; margin:0; min-width:120px; }
+    .orders-filter-bar select, .orders-filter-bar input { min-width:0; }
+    @media (max-width:600px) {
+      .orders-filter-bar > * { flex:1 1 140px; }
+      .orders-filter-bar h2 { flex:1 1 100%; }
+    }
+    /* confirm overlay on delete */
+    .confirm-inline { background:#FEF2F2; border:1.5px solid #FECACA; border-radius:10px; padding:12px 16px; margin-top:12px; font-size:.85rem; color:#991B1B; display:none; }
+    .confirm-inline.show { display:block; }
+    /* PIN lock screen */
+    #pinOverlay {
+      position:fixed; inset:0; z-index:9999;
+      background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .pin-box {
+      background:#fff; border-radius:24px; padding:40px 36px; width:min(380px,90vw);
+      text-align:center; box-shadow:0 32px 80px rgba(0,0,0,.5);
+    }
+    .pin-logo { font-size:2.4rem; margin-bottom:8px; }
+    .pin-title { font-size:1.2rem; font-weight:800; margin-bottom:4px; }
+    .pin-sub { font-size:.82rem; color:var(--muted); margin-bottom:28px; }
+    .pin-dots { display:flex; gap:12px; justify-content:center; margin-bottom:24px; }
+    .pin-dot {
+      width:16px; height:16px; border-radius:50%;
+      border:2.5px solid var(--border); background:#fff; transition:all .15s;
+    }
+    .pin-dot.filled { background:var(--red); border-color:var(--red); }
+    .pin-dot.shake { animation:pinShake .3s ease; }
+    @keyframes pinShake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+    .pin-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; max-width:240px; margin:0 auto 16px; }
+    .pin-key {
+      height:56px; border-radius:14px; border:1.5px solid var(--border);
+      background:#fff; font-size:1.3rem; font-weight:700; cursor:pointer;
+      font-family:inherit; transition:all .12s; color:var(--text);
+    }
+    .pin-key:hover { background:var(--bg); border-color:var(--red); }
+    .pin-key:active { transform:scale(.93); background:#FFF5F5; }
+    .pin-key.del { font-size:1rem; color:var(--muted); }
+    .pin-error { font-size:.82rem; color:#DC2626; min-height:20px; margin-top:4px; }
+    .pin-hint { font-size:.78rem; color:var(--muted); margin-top:14px; }
+  </style>
+</head>
+<body>
+
+<!-- ===================== PIN LOCK SCREEN ===================== -->
+<div id="pinOverlay">
+  <div class="pin-box">
+    <div class="pin-logo">🔐</div>
+    <div class="pin-title">Ruby Store Admin</div>
+    <div class="pin-sub">กรอก PIN เพื่อเข้าใช้งาน</div>
+    <div class="pin-dots" id="pinDots">
+      <div class="pin-dot" id="pd0"></div>
+      <div class="pin-dot" id="pd1"></div>
+      <div class="pin-dot" id="pd2"></div>
+      <div class="pin-dot" id="pd3"></div>
+    </div>
+    <div class="pin-grid" id="pinGrid">
+      <button class="pin-key" onclick="pinKey('1')">1</button>
+      <button class="pin-key" onclick="pinKey('2')">2</button>
+      <button class="pin-key" onclick="pinKey('3')">3</button>
+      <button class="pin-key" onclick="pinKey('4')">4</button>
+      <button class="pin-key" onclick="pinKey('5')">5</button>
+      <button class="pin-key" onclick="pinKey('6')">6</button>
+      <button class="pin-key" onclick="pinKey('7')">7</button>
+      <button class="pin-key" onclick="pinKey('8')">8</button>
+      <button class="pin-key" onclick="pinKey('9')">9</button>
+      <button class="pin-key" onclick="pinClear()" style="font-size:.85rem;">ล้าง</button>
+      <button class="pin-key" onclick="pinKey('0')">0</button>
+      <button class="pin-key del" onclick="pinDelete()">⌫</button>
+    </div>
+    <div class="pin-error" id="pinError"></div>
+    <div class="pin-hint" id="pinHint"></div>
+  </div>
+</div>
+
+<!-- ===================== CHANGE PIN MODAL ===================== -->
+<div id="changePinOverlay" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:28px 24px;width:320px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,.25);">
+    <div style="font-size:1.1rem;font-weight:800;margin-bottom:4px;">🔑 เปลี่ยน PIN</div>
+    <div style="font-size:.82rem;color:var(--muted);margin-bottom:18px;">กรอก PIN ปัจจุบัน แล้วตั้ง PIN ใหม่ 4 หลัก</div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <label style="font-size:.8rem;font-weight:600;color:var(--text-m);">PIN ปัจจุบัน</label>
+        <input type="password" id="cpCurrent" maxlength="4" inputmode="numeric" pattern="[0-9]*"
+          style="width:100%;margin-top:4px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:1rem;font-family:inherit;box-sizing:border-box;"
+          placeholder="• • • •">
+      </div>
+      <div>
+        <label style="font-size:.8rem;font-weight:600;color:var(--text-m);">PIN ใหม่</label>
+        <input type="password" id="cpNew" maxlength="4" inputmode="numeric" pattern="[0-9]*"
+          style="width:100%;margin-top:4px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:1rem;font-family:inherit;box-sizing:border-box;"
+          placeholder="• • • •">
+      </div>
+      <div>
+        <label style="font-size:.8rem;font-weight:600;color:var(--text-m);">ยืนยัน PIN ใหม่</label>
+        <input type="password" id="cpConfirm" maxlength="4" inputmode="numeric" pattern="[0-9]*"
+          style="width:100%;margin-top:4px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:1rem;font-family:inherit;box-sizing:border-box;"
+          placeholder="• • • •">
+      </div>
+      <div id="cpError" style="font-size:.82rem;color:#DC2626;min-height:18px;"></div>
+      <div style="display:flex;gap:10px;margin-top:4px;">
+        <button onclick="closeChangePinModal()" style="flex:1;padding:10px;border:1.5px solid var(--border);border-radius:10px;background:none;font-family:inherit;font-size:.9rem;cursor:pointer;">ยกเลิก</button>
+        <button onclick="saveNewPin()" style="flex:1;padding:10px;border:none;border-radius:10px;background:var(--red);color:#fff;font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;">บันทึก PIN</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== ADMIN LAYOUT ===================== -->
+<div class="admin-layout">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="admin-sidebar">
+    <div class="admin-logo">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 0 1-8 0"/>
+      </svg>
+      Ruby Store
+    </div>
+    <nav class="admin-nav">
+      <a href="#" class="admin-nav-link active" onclick="showPanel('dashboard',this);return false;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a href="#" class="admin-nav-link" onclick="showPanel('orders',this);return false;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+        คำสั่งซื้อ
+        <span id="ordersBadge" style="margin-left:auto;background:var(--red);color:#fff;font-size:.7rem;padding:2px 8px;border-radius:100px;display:none;">0</span>
+      </a>
+      <a href="#" class="admin-nav-link" onclick="showPanel('stores',this);return false;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        ร้านค้า
+      </a>
+      <a href="#" class="admin-nav-link" onclick="showPanel('products',this);return false;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        สินค้า
+      </a>
+      <a href="#" class="admin-nav-link" onclick="showPanel('customers',this);return false;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        ลูกค้า
+      </a>
+      <div style="border-top:1px solid rgba(255,255,255,.08);margin:12px 0;"></div>
+      <a href="index.html" class="admin-nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+        กลับร้านค้า
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="admin-main">
+
+    <!-- Topbar -->
+    <div class="admin-topbar">
+      <div>
+        <div class="admin-topbar-title" id="topbarTitle">Dashboard</div>
+        <div class="admin-topbar-date" id="topbarDate"></div>
+      </div>
+      <div style="position:relative;">
+        <div class="admin-avatar" id="adminAvatarBtn" onclick="toggleAdminMenu()" style="cursor:pointer;" title="เมนูผู้ดูแล">A</div>
+        <div id="adminDropdown" style="display:none;position:absolute;right:0;top:calc(100%+8px);background:#fff;border:1.5px solid var(--border);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.14);min-width:180px;z-index:500;overflow:hidden;">
+          <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-size:.78rem;color:var(--muted);">Ruby Store Admin</div>
+          <button onclick="openChangePinModal()" style="width:100%;text-align:left;padding:11px 16px;border:none;background:none;font-family:inherit;font-size:.875rem;cursor:pointer;color:var(--text);display:flex;align-items:center;gap:8px;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">
+            🔑 เปลี่ยน PIN
+          </button>
+          <button onclick="adminLogout()" style="width:100%;text-align:left;padding:11px 16px;border:none;background:none;font-family:inherit;font-size:.875rem;cursor:pointer;color:#DC2626;display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);" onmouseover="this.style.background='#FEF2F2'" onmouseout="this.style.background='none'">
+            🔒 ล็อกหน้าจอ
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ DASHBOARD PANEL ══ -->
+    <div class="admin-content admin-panel active" id="panelDashboard">
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-icon blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg></div>
+          <div class="kpi-label">คำสั่งซื้อทั้งหมด</div>
+          <div class="kpi-num blue" id="kpiOrders">0</div>
+          <div class="kpi-sub" id="kpiOrdersSub">—</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <div class="kpi-label">ยอดขายรวม</div>
+          <div class="kpi-num amber" id="kpiRevenue">฿0</div>
+          <div class="kpi-sub" id="kpiRevenueSub">—</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div class="kpi-label">สำเร็จแล้ว</div>
+          <div class="kpi-num green" id="kpiCompleted">0</div>
+          <div class="kpi-sub" id="kpiCompletedSub">—</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon indigo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
+          <div class="kpi-label">สินค้าทั้งหมด</div>
+          <div class="kpi-num indigo" id="kpiProducts">0</div>
+          <div class="kpi-sub">ใน 3 ร้านค้า</div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="charts-row">
+        <div class="chart-card">
+          <div class="chart-card-title">ยอดขาย 7 วันย้อนหลัง <span style="font-size:.72rem;font-weight:400;color:var(--muted);margin-left:6px;">จากออเดอร์จริง</span></div>
+          <svg class="chart-svg" viewBox="0 0 340 120" xmlns="http://www.w3.org/2000/svg">
+            <line x1="40" y1="10" x2="330" y2="10" stroke="#E5E7EB" stroke-width="1"/>
+            <line x1="40" y1="35" x2="330" y2="35" stroke="#E5E7EB" stroke-width="1"/>
+            <line x1="40" y1="60" x2="330" y2="60" stroke="#E5E7EB" stroke-width="1"/>
+            <line x1="40" y1="85" x2="330" y2="85" stroke="#E5E7EB" stroke-width="1"/>
+            <line x1="40" y1="110" x2="330" y2="110" stroke="#E5E7EB" stroke-width="1"/>
+            <text x="0" y="14" fill="#9CA3AF" font-size="8">40k</text>
+            <text x="0" y="39" fill="#9CA3AF" font-size="8">30k</text>
+            <text x="0" y="64" fill="#9CA3AF" font-size="8">20k</text>
+            <text x="0" y="89" fill="#9CA3AF" font-size="8">10k</text>
+            <text x="6" y="114" fill="#9CA3AF" font-size="8">0</text>
+            <defs><linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E53935" stop-opacity="0.18"/><stop offset="100%" stop-color="#E53935" stop-opacity="0"/></linearGradient></defs>
+            <path d="M50,85 L90,70 L130,52 L170,40 L210,55 L250,28 L290,18 L290,110 L50,110 Z" fill="url(#lineGrad)"/>
+            <polyline points="50,85 90,70 130,52 170,40 210,55 250,28 290,18" fill="none" stroke="#E53935" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <circle cx="50" cy="85" r="4" fill="#E53935"/><circle cx="90" cy="70" r="4" fill="#E53935"/>
+            <circle cx="130" cy="52" r="4" fill="#E53935"/><circle cx="170" cy="40" r="4" fill="#E53935"/>
+            <circle cx="210" cy="55" r="4" fill="#E53935"/><circle cx="250" cy="28" r="4" fill="#E53935"/>
+            <circle cx="290" cy="18" r="4" fill="#E53935"/>
+            <text x="44" y="122" fill="#9CA3AF" font-size="8">18 พ.ค.</text>
+            <text x="84" y="122" fill="#9CA3AF" font-size="8">19 พ.ค.</text>
+            <text x="124" y="122" fill="#9CA3AF" font-size="8">20 พ.ค.</text>
+            <text x="164" y="122" fill="#9CA3AF" font-size="8">21 พ.ค.</text>
+            <text x="204" y="122" fill="#9CA3AF" font-size="8">22 พ.ค.</text>
+            <text x="244" y="122" fill="#9CA3AF" font-size="8">23 พ.ค.</text>
+            <text x="284" y="122" fill="#9CA3AF" font-size="8">24 พ.ค.</text>
+          </svg>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title">ยอดขายแยกร้าน <span style="font-size:.72rem;font-weight:400;color:var(--muted);margin-left:6px;">จากออเดอร์จริง</span></div>
+          <div class="donut-wrap">
+            <svg viewBox="0 0 120 120" width="140" height="140">
+              <circle cx="60" cy="60" r="40" fill="none" stroke="#E53935" stroke-width="18" stroke-dasharray="113 138" stroke-dashoffset="35" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="40" fill="none" stroke="#3B82F6" stroke-width="18" stroke-dasharray="83 168" stroke-dashoffset="-78" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="40" fill="none" stroke="#FBBF24" stroke-width="18" stroke-dasharray="55 196" stroke-dashoffset="-161" transform="rotate(-90 60 60)"/>
+              <text x="60" y="56" text-anchor="middle" font-size="10" fill="#111" font-weight="700" font-family="Prompt,sans-serif">Pet</text>
+              <text x="60" y="68" text-anchor="middle" font-size="7" fill="#6B7280" font-family="Prompt,sans-serif">45%</text>
+            </svg>
+            <div class="donut-legend">
+              <div class="legend-item"><span class="legend-dot" style="background:#E53935"></span>Pet Shop <span style="margin-left:auto;font-weight:700;">45%</span></div>
+              <div class="legend-item"><span class="legend-dot" style="background:#3B82F6"></span>Computer <span style="margin-left:auto;font-weight:700;">33%</span></div>
+              <div class="legend-item"><span class="legend-dot" style="background:#FBBF24"></span>Toy Shop <span style="margin-left:auto;font-weight:700;">22%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Orders -->
+      <div class="admin-table-card">
+        <div class="admin-table-header">
+          <div class="admin-table-title">คำสั่งซื้อล่าสุด</div>
+          <button class="btn btn-outline btn-sm" onclick="showPanel('orders',null)">ดูทั้งหมด →</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead><tr><th>ออเดอร์</th><th>ลูกค้า</th><th>สินค้า</th><th>ยอด</th><th>ช่องทาง</th><th>สถานะ</th><th>วันที่</th></tr></thead>
+            <tbody id="dashOrdersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ORDERS PANEL ══ -->
+    <div class="admin-content admin-panel" id="panelOrders" style="display:none;">
+      <div class="orders-filter-bar">
+        <h2>คำสั่งซื้อทั้งหมด</h2>
+        <div style="position:relative;flex:1;min-width:160px;max-width:260px;">
+          <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="orderSearch" placeholder="ค้นหาออเดอร์ / ชื่อลูกค้า" autocomplete="off"
+            style="width:100%;padding:7px 10px 7px 30px;border:1.5px solid var(--border);border-radius:100px;font-size:.82rem;font-family:inherit;outline:none;"
+            oninput="applyOrderFilters()" onfocus="this.style.borderColor='var(--red)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <select class="co-input" id="filterStatus" style="width:auto;padding:6px 12px;font-size:.82rem;" onchange="applyOrderFilters()">
+          <option value="">ทุกสถานะ</option>
+          <option value="pending">รอยืนยัน</option>
+          <option value="confirmed">ยืนยันแล้ว</option>
+          <option value="completed">สำเร็จ</option>
+          <option value="cancelled">ยกเลิก</option>
+        </select>
+        <select class="co-input" id="filterChannel" style="width:auto;padding:6px 12px;font-size:.82rem;" onchange="applyOrderFilters()">
+          <option value="">ทุกช่องทาง</option>
+          <option value="wa">WhatsApp</option>
+          <option value="msg">Messenger</option>
+        </select>
+        <button class="btn btn-outline btn-sm" onclick="exportOrdersCSV()" style="white-space:nowrap;">📥 Export CSV</button>
+      </div>
+      <div class="admin-table-card">
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead><tr><th>ออเดอร์</th><th>ลูกค้า</th><th>สินค้า</th><th>ยอด</th><th>ช่องทาง</th><th>สถานะ</th><th>วันที่</th><th>จัดการ</th></tr></thead>
+            <tbody id="allOrdersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ STORES PANEL ══ -->
+    <div class="admin-content admin-panel" id="panelStores" style="display:none;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+        <h2 style="font-size:1.05rem;font-weight:800;margin:0;flex:1;">จัดการร้านค้า</h2>
+        <button class="btn btn-primary btn-sm" onclick="openProductModal(null,null)">+ เพิ่มสินค้าใหม่</button>
+      </div>
+      <!-- Store Cards -->
+      <div class="store-cards-grid">
+        <div class="store-card-admin">
+          <div class="sca-icon">🐾</div>
+          <div class="sca-name">Ruby Pet Shop</div>
+          <div class="sca-count" id="petCount">— สินค้า</div>
+          <div class="sca-actions">
+            <button class="btn btn-outline btn-sm" onclick="showStoreProducts('pet')">ดูสินค้า</button>
+            <button class="btn btn-primary btn-sm" onclick="openProductModal(null,'pet')">+ เพิ่ม</button>
+          </div>
+        </div>
+        <div class="store-card-admin">
+          <div class="sca-icon">💻</div>
+          <div class="sca-name">Ruby Computer</div>
+          <div class="sca-count" id="computerCount">— สินค้า</div>
+          <div class="sca-actions">
+            <button class="btn btn-outline btn-sm" onclick="showStoreProducts('computer')">ดูสินค้า</button>
+            <button class="btn btn-primary btn-sm" onclick="openProductModal(null,'computer')">+ เพิ่ม</button>
+          </div>
+        </div>
+        <div class="store-card-admin">
+          <div class="sca-icon">🧸</div>
+          <div class="sca-name">Ruby Toy Shop</div>
+          <div class="sca-count" id="toyCount">— สินค้า</div>
+          <div class="sca-actions">
+            <button class="btn btn-outline btn-sm" onclick="showStoreProducts('toy')">ดูสินค้า</button>
+            <button class="btn btn-primary btn-sm" onclick="openProductModal(null,'toy')">+ เพิ่ม</button>
+          </div>
+        </div>
+      </div>
+      <!-- Store Products Section -->
+      <div class="store-section" id="storeProductsSection" style="display:none;">
+        <div class="store-section-hd">
+          <h3 id="storeProductsTitle">สินค้าในร้าน</h3>
+          <button class="btn btn-primary btn-sm" id="storeAddBtn" onclick="">+ เพิ่มสินค้า</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead><tr><th>ID</th><th>สินค้า</th><th>ราคา</th><th>หมวด</th><th>Badge</th><th>จัดการ</th></tr></thead>
+            <tbody id="storeProductsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PRODUCTS PANEL ══ -->
+    <div class="admin-content admin-panel" id="panelProducts" style="display:none;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+        <h2 style="font-size:1.05rem;font-weight:800;margin:0;flex:1;">สินค้าทั้งหมด</h2>
+        <select class="co-input" id="productStoreFilter" style="width:auto;padding:6px 12px;font-size:.82rem;" onchange="renderProducts()">
+          <option value="">ทุกร้านค้า</option>
+          <option value="pet">Ruby Pet Shop</option>
+          <option value="computer">Ruby Computer</option>
+          <option value="toy">Ruby Toy Shop</option>
+        </select>
+        <button class="btn btn-primary btn-sm" onclick="openProductModal(null,null)">+ เพิ่มสินค้า</button>
+      </div>
+      <div class="admin-table-card">
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead><tr><th>ID</th><th>สินค้า</th><th>ร้าน</th><th>ราคา</th><th>หมวด</th><th>Badge</th><th>จัดการ</th></tr></thead>
+            <tbody id="productsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CUSTOMERS PANEL ══ -->
+    <div class="admin-content admin-panel" id="panelCustomers" style="display:none;">
+      <div style="margin-bottom:20px;">
+        <h2 style="font-size:1.05rem;font-weight:800;margin:0;">ลูกค้า</h2>
+        <p style="font-size:.82rem;color:var(--muted);margin:4px 0 0;">รวบรวมจากออเดอร์ทั้งหมดที่มีในระบบ</p>
+      </div>
+      <div class="admin-table-card">
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead><tr><th>ชื่อ</th><th>โทร</th><th>ออเดอร์ล่าสุด</th><th>ยอดรวม</th><th>ช่องทาง</th><th>ออเดอร์ทั้งหมด</th></tr></thead>
+            <tbody id="customersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ══ ORDER MODAL ══ -->
+<div class="admin-modal-overlay" id="orderModal">
+  <div class="admin-modal">
+    <div class="admin-modal-hd">
+      <h3 id="orderModalTitle">จัดการออเดอร์</h3>
+      <button class="admin-modal-close" onclick="closeOrderModal()">×</button>
+    </div>
+    <div class="admin-modal-body">
+      <!-- Order info -->
+      <div class="order-detail-grid" id="orderDetailGrid"></div>
+      <!-- Items -->
+      <div style="margin-top:14px;">
+        <div class="admin-form-label" style="margin-bottom:6px;">สินค้าในออเดอร์</div>
+        <div class="order-items-box" id="orderItemsBox"></div>
+      </div>
+      <!-- Status -->
+      <div style="margin-top:18px;">
+        <div class="admin-form-label">เปลี่ยนสถานะ</div>
+        <div class="status-btn-group" id="statusBtnGroup"></div>
+      </div>
+      <!-- Contact -->
+      <div id="orderContactSection" style="margin-top:18px;"></div>
+    </div>
+    <div class="admin-modal-footer">
+      <button class="btn btn-outline btn-sm" onclick="closeOrderModal()">ปิด</button>
+      <button class="btn btn-primary btn-sm" onclick="saveOrderStatus()">💾 บันทึกสถานะ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PRODUCT MODAL ══ -->
+<div class="admin-modal-overlay" id="productModal">
+  <div class="admin-modal">
+    <div class="admin-modal-hd">
+      <h3 id="productModalTitle">เพิ่มสินค้า</h3>
+      <button class="admin-modal-close" onclick="closeProductModal()">×</button>
+    </div>
+    <div class="admin-modal-body">
+      <div class="admin-form-grid">
+        <!-- Emoji -->
+        <div class="admin-form-group full">
+          <label class="admin-form-label">Emoji สินค้า</label>
+          <input class="admin-form-input" id="pEmoji" value="📦" maxlength="4" style="width:80px;font-size:1.5rem;text-align:center;">
+          <div class="emoji-picker-row" id="emojiPicker"></div>
+        </div>
+        <!-- Name -->
+        <div class="admin-form-group full">
+          <label class="admin-form-label">ชื่อสินค้า *</label>
+          <input class="admin-form-input" id="pName" placeholder="ชื่อสินค้า">
+        </div>
+        <!-- Price -->
+        <div class="admin-form-group">
+          <label class="admin-form-label">ราคา (฿) *</label>
+          <input type="number" class="admin-form-input" id="pPrice" placeholder="0" min="0">
+        </div>
+        <!-- Old Price -->
+        <div class="admin-form-group">
+          <label class="admin-form-label">ราคาเดิม (ก่อนลด)</label>
+          <input type="number" class="admin-form-input" id="pOldPrice" placeholder="ว่างถ้าไม่มี" min="0">
+        </div>
+        <!-- Store -->
+        <div class="admin-form-group">
+          <label class="admin-form-label">ร้านค้า *</label>
+          <select class="admin-form-input" id="pStore">
+            <option value="pet">🐾 Ruby Pet Shop</option>
+            <option value="computer">💻 Ruby Computer</option>
+            <option value="toy">🧸 Ruby Toy Shop</option>
+          </select>
+        </div>
+        <!-- Category -->
+        <div class="admin-form-group">
+          <label class="admin-form-label">หมวดหมู่ *</label>
+          <select class="admin-form-input" id="pCat">
+            <option value="food">🍖 อาหาร</option>
+            <option value="toy-pet">🎾 ของเล่นสัตว์</option>
+            <option value="dog">🐶 น้องหมา</option>
+            <option value="cat">🐱 น้องแมว</option>
+            <option value="computer">💻 คอมพิวเตอร์</option>
+            <option value="equip">🔧 อุปกรณ์</option>
+            <option value="toy">🧸 ของเล่นเด็ก</option>
+          </select>
+        </div>
+        <!-- Badge -->
+        <div class="admin-form-group">
+          <label class="admin-form-label">Badge</label>
+          <select class="admin-form-input" id="pBadge">
+            <option value="">ไม่มี</option>
+            <option value="sale">🏷️ Sale</option>
+            <option value="new">✨ ใหม่</option>
+            <option value="hot">🔥 ขายดี</option>
+          </select>
+        </div>
+        <!-- BG Color -->
+        <div class="admin-form-group">
+          <label class="admin-form-label">สีพื้นหลัง</label>
+          <select class="admin-form-input" id="pBg">
+            <option value="#FFF5F5">ชมพู (Pet)</option>
+            <option value="#F0FFF4">เขียว (Tech)</option>
+            <option value="#FFF8F0">ส้ม (Toy)</option>
+            <option value="#F5F0FF">ม่วง</option>
+            <option value="#F0F8FF">ฟ้า</option>
+            <option value="#FFFEF0">เหลือง</option>
+          </select>
+        </div>
+        <!-- Description -->
+        <div class="admin-form-group full">
+          <label class="admin-form-label">รายละเอียด (optional)</label>
+          <textarea class="admin-form-input" id="pDesc" rows="2" placeholder="รายละเอียดสินค้า"></textarea>
+        </div>
+      </div>
+      <!-- Delete confirm -->
+      <div class="confirm-inline" id="deleteConfirm">
+        ⚠️ ยืนยันลบสินค้านี้? การลบไม่สามารถกู้คืนได้
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button class="btn btn-sm btn-outline" onclick="document.getElementById('deleteConfirm').classList.remove('show')">ยกเลิก</button>
+          <button class="btn btn-sm" style="background:#DC2626;color:#fff;" onclick="confirmDeleteProduct()">ลบเลย</button>
+        </div>
+      </div>
+    </div>
+    <div class="admin-modal-footer">
+      <button class="btn btn-outline btn-sm btn-danger" id="deleteProductBtn" onclick="askDeleteProduct()" style="display:none;">🗑 ลบสินค้า</button>
+      <button class="btn btn-outline btn-sm" onclick="closeProductModal()">ยกเลิก</button>
+      <button class="btn btn-primary btn-sm" onclick="saveProduct()">💾 บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<script src="db.js"></script>
+<script src="app.js"></script>
+<script>
+/* ═══════════════════════════════════════════
+   DATA LAYER
+═══════════════════════════════════════════ */
+const STORE_NAMES = { pet:'Ruby Pet Shop', computer:'Ruby Computer', toy:'Ruby Toy Shop' };
+const STATUS_LABELS = { pending:'🕐 รอยืนยัน', confirmed:'✅ ยืนยันแล้ว', completed:'📦 สำเร็จ', cancelled:'❌ ยกเลิก' };
+const STATUS_RAW = { pending:'รอยืนยัน', confirmed:'ยืนยันแล้ว', completed:'สำเร็จ', cancelled:'ยกเลิก' };
+
+const MOCK_ORDERS = [
+  { orderNo:'RB240001', name:'คุณสมใจ รักดี', phone:'081-234-5678', address:'123 ถ.สุขุมวิท กรุงเทพฯ', delivery:'Kerry Express', items:[{name:'Royal Canin Adult 15kg',price:1290,qty:2}], total:2580, channel:'wa', status:'pending', note:'', createdAt:'2026-05-24T09:12:00' },
+  { orderNo:'RB240002', name:'คุณณัฐ พลอยงาม', phone:'089-876-5432', address:'456 ถ.พหลโยธิน เชียงใหม่', delivery:'Flash Express', items:[{name:'Gaming Mouse 16000 DPI',price:890,qty:1}], total:890, channel:'msg', status:'confirmed', note:'', createdAt:'2026-05-24T08:55:00' },
+  { orderNo:'RB240003', name:'คุณมาลี สุขใส', phone:'083-111-2233', address:'789 ถ.นิมมาน เชียงใหม่', delivery:'Kerry Express', items:[{name:'LEGO Classic 500 ชิ้น',price:1290,qty:1},{name:'Mechanical Keyboard RGB TKL',price:2490,qty:1}], total:3780, channel:'wa', status:'completed', note:'', createdAt:'2026-05-23T17:30:00' },
+  { orderNo:'RB240004', name:'คุณวิชัย นานา', phone:'062-999-8877', address:'321 ถ.ราชดำเนิน กรุงเทพฯ', delivery:'ไปรษณีย์ไทย', items:[{name:'Whiskas ปลาแซลมอน 1.2kg',price:299,qty:3}], total:897, channel:'wa', status:'pending', note:'', createdAt:'2026-05-23T15:00:00' },
+  { orderNo:'RB240005', name:'คุณนงนุช ดีใจ', phone:'091-555-6677', address:'654 ถ.สีลม กรุงเทพฯ', delivery:'Flash Express', items:[{name:'ตุ๊กตาหมีน้อย 30cm',price:350,qty:2}], total:700, channel:'msg', status:'cancelled', note:'เปลี่ยนใจ', createdAt:'2026-05-23T11:22:00' },
+];
+
+function getAdminOrders() {
+  const local = JSON.parse(localStorage.getItem('ruby_orders') || '[]');
+  const source = local.length > 0 ? local : MOCK_ORDERS;
+  return source.map(o => ({
+    orderNo: o.orderNo || o.no || '',
+    name: o.name || 'ไม่ระบุ',
+    phone: o.phone || '',
+    address: o.address || '',
+    delivery: o.delivery || '',
+    items: Array.isArray(o.items) ? o.items : [],
+    itemsStr: Array.isArray(o.items) ? o.items.map(i=>`${i.name} x${i.qty}`).join(', ') : '-',
+    total: o.total || 0,
+    channel: o.channel || 'wa',
+    status: o.status || 'pending',
+    note: o.note || '',
+    createdAt: o.createdAt || null,
+    date: o.createdAt ? new Date(o.createdAt).toLocaleString('th-TH',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '-',
+  }));
+}
+
+function updateOrderStatusLocal(orderNo, newStatus) {
+  const orders = JSON.parse(localStorage.getItem('ruby_orders') || '[]');
+  const idx = orders.findIndex(o => o.orderNo === orderNo);
+  if (idx >= 0) {
+    orders[idx].status = newStatus;
+    localStorage.setItem('ruby_orders', JSON.stringify(orders));
+    return true;
+  }
+  // Mock orders — update in-memory
+  const m = MOCK_ORDERS.find(o => o.orderNo === orderNo);
+  if (m) { m.status = newStatus; return true; }
+  return false;
+}
+
+function getAdminProducts() {
+  const override = localStorage.getItem('ruby_products');
+  if (override) {
+    try { const p = JSON.parse(override); if (Array.isArray(p) && p.length) return p; } catch(e){}
+  }
+  return window.PRODUCTS || [];
+}
+
+function saveAdminProducts(products) {
+  localStorage.setItem('ruby_products', JSON.stringify(products));
+  window.PRODUCTS = products;
+}
+
+/* ═══════════════════════════════════════════
+   RENDER HELPERS
+═══════════════════════════════════════════ */
+function chPill(ch) {
+  return ch === 'wa'
+    ? '<span class="channel-pill wa">WhatsApp</span>'
+    : '<span class="channel-pill msg">Messenger</span>';
+}
+function statusPill(s) {
+  return `<span class="status-pill ${s}">${STATUS_RAW[s]||s}</span>`;
+}
+
+function orderRow(o, showAction) {
+  const action = showAction
+    ? `<td><button class="btn btn-outline btn-sm" style="font-size:.75rem;padding:4px 12px;" onclick="openOrderModal('${o.orderNo}')">จัดการ</button></td>`
+    : '';
+  return `<tr>
+    <td style="font-weight:700;font-size:.82rem;">${o.orderNo}</td>
+    <td>${o.name}</td>
+    <td style="color:var(--text-m);font-size:.82rem;max-width:200px;">${o.itemsStr}</td>
+    <td style="font-weight:700;color:var(--red);">฿${(o.total||0).toLocaleString()}</td>
+    <td>${chPill(o.channel)}</td>
+    <td>${statusPill(o.status)}</td>
+    <td style="font-size:.78rem;color:var(--muted);">${o.date}</td>
+    ${action}
+  </tr>`;
+}
+
+/* ═══════════════════════════════════════════
+   PANEL RENDERS
+═══════════════════════════════════════════ */
+function renderDashboard() {
+  const orders = getAdminOrders();
+  const prods = getAdminProducts();
+  document.getElementById('kpiOrders').textContent = orders.length;
+  const pending = orders.filter(o=>o.status==='pending').length;
+  document.getElementById('kpiOrdersSub').textContent = pending > 0 ? `รอยืนยัน ${pending} รายการ` : 'ไม่มีรอยืนยัน';
+  const revenue = orders.filter(o=>o.status!=='cancelled').reduce((s,o)=>s+o.total,0);
+  document.getElementById('kpiRevenue').textContent = '฿' + revenue.toLocaleString();
+  document.getElementById('kpiRevenueSub').textContent = `จาก ${orders.filter(o=>o.status!=='cancelled').length} ออเดอร์`;
+  const completed = orders.filter(o=>o.status==='completed').length;
+  document.getElementById('kpiCompleted').textContent = completed;
+  document.getElementById('kpiCompletedSub').textContent = `ยกเลิก ${orders.filter(o=>o.status==='cancelled').length} รายการ`;
+  document.getElementById('kpiProducts').textContent = prods.length;
+  // recent 5
+  const el = document.getElementById('dashOrdersBody');
+  if (el) el.innerHTML = orders.slice(0,5).map(o=>orderRow(o,false)).join('') || '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--muted);">ยังไม่มีออเดอร์</td></tr>';
+  // badge
+  const badge = document.getElementById('ordersBadge');
+  if (pending > 0) { badge.textContent = pending; badge.style.display='inline'; }
+  else badge.style.display='none';
+  // real charts
+  renderDashboardCharts(orders, prods);
+}
+
+/* ═══════════════════════════════════════════
+   REAL DASHBOARD CHARTS
+═══════════════════════════════════════════ */
+const MONTH_TH = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+
+function renderDashboardCharts(orders, prods) {
+  _renderLineChart(orders);
+  _renderDonutChart(orders, prods);
+}
+
+function _renderLineChart(orders) {
+  const svgEl = document.querySelector('.chart-svg');
+  if (!svgEl) return;
+
+  // Build last-7-days buckets
+  const days = [];
+  const now = new Date();
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+    days.push({
+      label: `${d.getDate()} ${MONTH_TH[d.getMonth()]}`,
+      key: d.toISOString().slice(0, 10),
+      total: 0
+    });
+  }
+  orders.filter(o => o.status !== 'cancelled').forEach(o => {
+    if (!o.createdAt) return;
+    const key = new Date(o.createdAt).toISOString().slice(0, 10);
+    const day = days.find(d => d.key === key);
+    if (day) day.total += (o.total || 0);
+  });
+
+  // Layout constants
+  const W = 340, H = 120, padL = 36, padR = 10, padT = 12, padB = 18;
+  const plotW = W - padL - padR;
+  const plotH = H - padT - padB;
+  const maxVal = Math.max(...days.map(d => d.total), 500);
+
+  // Round max to a nice number
+  const niceMax = Math.ceil(maxVal / 1000) * 1000 || 1000;
+  const ySteps = 4;
+
+  // Y-axis grid + labels
+  let gridHtml = '';
+  for (let i = 0; i <= ySteps; i++) {
+    const y = padT + (i / ySteps) * plotH;
+    const val = niceMax * (1 - i / ySteps);
+    const label = val >= 1000 ? (val / 1000).toFixed(0) + 'k' : val.toFixed(0);
+    gridHtml += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="#E5E7EB" stroke-width="1"/>`;
+    gridHtml += `<text x="${padL - 4}" y="${(y + 3.5).toFixed(1)}" fill="#9CA3AF" font-size="7.5" text-anchor="end">${label}</text>`;
+  }
+
+  // Data points
+  const pts = days.map((d, i) => ({
+    x: padL + (i / 6) * plotW,
+    y: padT + plotH - Math.min(d.total / niceMax, 1) * plotH,
+    label: d.label,
+    total: d.total
+  }));
+
+  const polyline = pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  const areaPath = `M${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)} ` +
+    pts.slice(1).map(p => `L${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ') +
+    ` L${pts[6].x.toFixed(1)},${(padT + plotH).toFixed(1)} L${pts[0].x.toFixed(1)},${(padT + plotH).toFixed(1)} Z`;
+
+  // X labels (show every other one if crowded)
+  const xLabels = pts.map((p, i) => {
+    const anchor = i === 0 ? 'start' : i === 6 ? 'end' : 'middle';
+    return `<text x="${p.x.toFixed(1)}" y="${H}" fill="#9CA3AF" font-size="7" text-anchor="${anchor}">${p.label}</text>`;
+  }).join('');
+
+  // Tooltip dots with title
+  const dots = pts.map(p =>
+    `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="${p.total > 0 ? '#E53935' : '#D1D5DB'}" stroke="#fff" stroke-width="1.5">
+      <title>฿${p.total.toLocaleString()}</title>
+    </circle>`
+  ).join('');
+
+  svgEl.innerHTML = `
+    <defs>
+      <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#E53935" stop-opacity="0.18"/>
+        <stop offset="100%" stop-color="#E53935" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    ${gridHtml}
+    <path d="${areaPath}" fill="url(#lineGrad)"/>
+    <polyline points="${polyline}" fill="none" stroke="#E53935" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+    ${dots}
+    ${xLabels}
+  `;
+}
+
+function _renderDonutChart(orders, prods) {
+  const svgEl = document.querySelector('.donut-wrap svg');
+  const legendEl = document.querySelector('.donut-legend');
+  if (!svgEl) return;
+
+  // Map product name → store
+  const nameToStore = {};
+  prods.forEach(p => { nameToStore[p.name] = p.store; });
+
+  const storeRev = { pet: 0, computer: 0, toy: 0 };
+  orders.filter(o => o.status !== 'cancelled').forEach(o => {
+    (o.items || []).forEach(item => {
+      const store = nameToStore[item.name];
+      if (store && storeRev[store] !== undefined) {
+        storeRev[store] += (item.price || 0) * (item.qty || 1);
+      }
+    });
+  });
+
+  const totalRev = storeRev.pet + storeRev.computer + storeRev.toy;
+
+  // Fallback to equal thirds if no data
+  const pct = totalRev > 0 ? {
+    pet: Math.round(storeRev.pet / totalRev * 100),
+    computer: Math.round(storeRev.computer / totalRev * 100),
+    toy: 0
+  } : { pet: 45, computer: 33, toy: 22 };
+  if (totalRev > 0) pct.toy = 100 - pct.pet - pct.computer;
+
+  // SVG donut: r=40, circumference ≈ 251.33
+  const C = 2 * Math.PI * 40;
+  const len = { pet: C * pct.pet / 100, computer: C * pct.computer / 100 };
+  len.toy = C - len.pet - len.computer;
+
+  // Each circle: stroke-dasharray="segLen restLen", stroke-dashoffset=-previousTotal
+  // with transform="rotate(-90 60 60)" → starts at 12 o'clock
+  const colors = { pet: '#E53935', computer: '#3B82F6', toy: '#FBBF24' };
+  const stores = ['pet', 'computer', 'toy'];
+  let offset = 0;
+  const circles = stores.map(s => {
+    const segLen = len[s];
+    const dashOffset = -offset;
+    offset += segLen;
+    return `<circle cx="60" cy="60" r="40" fill="none" stroke="${colors[s]}" stroke-width="18"
+      stroke-dasharray="${segLen.toFixed(2)} ${(C - segLen).toFixed(2)}"
+      stroke-dashoffset="${dashOffset.toFixed(2)}"
+      transform="rotate(-90 60 60)"/>`;
+  }).join('');
+
+  // Center label: show dominant store
+  const dominant = stores.reduce((a, b) => pct[a] >= pct[b] ? a : b);
+  const domLabel = { pet: 'Pet', computer: 'Comp', toy: 'Toy' };
+
+  svgEl.innerHTML = `
+    ${circles}
+    <text x="60" y="56" text-anchor="middle" font-size="10" fill="#111" font-weight="700" font-family="Prompt,sans-serif">${domLabel[dominant]}</text>
+    <text x="60" y="68" text-anchor="middle" font-size="7" fill="#6B7280" font-family="Prompt,sans-serif">${pct[dominant]}%</text>
+  `;
+
+  if (legendEl) {
+    const storeNames = { pet: 'Pet Shop', computer: 'Computer', toy: 'Toy Shop' };
+    legendEl.innerHTML = stores.map(s => `
+      <div class="legend-item">
+        <span class="legend-dot" style="background:${colors[s]}"></span>
+        ${storeNames[s]}
+        <span style="margin-left:auto;font-weight:700;">${pct[s]}%</span>
+      </div>`).join('');
+  }
+}
+
+let _cachedOrders = null;
+function renderAllOrders() {
+  _cachedOrders = getAdminOrders();
+  applyOrderFilters();
+}
+
+function applyOrderFilters() {
+  const orders = _cachedOrders || getAdminOrders();
+  const statusF = document.getElementById('filterStatus')?.value || '';
+  const channelF = document.getElementById('filterChannel')?.value || '';
+  const searchQ = (document.getElementById('orderSearch')?.value || '').trim().toLowerCase();
+  let filtered = orders;
+  if (statusF) filtered = filtered.filter(o=>o.status===statusF);
+  if (channelF) filtered = filtered.filter(o=>o.channel===channelF);
+  if (searchQ) filtered = filtered.filter(o=>
+    o.orderNo.toLowerCase().includes(searchQ) ||
+    o.name.toLowerCase().includes(searchQ) ||
+    o.phone.includes(searchQ)
+  );
+  const el = document.getElementById('allOrdersBody');
+  el.innerHTML = filtered.length
+    ? filtered.map(o=>orderRow(o,true)).join('')
+    : '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--muted);">ไม่พบออเดอร์</td></tr>';
+}
+
+function exportOrdersCSV() {
+  const orders = _cachedOrders || getAdminOrders();
+  const rows = [['ออเดอร์','ลูกค้า','โทร','ที่อยู่','จัดส่ง','สินค้า','ยอด','ช่องทาง','สถานะ','วันที่']];
+  orders.forEach(o => {
+    rows.push([
+      o.orderNo, o.name, o.phone, o.address, o.delivery,
+      o.itemsStr, o.total, o.channel === 'wa' ? 'WhatsApp' : 'Messenger',
+      STATUS_RAW[o.status] || o.status, o.date
+    ]);
+  });
+  const csv = rows.map(r => r.map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `ruby-orders-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast('📥 Export CSV สำเร็จ');
+}
+
+function renderProducts(storeFilter) {
+  const sf = storeFilter || document.getElementById('productStoreFilter')?.value || '';
+  const prods = getAdminProducts();
+  const filtered = sf ? prods.filter(p=>p.store===sf) : prods;
+  const el = document.getElementById('productsBody');
+  if (!el) return;
+  el.innerHTML = filtered.length
+    ? filtered.map(p=>productRow(p,true)).join('')
+    : '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);">ไม่มีสินค้า</td></tr>';
+}
+
+function productRow(p, showStore) {
+  const storeTd = showStore ? `<td style="font-size:.8rem;color:var(--muted);">${STORE_NAMES[p.store]||p.store}</td>` : '';
+  const badgeHtml = p.badge
+    ? `<span style="font-size:.75rem;padding:2px 8px;border-radius:100px;background:${p.badge==='sale'?'#FEF3C7':p.badge==='new'?'#ECFDF5':'#FEE2E2'};color:${p.badge==='sale'?'#92400E':p.badge==='new'?'#065F46':'#991B1B'};">${p.badge==='sale'?'Sale':p.badge==='new'?'ใหม่':'ขายดี'}</span>`
+    : '<span style="color:var(--muted);font-size:.78rem;">—</span>';
+  return `<tr>
+    <td style="font-size:.78rem;color:var(--muted);">${p.id}</td>
+    <td>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:34px;height:34px;border-radius:8px;background:${p.bg||'#f5f5f5'};display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">${p.emoji||'📦'}</div>
+        <span style="font-weight:600;font-size:.875rem;">${p.name}</span>
+      </div>
+    </td>
+    ${storeTd}
+    <td style="font-weight:700;color:var(--red);">฿${(p.price||0).toLocaleString()}</td>
+    <td><span style="font-size:.78rem;background:var(--bg);padding:2px 10px;border-radius:100px;">${p.cat||'—'}</span></td>
+    <td>${badgeHtml}</td>
+    <td>
+      <button class="btn btn-outline btn-sm" style="font-size:.75rem;padding:4px 12px;" onclick="openProductModal('${p.id}',null)">แก้ไข</button>
+    </td>
+  </tr>`;
+}
+
+function renderCustomers() {
+  const orders = getAdminOrders();
+  const map = {};
+  orders.forEach(o => {
+    const key = o.name + '|' + o.phone;
+    if (!map[key]) map[key] = { name:o.name, phone:o.phone, total:0, count:0, channel:o.channel, lastDate:o.date };
+    map[key].total += (o.status !== 'cancelled' ? o.total : 0);
+    map[key].count++;
+    map[key].lastDate = o.date;
+  });
+  const customers = Object.values(map).sort((a,b)=>b.total-a.total);
+  const el = document.getElementById('customersBody');
+  el.innerHTML = customers.length
+    ? customers.map(c=>`<tr>
+        <td style="font-weight:700;">${c.name}</td>
+        <td style="color:var(--text-m);">${c.phone}</td>
+        <td style="font-size:.82rem;color:var(--muted);">${c.lastDate}</td>
+        <td style="font-weight:700;color:var(--red);">฿${c.total.toLocaleString()}</td>
+        <td>${chPill(c.channel)}</td>
+        <td style="text-align:center;">${c.count}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);">ไม่มีข้อมูลลูกค้า</td></tr>';
+}
+
+function renderStores() {
+  const prods = getAdminProducts();
+  ['pet','computer','toy'].forEach(s => {
+    const cnt = prods.filter(p=>p.store===s).length;
+    const el = document.getElementById(s+'Count');
+    if (el) el.textContent = `${cnt} สินค้า`;
+  });
+}
+
+let _currentStore = null;
+function showStoreProducts(store) {
+  _currentStore = store;
+  const section = document.getElementById('storeProductsSection');
+  section.style.display = 'block';
+  document.getElementById('storeProductsTitle').textContent = `สินค้าใน ${STORE_NAMES[store]}`;
+  document.getElementById('storeAddBtn').setAttribute('onclick', `openProductModal(null,'${store}')`);
+  const prods = getAdminProducts().filter(p=>p.store===store);
+  const el = document.getElementById('storeProductsBody');
+  el.innerHTML = prods.length
+    ? prods.map(p=>productRow(p,false)).join('')
+    : `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);">ยังไม่มีสินค้าในร้านนี้</td></tr>`;
+  section.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+/* ═══════════════════════════════════════════
+   ORDER MODAL
+═══════════════════════════════════════════ */
+let _currentOrderNo = null;
+let _currentOrderStatus = null;
+
+function openOrderModal(orderNo) {
+  const orders = getAdminOrders();
+  const o = orders.find(x=>x.orderNo===orderNo);
+  if (!o) return;
+  _currentOrderNo = orderNo;
+  _currentOrderStatus = o.status;
+
+  document.getElementById('orderModalTitle').textContent = `จัดการออเดอร์ ${orderNo}`;
+
+  // Detail grid
+  document.getElementById('orderDetailGrid').innerHTML = `
+    <span class="odg-label">ลูกค้า</span><span class="odg-val">${o.name}</span>
+    <span class="odg-label">โทรศัพท์</span><span class="odg-val">${o.phone||'—'}</span>
+    <span class="odg-label">ที่อยู่</span><span class="odg-val">${o.address||'—'}</span>
+    <span class="odg-label">จัดส่ง</span><span class="odg-val">${o.delivery||'—'}</span>
+    <span class="odg-label">ช่องทาง</span><span class="odg-val">${chPill(o.channel)}</span>
+    <span class="odg-label">ยอดรวม</span><span class="odg-val" style="font-weight:800;color:var(--red);">฿${(o.total||0).toLocaleString()}</span>
+    ${o.note ? `<span class="odg-label">หมายเหตุ</span><span class="odg-val">${o.note}</span>` : ''}
+    <span class="odg-label">วันที่</span><span class="odg-val">${o.date}</span>
+  `;
+
+  // Items
+  const itemsHtml = o.items.length
+    ? o.items.map(i=>`<div class="order-item-row"><span>${i.name}${i.variant?' ('+i.variant+')':''}</span><span>x${i.qty} = ฿${((i.price||0)*i.qty).toLocaleString()}</span></div>`).join('')
+    : '<div style="color:var(--muted);font-size:.83rem;">ไม่มีข้อมูลสินค้า</div>';
+  document.getElementById('orderItemsBox').innerHTML = itemsHtml;
+
+  // Status buttons
+  const statuses = ['pending','confirmed','completed','cancelled'];
+  const labels = { pending:'🕐 รอยืนยัน', confirmed:'✅ ยืนยันแล้ว', completed:'📦 สำเร็จ', cancelled:'❌ ยกเลิก' };
+  document.getElementById('statusBtnGroup').innerHTML = statuses.map(s=>`
+    <button class="status-btn s-${s} ${o.status===s?'sel':''}" onclick="selectOrderStatus('${s}',this)">${labels[s]}</button>
+  `).join('');
+
+  // Contact
+  const phone = (o.phone||'').replace(/[-\s]/g,'');
+  const msg = encodeURIComponent(`🛍️ Ruby Store\nออเดอร์ ${o.orderNo} — สถานะ: ${STATUS_RAW[o.status]||o.status}\nสินค้า: ${o.itemsStr}\nยอด: ฿${o.total.toLocaleString()}`);
+  document.getElementById('orderContactSection').innerHTML = `
+    <div class="admin-form-label" style="margin-bottom:8px;">ติดต่อลูกค้า</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <a href="https://wa.me/66${phone.replace(/^0/,'')}?text=${msg}" target="_blank" class="btn btn-sm" style="background:#25D366;color:#fff;text-decoration:none;">💬 WhatsApp</a>
+      <a href="tel:${o.phone}" class="btn btn-sm btn-outline" style="text-decoration:none;">📞 โทร</a>
+    </div>`;
+
+  document.getElementById('orderModal').classList.add('open');
+}
+
+function selectOrderStatus(status, btn) {
+  _currentOrderStatus = status;
+  document.querySelectorAll('#statusBtnGroup .status-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function saveOrderStatus() {
+  if (!_currentOrderNo || !_currentOrderStatus) return;
+  updateOrderStatusLocal(_currentOrderNo, _currentOrderStatus);
+  closeOrderModal();
+  showToast(`✅ อัพเดทสถานะ ${_currentOrderNo} เป็น ${STATUS_RAW[_currentOrderStatus]}`);
+  // Re-render
+  if (document.getElementById('panelOrders').style.display !== 'none') renderAllOrders();
+  if (document.getElementById('panelDashboard').style.display !== 'none' || document.getElementById('panelDashboard').classList.contains('active')) renderDashboard();
+}
+
+function closeOrderModal() {
+  document.getElementById('orderModal').classList.remove('open');
+  _currentOrderNo = null;
+}
+
+/* ═══════════════════════════════════════════
+   PRODUCT MODAL
+═══════════════════════════════════════════ */
+const EMOJI_OPTIONS = ['🐾','🐶','🐱','🐠','🦜','🐇','🍖','🦴','🐠','🎾','🏈','🎯','💻','🖱️','⌨️','🖥️','💾','📱','🧸','🎮','🎲','🎁','🌟','📦'];
+let _editProductId = null;
+
+function openProductModal(productId, prefilledStore) {
+  _editProductId = productId;
+  document.getElementById('deleteConfirm').classList.remove('show');
+
+  // Build emoji picker
+  document.getElementById('emojiPicker').innerHTML = EMOJI_OPTIONS.map(e=>
+    `<button type="button" class="emoji-opt" onclick="selectEmoji('${e}')">${e}</button>`
+  ).join('');
+
+  if (productId) {
+    // Edit mode
+    const p = getAdminProducts().find(x=>x.id===productId);
+    if (!p) return;
+    document.getElementById('productModalTitle').textContent = 'แก้ไขสินค้า';
+    document.getElementById('pEmoji').value = p.emoji || '📦';
+    document.getElementById('pName').value = p.name || '';
+    document.getElementById('pPrice').value = p.price || '';
+    document.getElementById('pOldPrice').value = p.oldPrice || '';
+    document.getElementById('pStore').value = p.store || 'pet';
+    document.getElementById('pCat').value = p.cat || 'food';
+    document.getElementById('pBadge').value = p.badge || '';
+    document.getElementById('pBg').value = p.bg || '#FFF5F5';
+    document.getElementById('pDesc').value = p.desc || '';
+    document.getElementById('deleteProductBtn').style.display = 'inline-flex';
+  } else {
+    // Add mode
+    document.getElementById('productModalTitle').textContent = 'เพิ่มสินค้า';
+    document.getElementById('pEmoji').value = '📦';
+    document.getElementById('pName').value = '';
+    document.getElementById('pPrice').value = '';
+    document.getElementById('pOldPrice').value = '';
+    document.getElementById('pStore').value = prefilledStore || 'pet';
+    document.getElementById('pCat').value = 'food';
+    document.getElementById('pBadge').value = '';
+    document.getElementById('pBg').value = '#FFF5F5';
+    document.getElementById('pDesc').value = '';
+    document.getElementById('deleteProductBtn').style.display = 'none';
+  }
+
+  document.getElementById('productModal').classList.add('open');
+}
+
+function selectEmoji(e) {
+  document.getElementById('pEmoji').value = e;
+  document.querySelectorAll('#emojiPicker .emoji-opt').forEach(btn=>{
+    btn.classList.toggle('sel', btn.textContent===e);
+  });
+}
+
+function saveProduct() {
+  const name = document.getElementById('pName').value.trim();
+  const price = parseInt(document.getElementById('pPrice').value) || 0;
+  if (!name) { showToast('กรุณาใส่ชื่อสินค้า','error'); return; }
+  if (!price) { showToast('กรุณาใส่ราคา','error'); return; }
+
+  const prods = getAdminProducts();
+  const oldPrice = parseInt(document.getElementById('pOldPrice').value) || null;
+
+  if (_editProductId) {
+    // Update existing
+    const idx = prods.findIndex(p=>p.id===_editProductId);
+    if (idx>=0) {
+      prods[idx] = { ...prods[idx],
+        emoji: document.getElementById('pEmoji').value,
+        name,
+        price,
+        oldPrice: oldPrice || undefined,
+        store: document.getElementById('pStore').value,
+        cat: document.getElementById('pCat').value,
+        badge: document.getElementById('pBadge').value || undefined,
+        bg: document.getElementById('pBg').value,
+        desc: document.getElementById('pDesc').value.trim() || undefined,
+      };
+    }
+    showToast(`✅ อัพเดท "${name}" แล้ว`);
+  } else {
+    // Add new
+    const newId = 'P' + String(Date.now()).slice(-4).padStart(3,'0');
+    prods.push({
+      id: newId,
+      emoji: document.getElementById('pEmoji').value || '📦',
+      name,
+      price,
+      oldPrice: oldPrice || undefined,
+      store: document.getElementById('pStore').value,
+      cat: document.getElementById('pCat').value,
+      badge: document.getElementById('pBadge').value || undefined,
+      bg: document.getElementById('pBg').value || '#FFF5F5',
+      desc: document.getElementById('pDesc').value.trim() || undefined,
+    });
+    showToast(`✅ เพิ่ม "${name}" แล้ว`);
+  }
+
+  saveAdminProducts(prods);
+  closeProductModal();
+  // Re-render current panel
+  renderProducts();
+  renderStores();
+  if (_currentStore) showStoreProducts(_currentStore);
+  renderDashboard();
+}
+
+function askDeleteProduct() {
+  document.getElementById('deleteConfirm').classList.add('show');
+}
+
+function confirmDeleteProduct() {
+  const prods = getAdminProducts().filter(p=>p.id!==_editProductId);
+  saveAdminProducts(prods);
+  showToast('🗑 ลบสินค้าแล้ว');
+  closeProductModal();
+  renderProducts();
+  renderStores();
+  if (_currentStore) showStoreProducts(_currentStore);
+  renderDashboard();
+}
+
+function closeProductModal() {
+  document.getElementById('productModal').classList.remove('open');
+  document.getElementById('deleteConfirm').classList.remove('show');
+  _editProductId = null;
+}
+
+/* ═══════════════════════════════════════════
+   PANEL NAVIGATION
+═══════════════════════════════════════════ */
+const PANEL_TITLES = { dashboard:'Dashboard', orders:'คำสั่งซื้อ', stores:'ร้านค้า', products:'สินค้า', customers:'ลูกค้า' };
+
+function showPanel(name, linkEl) {
+  document.querySelectorAll('.admin-panel').forEach(p=>{
+    p.style.display = 'none'; p.classList.remove('active');
+  });
+  document.querySelectorAll('.admin-nav-link').forEach(l=>l.classList.remove('active'));
+
+  const panel = document.getElementById('panel' + name.charAt(0).toUpperCase() + name.slice(1));
+  if (panel) { panel.style.display='block'; panel.classList.add('active'); }
+  document.getElementById('topbarTitle').textContent = PANEL_TITLES[name] || name;
+
+  if (linkEl) linkEl.classList.add('active');
+  else document.querySelectorAll('.admin-nav-link').forEach(l=>{
+    if (l.getAttribute('onclick')?.includes(`'${name}'`)) l.classList.add('active');
+  });
+
+  if (name==='dashboard') renderDashboard();
+  if (name==='orders')    renderAllOrders();
+  if (name==='stores')    { renderStores(); }
+  if (name==='products')  renderProducts();
+  if (name==='customers') renderCustomers();
+}
+
+/* ═══════════════════════════════════════════
+   CLOSE MODALS ON OVERLAY CLICK
+═══════════════════════════════════════════ */
+document.getElementById('orderModal').addEventListener('click', function(e){
+  if (e.target===this) closeOrderModal();
+});
+document.getElementById('productModal').addEventListener('click', function(e){
+  if (e.target===this) closeProductModal();
+});
+
+/* ═══════════════════════════════════════════
+   ADMIN TOPBAR MENU
+═══════════════════════════════════════════ */
+function toggleAdminMenu() {
+  const d = document.getElementById('adminDropdown');
+  d.style.display = d.style.display === 'none' ? 'block' : 'none';
+}
+function adminLogout() {
+  sessionStorage.removeItem('rubyAdminAuthed');
+  location.reload();
+}
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  const btn = document.getElementById('adminAvatarBtn');
+  const dd = document.getElementById('adminDropdown');
+  if (btn && dd && !btn.contains(e.target) && !dd.contains(e.target)) {
+    dd.style.display = 'none';
+  }
+});
+
+/* ═══════════════════════════════════════════
+   PIN LOCK
+═══════════════════════════════════════════ */
+// SHA-256 of "1234" — default PIN stored as hash, never as plaintext
+const _DEFAULT_HASH = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4';
+let _pinInput = '';
+
+async function _sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function _getStoredHash() {
+  return localStorage.getItem('ruby_admin_pin_hash') || _DEFAULT_HASH;
+}
+
+function pinKey(d) {
+  if (_pinInput.length >= 4) return;
+  _pinInput += d;
+  updatePinDots();
+  if (_pinInput.length === 4) setTimeout(checkPin, 120);
+}
+
+function pinDelete() {
+  _pinInput = _pinInput.slice(0, -1);
+  updatePinDots();
+  document.getElementById('pinError').textContent = '';
+}
+
+function pinClear() {
+  _pinInput = '';
+  updatePinDots();
+  document.getElementById('pinError').textContent = '';
+}
+
+function updatePinDots() {
+  for (let i = 0; i < 4; i++) {
+    document.getElementById('pd' + i).classList.toggle('filled', i < _pinInput.length);
+  }
+}
+
+async function checkPin() {
+  const entered = _pinInput;
+  const hash = await _sha256(entered);
+  if (hash === _getStoredHash()) {
+    sessionStorage.setItem('rubyAdminAuthed', '1');
+    document.getElementById('pinOverlay').style.display = 'none';
+  } else {
+    document.getElementById('pinError').textContent = '❌ PIN ไม่ถูกต้อง ลองอีกครั้ง';
+    document.querySelectorAll('.pin-dot').forEach(d => {
+      d.classList.add('shake');
+      setTimeout(() => d.classList.remove('shake'), 350);
+    });
+    _pinInput = '';
+    setTimeout(updatePinDots, 350);
+  }
+}
+
+/* ── Change PIN ─────────────────────────────── */
+function openChangePinModal() {
+  document.getElementById('adminDropdown').style.display = 'none';
+  ['cpCurrent','cpNew','cpConfirm'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('cpError').textContent = '';
+  const ov = document.getElementById('changePinOverlay');
+  ov.style.display = 'flex';
+  document.getElementById('cpCurrent').focus();
+}
+
+function closeChangePinModal() {
+  document.getElementById('changePinOverlay').style.display = 'none';
+}
+
+async function saveNewPin() {
+  const current = document.getElementById('cpCurrent').value.trim();
+  const newPin  = document.getElementById('cpNew').value.trim();
+  const confirm = document.getElementById('cpConfirm').value.trim();
+  const errEl   = document.getElementById('cpError');
+
+  if (!/^\d{4}$/.test(current) || !/^\d{4}$/.test(newPin) || !/^\d{4}$/.test(confirm)) {
+    errEl.textContent = '⚠️ PIN ต้องเป็นตัวเลข 4 หลักเท่านั้น'; return;
+  }
+  if (newPin !== confirm) {
+    errEl.textContent = '⚠️ PIN ใหม่และยืนยันไม่ตรงกัน'; return;
+  }
+
+  const currentHash = await _sha256(current);
+  if (currentHash !== _getStoredHash()) {
+    errEl.textContent = '❌ PIN ปัจจุบันไม่ถูกต้อง'; return;
+  }
+
+  const newHash = await _sha256(newPin);
+  localStorage.setItem('ruby_admin_pin_hash', newHash);
+  closeChangePinModal();
+  showToast('✅ เปลี่ยน PIN สำเร็จ');
+}
+
+// Close change-pin overlay on background click
+document.getElementById('changePinOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeChangePinModal();
+});
+
+// Keyboard support for PIN entry
+document.addEventListener('keydown', function(e) {
+  if (document.getElementById('pinOverlay').style.display === 'none') return;
+  if (e.key >= '0' && e.key <= '9') pinKey(e.key);
+  else if (e.key === 'Backspace') pinDelete();
+  else if (e.key === 'Escape') pinClear();
+});
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  // PIN gate
+  if (sessionStorage.getItem('rubyAdminAuthed') === '1') {
+    document.getElementById('pinOverlay').style.display = 'none';
+  }
+  // else: overlay stays visible
+
+  const now = new Date();
+  document.getElementById('topbarDate').textContent =
+    now.toLocaleDateString('th-TH', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  renderDashboard();
+});
+</script>
+</body>
+</html>

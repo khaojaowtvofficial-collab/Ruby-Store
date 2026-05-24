@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruby Store — สั่งซื้อ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Fix: prevent phone-prefix grid blowout on mobile */
+    .co-form-row > * { min-width: 0; }
+    .co-input-prefix { min-width: 0; }
+    .co-input-prefix input { min-width: 0; width: 0; }
+  </style>
+</head>
+<body>
+
+<!-- ===================== NAVBAR (minimal) ===================== -->
+<nav class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="navbar-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 0 1-8 0"/>
+      </svg>
+      Ruby <span>Store</span>
+    </a>
+    <div class="navbar-spacer"></div>
+    <div class="navbar-secure-badge">🔒 ปลอดภัย</div>
+  </div>
+</nav>
+
+<!-- ===================== MAIN ===================== -->
+<div class="page-body-no-nav" style="padding-bottom:40px;">
+  <div class="checkout-layout" id="checkoutLayout">
+
+    <!-- Mobile Order Summary (accordion) -->
+    <div id="mobileCartSummary" style="display:none;background:var(--card);border:1.5px solid var(--border);border-radius:16px;margin-bottom:20px;overflow:hidden;">
+      <button onclick="toggleMobileSummary()" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:none;border:none;cursor:pointer;font-family:inherit;font-size:.9rem;font-weight:700;color:var(--text);">
+        <span>🛒 สรุปรายการสินค้า</span>
+        <span style="display:flex;align-items:center;gap:8px;">
+          <span style="color:var(--red);font-size:1rem;" id="mobileSummaryTotal">฿0</span>
+          <svg id="mobileSummaryChevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transition:transform .25s;"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </button>
+      <div id="mobileSummaryBody" style="display:none;padding:0 18px 16px;border-top:1px solid var(--border);">
+        <div id="mobileSummaryItems" style="margin-top:12px;"></div>
+      </div>
+    </div>
+
+    <!-- Main Column -->
+    <div class="checkout-main">
+
+      <!-- Step Indicator -->
+      <div class="step-indicator" style="margin-bottom:28px;">
+        <div class="step-item">
+          <div class="step-circle active" id="sc1">1</div>
+          <div class="step-label active" id="sl1">ข้อมูลส่ง</div>
+          <div class="step-line" id="sline1"></div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle" id="sc2">2</div>
+          <div class="step-label" id="sl2">ช่องทาง</div>
+          <div class="step-line" id="sline2"></div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle" id="sc3">3</div>
+          <div class="step-label" id="sl3">ยืนยัน</div>
+        </div>
+      </div>
+
+      <!-- ── STEP 1: Shipping Form ─────────────────── -->
+      <div class="checkout-step-panel" id="step1Panel">
+        <div class="co-form">
+          <div class="co-form-title">📦 ข้อมูลการจัดส่ง</div>
+
+          <div class="co-form-row">
+            <div class="co-field">
+              <label class="co-label">ชื่อ-นามสกุล <span style="color:var(--red)">*</span></label>
+              <input type="text" class="co-input" id="fieldName" placeholder="ชื่อ นามสกุล" autocomplete="name">
+              <div class="co-error" id="errName"></div>
+            </div>
+            <div class="co-field">
+              <label class="co-label">เบอร์โทร <span style="color:var(--red)">*</span></label>
+              <div class="co-input-prefix">
+                <span class="prefix">🇹🇭 +66</span>
+                <input type="tel" id="fieldPhone" placeholder="08X-XXX-XXXX" autocomplete="tel">
+              </div>
+              <div class="co-error" id="errPhone"></div>
+            </div>
+          </div>
+
+          <div class="co-field">
+            <label class="co-label">ที่อยู่จัดส่ง <span style="color:var(--red)">*</span></label>
+            <textarea class="co-input" id="fieldAddress" placeholder="บ้านเลขที่ ซอย ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์" rows="3" style="resize:vertical;"></textarea>
+            <div class="co-error" id="errAddress"></div>
+          </div>
+
+          <div class="co-field">
+            <label class="co-label">หมายเหตุ (ถ้ามี)</label>
+            <input type="text" class="co-input" id="fieldNote" placeholder="ข้อความถึงร้านค้า">
+          </div>
+
+          <!-- Delivery Options -->
+          <div class="co-form-title" style="margin-top:24px;">🚚 วิธีจัดส่ง</div>
+          <div class="delivery-opts" id="deliveryOpts">
+            <label class="delivery-opt">
+              <input type="radio" name="delivery" value="ส่งพัสดุ Kerry" checked>
+              <div class="delivery-info">
+                <div class="delivery-name">Kerry Express</div>
+                <div class="delivery-note">1-3 วันทำการ</div>
+              </div>
+              <div class="delivery-price">ฟรี</div>
+            </label>
+            <label class="delivery-opt">
+              <input type="radio" name="delivery" value="ส่งพัสดุ Flash">
+              <div class="delivery-info">
+                <div class="delivery-name">Flash Express</div>
+                <div class="delivery-note">1-2 วันทำการ</div>
+              </div>
+              <div class="delivery-price">ฟรี</div>
+            </label>
+            <label class="delivery-opt">
+              <input type="radio" name="delivery" value="ไปรษณีย์ไทย">
+              <div class="delivery-info">
+                <div class="delivery-name">ไปรษณีย์ไทย</div>
+                <div class="delivery-note">2-5 วันทำการ</div>
+              </div>
+              <div class="delivery-price">ฟรี</div>
+            </label>
+          </div>
+
+          <div class="checkout-ctas">
+            <button class="btn btn-outline" onclick="window.location.href='shop.html'">← กลับซื้อต่อ</button>
+            <button class="btn btn-primary" style="flex:1;" onclick="goStep2()">ถัดไป: เลือกช่องทาง →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 2: Channel Selector ─────────────── -->
+      <div class="checkout-step-panel" id="step2Panel" style="display:none;">
+        <div class="co-form">
+          <div class="co-form-title">💬 เลือกช่องทางสั่งซื้อ</div>
+          <p style="font-size:0.875rem;color:var(--text-m);margin-bottom:20px;">เลือกช่องทางที่สะดวก ร้านจะได้รับข้อความสั่งซื้ออัตโนมัติ</p>
+
+          <div class="channel-opts" id="channelOpts">
+            <label class="channel-opt" id="chWA">
+              <input type="radio" name="channel" value="wa" checked>
+              <div class="channel-opt-card">
+                <div class="channel-check"></div>
+                <div class="channel-icon-box wa">💬</div>
+                <div>
+                  <div class="channel-name">WhatsApp</div>
+                  <div class="channel-desc">ส่งข้อความสั่งซื้ออัตโนมัติ</div>
+                </div>
+              </div>
+            </label>
+            <label class="channel-opt msg-opt" id="chMsg">
+              <input type="radio" name="channel" value="msg">
+              <div class="channel-opt-card">
+                <div class="channel-check"></div>
+                <div class="channel-icon-box msg">💬</div>
+                <div>
+                  <div class="channel-name">Facebook Messenger</div>
+                  <div class="channel-desc">ส่งผ่าน Messenger</div>
+                </div>
+              </div>
+            </label>
+          </div>
+
+          <!-- How it works -->
+          <div class="channel-how">
+            <div class="channel-how-title">📋 ขั้นตอน</div>
+            <div class="channel-how-steps">
+              <div class="channel-how-step">
+                <div class="how-num">1</div>
+                <div class="how-text">กดยืนยัน → ข้อความสั่งซื้อจะถูกสร้างโดยอัตโนมัติ</div>
+              </div>
+              <div class="channel-how-step">
+                <div class="how-num">2</div>
+                <div class="how-text">แอปจะเปิดขึ้นพร้อมข้อความที่กรอกให้แล้ว</div>
+              </div>
+              <div class="channel-how-step">
+                <div class="how-num">3</div>
+                <div class="how-text">กด "ส่ง" ร้านจะยืนยันออเดอร์ภายใน 24 ชม.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="checkout-ctas">
+            <button class="btn btn-outline" onclick="gotoStep(1)">← ย้อนกลับ</button>
+            <button class="btn btn-primary" style="flex:1;" onclick="goStep3()">ถัดไป: ตรวจสอบ →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 3: Confirm ─────────────────────── -->
+      <div class="checkout-step-panel" id="step3Panel" style="display:none;">
+        <div class="co-form">
+          <div class="co-form-title">✅ ยืนยันคำสั่งซื้อ</div>
+
+          <!-- Recap shipping -->
+          <div style="background:var(--bg);border-radius:12px;padding:16px;margin-bottom:16px;">
+            <div style="font-size:0.8rem;color:var(--muted);font-weight:600;margin-bottom:8px;">📦 ข้อมูลจัดส่ง</div>
+            <div style="font-size:0.875rem;color:var(--text);line-height:1.8;" id="recapShipping">-</div>
+          </div>
+
+          <!-- Channel recap -->
+          <div style="background:var(--bg);border-radius:12px;padding:16px;margin-bottom:20px;">
+            <div style="font-size:0.8rem;color:var(--muted);font-weight:600;margin-bottom:8px;">💬 ช่องทาง</div>
+            <div style="font-size:0.875rem;font-weight:700;color:var(--text);" id="recapChannel">-</div>
+          </div>
+
+          <!-- Terms -->
+          <label class="terms-check">
+            <input type="checkbox" id="termsCheck">
+            <span>ฉันยอมรับ <a href="#" style="color:var(--red);">เงื่อนไขการสั่งซื้อ</a> และเข้าใจว่าการสั่งซื้อผ่านโซเชียลมีเดียไม่มีการตัดเงินออนไลน์</span>
+          </label>
+          <div class="co-error" id="errTerms"></div>
+
+          <!-- Trust badges -->
+          <div class="trust-badges" style="margin-top:16px;">
+            <div class="trust-badge"><span class="trust-badge-icon">🔒</span>ปลอดภัย</div>
+            <div class="trust-badge"><span class="trust-badge-icon">✅</span>ไม่ตัดเงินออนไลน์</div>
+            <div class="trust-badge"><span class="trust-badge-icon">💬</span>ร้านยืนยันออเดอร์</div>
+          </div>
+
+          <div class="checkout-ctas">
+            <button class="btn btn-outline" onclick="gotoStep(2)">← ย้อนกลับ</button>
+            <button class="btn btn-wa" style="flex:1;" id="confirmWABtn" onclick="confirmOrder()">
+              💬 ส่งข้อความสั่งซื้อ
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── SIDEBAR: Order Summary ─────────────────── -->
+    <aside class="checkout-sidebar">
+      <div class="order-summary-card">
+        <div class="order-summary-title">สรุปคำสั่งซื้อ</div>
+        <div id="sidebarItems"><!-- rendered by JS --></div>
+        <div class="order-totals">
+          <div class="order-total-row">
+            <span>ค่าสินค้า</span>
+            <span id="sidebarSubtotal">฿0</span>
+          </div>
+          <div class="order-total-row">
+            <span>ค่าจัดส่ง</span>
+            <span style="color:var(--green)">ฟรี</span>
+          </div>
+          <div class="order-total-row grand">
+            <span>รวมทั้งหมด</span>
+            <span id="sidebarTotal">฿0</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<!-- ===================== WA MODAL ===================== -->
+<div class="wa-modal-overlay" id="waModalOverlay">
+  <div class="wa-modal">
+    <div class="wa-modal-header" id="waModalHeader">
+      <div class="wa-modal-header-icon">💬</div>
+      <div class="wa-modal-header-text">
+        <div style="font-weight:800;font-size:1rem;">สั่งซื้อผ่าน <span id="waChannelName">WhatsApp</span></div>
+        <div style="font-size:0.78rem;opacity:.85;">คัดลอกหรือเปิดแอปได้เลย</div>
+      </div>
+      <button class="wa-modal-close" id="waModalClose">×</button>
+    </div>
+    <div class="wa-modal-body">
+      <div class="wa-bubble" id="waModalMsg"></div>
+    </div>
+    <div class="wa-modal-footer">
+      <button class="wa-copy-btn" id="waCopyBtn">📋 คัดลอก</button>
+      <button class="btn btn-wa wa-open-btn" id="waOpenBtn">📱 เปิด WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="db.js"></script>
+<script src="app.js"></script>
+<script>
+  /* ── Checkout page logic ── */
+  let checkoutStep = 1;
+  let formData = {};
+  let selectedChannel = 'wa';
+
+  function gotoStep(step) {
+    checkoutStep = step;
+    ['step1Panel','step2Panel','step3Panel'].forEach((id, i) => {
+      document.getElementById(id).style.display = (i + 1 === step) ? 'block' : 'none';
+    });
+    // Update step circles
+    for (let i = 1; i <= 3; i++) {
+      const circle = document.getElementById('sc' + i);
+      const label = document.getElementById('sl' + i);
+      if (circle) {
+        if (i < step) { circle.className = 'step-circle done'; circle.textContent = '✓'; }
+        else if (i === step) { circle.className = 'step-circle active'; circle.textContent = i; }
+        else { circle.className = 'step-circle'; circle.textContent = i; }
+      }
+      if (label) { label.className = 'step-label' + (i === step ? ' active' : ''); }
+      // Step lines
+      const line = document.getElementById('sline' + i);
+      if (line) line.className = 'step-line' + (i < step ? ' done' : '');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function validateStep1() {
+    let valid = true;
+    const name = document.getElementById('fieldName').value.trim();
+    const phone = document.getElementById('fieldPhone').value.trim();
+    const address = document.getElementById('fieldAddress').value.trim();
+
+    document.getElementById('errName').textContent = '';
+    document.getElementById('errPhone').textContent = '';
+    document.getElementById('errAddress').textContent = '';
+
+    if (!name) {
+      document.getElementById('errName').textContent = 'กรุณากรอกชื่อ-นามสกุล';
+      document.getElementById('fieldName').classList.add('error');
+      valid = false;
+    } else {
+      document.getElementById('fieldName').classList.remove('error');
+    }
+    if (!phone || phone.length < 9) {
+      document.getElementById('errPhone').textContent = 'กรุณากรอกเบอร์โทรที่ถูกต้อง';
+      document.getElementById('fieldPhone').classList.add('error');
+      valid = false;
+    } else {
+      document.getElementById('fieldPhone').classList.remove('error');
+    }
+    if (!address) {
+      document.getElementById('errAddress').textContent = 'กรุณากรอกที่อยู่จัดส่ง';
+      document.getElementById('fieldAddress').classList.add('error');
+      valid = false;
+    } else {
+      document.getElementById('fieldAddress').classList.remove('error');
+    }
+    return valid;
+  }
+
+  function goStep2() {
+    if (!validateStep1()) { showToast('กรุณากรอกข้อมูลให้ครบ', 'error'); return; }
+    const delivery = document.querySelector('input[name="delivery"]:checked')?.value || 'ส่งพัสดุ';
+    formData = {
+      name: document.getElementById('fieldName').value.trim(),
+      phone: document.getElementById('fieldPhone').value.trim(),
+      address: document.getElementById('fieldAddress').value.trim(),
+      note: document.getElementById('fieldNote').value.trim(),
+      delivery,
+    };
+    gotoStep(2);
+  }
+
+  function goStep3() {
+    selectedChannel = document.querySelector('input[name="channel"]:checked')?.value || 'wa';
+    // Update recap
+    document.getElementById('recapShipping').innerHTML =
+      `<b>${formData.name}</b> &nbsp;📞 ${formData.phone}<br>${formData.address}${formData.note ? '<br>📝 ' + formData.note : ''}<br>🚚 ${formData.delivery}`;
+    document.getElementById('recapChannel').textContent =
+      selectedChannel === 'wa' ? '💬 WhatsApp' : '💬 Facebook Messenger';
+    // Update confirm button
+    const btn = document.getElementById('confirmWABtn');
+    if (btn) {
+      btn.className = selectedChannel === 'wa' ? 'btn btn-wa' : 'btn btn-msg';
+      btn.textContent = selectedChannel === 'wa' ? '💬 ส่งคำสั่งซื้อทาง WhatsApp' : '💬 ส่งคำสั่งซื้อทาง Messenger';
+      btn.setAttribute('onclick', 'confirmOrder()');
+    }
+    gotoStep(3);
+  }
+
+  async function confirmOrder() {
+    const terms = document.getElementById('termsCheck');
+    document.getElementById('errTerms').textContent = '';
+    if (!terms.checked) {
+      document.getElementById('errTerms').textContent = 'กรุณายอมรับเงื่อนไขก่อน';
+      showToast('กรุณายอมรับเงื่อนไขก่อน', 'error');
+      return;
+    }
+
+    // Disable button while saving
+    const btn = document.getElementById('confirmWABtn');
+    if (btn) { btn.disabled = true; btn.textContent = 'กำลังบันทึก...'; }
+
+    // Generate order number & save (local + Supabase if configured)
+    const orderNo = 'RB' + Date.now().toString().slice(-6);
+    await RubyDB.saveOrder({
+      ...formData,
+      orderNo,
+      channel: selectedChannel,
+      items: JSON.parse(localStorage.getItem('ruby_cart') || '[]'),
+      total: getCartTotal(),
+    });
+
+    if (btn) { btn.disabled = false; }
+
+    // Open WA modal
+    openWAModal(selectedChannel, formData);
+
+    // On modal close → clear cart → success page
+    const origClose = window.closeWAModal;
+    window.closeWAModal = function() {
+      origClose();
+      clearCart();
+      window.location.href = 'success.html';
+    };
+  }
+
+  /* Render sidebar order summary */
+  function renderSidebar() {
+    renderOrderSummary('sidebarItems');
+    const total = getCartTotal();
+    const sub = document.getElementById('sidebarSubtotal');
+    const tot = document.getElementById('sidebarTotal');
+    if (sub) sub.textContent = '฿' + total.toLocaleString();
+    if (tot) tot.textContent = '฿' + total.toLocaleString();
+  }
+
+  function toggleMobileSummary() {
+    const body = document.getElementById('mobileSummaryBody');
+    const chev = document.getElementById('mobileSummaryChevron');
+    const open = body.style.display === 'block';
+    body.style.display = open ? 'none' : 'block';
+    if (chev) chev.style.transform = open ? '' : 'rotate(180deg)';
+  }
+
+  function renderMobileSummary() {
+    const total = getCartTotal();
+    const el = document.getElementById('mobileSummaryTotal');
+    if (el) el.textContent = '฿' + total.toLocaleString();
+    const items = document.getElementById('mobileSummaryItems');
+    if (items) {
+      const cartItems = JSON.parse(localStorage.getItem('ruby_cart') || '[]');
+      items.innerHTML = cartItems.map(item =>
+        `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:.85rem;">
+          <span style="color:var(--text-m);">${item.name}${item.variant?' ('+item.variant+')':''} ×${item.qty}</span>
+          <span style="font-weight:700;color:var(--red);">฿${((item.price||0)*item.qty).toLocaleString()}</span>
+        </div>`).join('') +
+        `<div style="display:flex;justify-content:space-between;padding:10px 0 4px;font-weight:800;font-size:.9rem;">
+          <span>รวมทั้งหมด</span><span style="color:var(--red);">฿${total.toLocaleString()}</span>
+        </div>`;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderSidebar();
+    renderMobileSummary();
+    // Show mobile summary only on small screens
+    if (window.innerWidth < 768) {
+      const ms = document.getElementById('mobileCartSummary');
+      if (ms) ms.style.display = 'block';
+    }
+    if (cart.length === 0) {
+      showToast('ตะกร้าว่าง กรุณาเลือกสินค้าก่อน', 'error');
+      setTimeout(() => window.location.href = 'shop.html', 2000);
+    }
+  });
+</script>
+</body>
+</html>

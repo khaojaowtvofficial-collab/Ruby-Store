@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruby Store — เลือกซื้อสินค้า</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===================== NAVBAR ===================== -->
+<nav class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="navbar-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 0 1-8 0"/>
+      </svg>
+      Ruby <span>Store</span>
+    </a>
+    <nav class="navbar-nav">
+      <a href="index.html">หน้าแรก</a>
+      <a href="shop.html" class="active">สินค้า</a>
+      <a href="index.html#stores">ร้านค้า</a>
+      <a href="index.html#about">เกี่ยวกับ</a>
+    </nav>
+    <div class="navbar-spacer"></div>
+    <div class="navbar-actions">
+      <button class="nav-cart-btn" id="cartBtn" aria-label="ตะกร้าสินค้า">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        <span class="cart-badge hidden" id="cartBadge">0</span>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="เมนู">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">🏠 หน้าแรก</a>
+  <a href="shop.html" class="active">🛍️ สินค้า</a>
+  <a href="index.html#stores">🏪 ร้านค้า</a>
+  <a href="index.html#about">ℹ️ เกี่ยวกับ</a>
+</div>
+
+<!-- ===================== MAIN ===================== -->
+<div class="page-body">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="index.html">หน้าแรก</a>
+      <span class="sep">›</span>
+      <span class="current" id="breadcrumbStore">ร้านค้าทั้งหมด</span>
+    </div>
+
+    <!-- Store Switcher -->
+    <div class="store-switcher" id="storeSwitcher">
+      <a href="shop.html#all" class="store-tab" data-store="all">🛍️ ทั้งหมด</a>
+      <a href="shop.html#pet" class="store-tab" data-store="pet">🐾 Ruby Pet Shop</a>
+      <a href="shop.html#computer" class="store-tab" data-store="computer">💻 Ruby Computer</a>
+      <a href="shop.html#toy" class="store-tab" data-store="toy">🧸 Ruby Toy Shop</a>
+    </div>
+
+    <!-- Search Bar -->
+    <div style="position:relative;margin-bottom:16px;">
+      <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="ค้นหาสินค้า..." autocomplete="off"
+        style="width:100%;padding:11px 40px 11px 42px;border:1.5px solid var(--border);border-radius:100px;font-size:0.9rem;font-family:inherit;outline:none;background:var(--card);box-sizing:border-box;transition:border .15s;"
+        oninput="_searchQuery=this.value.trim();renderShopProducts(getStoreFromHash())"
+        onfocus="this.style.borderColor='var(--red)'" onblur="this.style.borderColor='var(--border)'">
+      <button id="searchClearBtn" onclick="_searchQuery='';document.getElementById('searchInput').value='';renderShopProducts(getStoreFromHash())"
+        style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.2rem;display:none;line-height:1;padding:4px;">×</button>
+    </div>
+
+    <!-- Category chips -->
+    <div class="cat-chips" style="margin-bottom:20px;">
+      <button class="cat-chip active" data-cat="all">🛍️ ทั้งหมด</button>
+      <button class="cat-chip" data-cat="food">🍖 อาหาร</button>
+      <button class="cat-chip" data-cat="toy-pet">🎾 ของเล่น</button>
+      <button class="cat-chip" data-cat="dog">🐶 น้องหมา</button>
+      <button class="cat-chip" data-cat="cat">🐱 น้องแมว</button>
+      <button class="cat-chip" data-cat="computer">💻 คอม</button>
+      <button class="cat-chip" data-cat="equip">🔧 อุปกรณ์</button>
+    </div>
+
+    <!-- Shop Layout -->
+    <div class="shop-layout">
+      <!-- Sidebar Filters (desktop only) -->
+      <aside class="shop-filters">
+        <div class="filter-section">
+          <div class="filter-section-title">ช่วงราคา</div>
+          <div class="price-range">
+            <input type="number" id="priceMin" placeholder="ต่ำสุด" min="0" value="0">
+            <span class="dash">—</span>
+            <input type="number" id="priceMax" placeholder="สูงสุด" min="0" value="10000">
+          </div>
+          <button class="btn btn-outline btn-sm btn-block" style="margin-top:10px;" onclick="applyPriceFilter()">กรอง</button>
+        </div>
+        <div class="filter-section">
+          <div class="filter-section-title">หมวดหมู่</div>
+          <label class="filter-check">
+            <input type="checkbox" checked onchange="toggleCatFilter('pet')"> สัตว์เลี้ยง
+          </label>
+          <label class="filter-check">
+            <input type="checkbox" checked onchange="toggleCatFilter('computer')"> คอมพิวเตอร์
+          </label>
+          <label class="filter-check">
+            <input type="checkbox" checked onchange="toggleCatFilter('toy')"> ของเล่น
+          </label>
+        </div>
+        <div class="filter-section">
+          <div class="filter-section-title">ร้านค้า</div>
+          <label class="filter-check">
+            <input type="checkbox" checked> Ruby Pet Shop
+          </label>
+          <label class="filter-check">
+            <input type="checkbox" checked> Ruby Computer
+          </label>
+          <label class="filter-check">
+            <input type="checkbox" checked> Ruby Toy Shop
+          </label>
+        </div>
+      </aside>
+
+      <!-- Product Grid -->
+      <div>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
+          <p style="font-size:0.85rem; color:var(--muted);" id="productCount">แสดง 0 รายการ</p>
+          <select class="co-input" style="width:auto; padding:6px 12px; font-size:0.82rem;" id="sortSelect" onchange="sortProducts()">
+            <option value="default">เรียงตาม: ค่าเริ่มต้น</option>
+            <option value="price-asc">ราคา: น้อย → มาก</option>
+            <option value="price-desc">ราคา: มาก → น้อย</option>
+            <option value="name">ชื่อสินค้า A-Z</option>
+          </select>
+        </div>
+        <div class="products-grid" id="shopProductsGrid">
+          <!-- Populated by JS -->
+        </div>
+        <div class="pagination">
+          <button class="page-btn" id="prevPage">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+          <button class="page-btn active" id="page1">1</button>
+          <button class="page-btn" id="page2">2</button>
+          <button class="page-btn" id="nextPage">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer" style="padding-bottom: 80px;">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--red)">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          Ruby Store
+        </div>
+        <p class="footer-tagline">Social Commerce สำหรับร้านไทย</p>
+      </div>
+      <div class="footer-links-col">
+        <h4>ร้านค้า</h4>
+        <a href="shop.html#pet">Ruby Pet Shop</a>
+        <a href="shop.html#computer">Ruby Computer</a>
+        <a href="shop.html#toy">Ruby Toy Shop</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Ruby Store</div>
+  </div>
+</footer>
+
+<!-- ===================== CART SIDEBAR ===================== -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h3>🛒 ตะกร้าสินค้า</h3>
+    <button class="cart-close" id="cartClose">×</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty" id="cartEmpty">
+      <div class="cart-empty-icon">🛒</div>
+      <p>ตะกร้าว่างเปล่า</p>
+    </div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none;">
+    <div class="cart-subtotal">
+      <span class="label">ราคาสินค้า</span>
+      <span class="value" id="cartSubtotalVal">฿0</span>
+    </div>
+    <div class="cart-total">
+      <span>รวมทั้งหมด</span>
+      <span class="price" id="cartTotalVal">฿0</span>
+    </div>
+    <a href="checkout.html" class="btn btn-primary btn-block">ดำเนินการสั่งซื้อ →</a>
+  </div>
+</div>
+
+<!-- ===================== MOBILE BOTTOM NAV ===================== -->
+<nav class="mobile-bottom-nav">
+  <a href="index.html" class="nav-item">
+    <span class="icon">🏠</span><span>หน้าแรก</span>
+  </a>
+  <a href="shop.html" class="nav-item active">
+    <span class="icon">🛍️</span><span>ร้านค้า</span>
+  </a>
+  <a href="#" class="nav-item" id="mobileCartBtn">
+    <span class="icon">🛒</span>
+    <div class="cart-dot" id="mobileCartDot"></div>
+    <span>ตะกร้า</span>
+  </a>
+  <a href="profile.html" class="nav-item">
+    <span class="icon">👤</span><span>บัญชี</span>
+  </a>
+</nav>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="app.js"></script>
+<script>
+  const STORE_NAMES = { all: 'ร้านค้าทั้งหมด', pet: 'Ruby Pet Shop', computer: 'Ruby Computer', toy: 'Ruby Toy Shop' };
+
+  // Read store from hash (#pet / #computer / #toy / empty = all)
+  function getStoreFromHash() {
+    const hash = window.location.hash.replace('#', '').trim();
+    return ['pet', 'computer', 'toy'].includes(hash) ? hash : 'all'; // '#all' or '' → 'all'
+  }
+
+  function applyStore(store) {
+    // Highlight active tab
+    document.querySelectorAll('.store-tab').forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.store === store);
+    });
+    // Breadcrumb
+    document.getElementById('breadcrumbStore').textContent = STORE_NAMES[store] || 'ร้านค้าทั้งหมด';
+    // Render products
+    renderShopProducts(store);
+    // Reset cat chips + filter state
+    _activeCat = 'all';
+    _priceMin = 0; _priceMax = 999999;
+    _searchQuery = '';
+    const si = document.getElementById('searchInput');
+    if (si) si.value = '';
+    document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+    document.querySelector('.cat-chip[data-cat="all"]')?.classList.add('active');
+    if (document.getElementById('priceMin')) document.getElementById('priceMin').value = 0;
+    if (document.getElementById('priceMax')) document.getElementById('priceMax').value = 10000;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    applyStore(getStoreFromHash());
+
+    // React to tab clicks without page reload
+    window.addEventListener('hashchange', () => applyStore(getStoreFromHash()));
+
+    // Cat chip → filter products
+    document.querySelectorAll('.cat-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        _activeCat = chip.dataset.cat || 'all';
+        renderShopProducts(getStoreFromHash());
+      });
+    });
+  });
+
+  // Cat → store mapping for chip filtering
+  const CAT_STORE_MAP = {
+    all: null, food: 'pet', 'toy-pet': 'pet', dog: 'pet', cat: 'pet',
+    computer: 'computer', equip: 'computer', toy: 'toy',
+  };
+  let _activeCat  = 'all';
+  let _priceMin   = 0;
+  let _priceMax   = 999999;
+  let _searchQuery = '';
+
+  function renderShopProducts(storeFilter) {
+    const grid = document.getElementById('shopProductsGrid');
+    let products = window.PRODUCTS || [];
+
+    // Filter by store tab
+    if (storeFilter !== 'all') products = products.filter(p => p.store === storeFilter);
+
+    // Filter by category chip
+    if (_activeCat !== 'all') products = products.filter(p => p.cat === _activeCat);
+
+    // Filter by price range
+    products = products.filter(p => p.price >= _priceMin && p.price <= _priceMax);
+
+    // Filter by search query
+    if (_searchQuery) {
+      const q = _searchQuery.toLowerCase();
+      products = products.filter(p => p.name.toLowerCase().includes(q) || (p.desc||'').toLowerCase().includes(q));
+      // Show/hide clear button
+      const clearBtn = document.getElementById('searchClearBtn');
+      if (clearBtn) clearBtn.style.display = 'block';
+    } else {
+      const clearBtn = document.getElementById('searchClearBtn');
+      if (clearBtn) clearBtn.style.display = 'none';
+    }
+
+    // Sort
+    const sortVal = document.getElementById('sortSelect')?.value || 'default';
+    if (sortVal === 'price-asc')  products = [...products].sort((a,b) => a.price - b.price);
+    if (sortVal === 'price-desc') products = [...products].sort((a,b) => b.price - a.price);
+    if (sortVal === 'name')       products = [...products].sort((a,b) => a.name.localeCompare(b.name, 'th'));
+
+    document.getElementById('productCount').textContent = `แสดง ${products.length} รายการ`;
+    grid.innerHTML = products.length
+      ? products.map(p => buildProductCard(p)).join('')
+      : '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);">ไม่พบสินค้า</div>';
+    bindAddToCart();
+  }
+
+  function sortProducts() {
+    renderShopProducts(getStoreFromHash());
+  }
+
+  function applyPriceFilter() {
+    _priceMin = parseInt(document.getElementById('priceMin')?.value) || 0;
+    _priceMax = parseInt(document.getElementById('priceMax')?.value) || 999999;
+    renderShopProducts(getStoreFromHash());
+    showToast(`กรองราคา ฿${_priceMin.toLocaleString()} – ฿${_priceMax.toLocaleString()}`);
+  }
+
+  function toggleCatFilter(cat) {
+    // unused (handled by chip click below)
+  }
+</script>
+</body>
+</html>
