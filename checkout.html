@@ -13,6 +13,7 @@
     .co-form-row > * { min-width: 0; }
     .co-input-prefix { min-width: 0; }
     .co-input-prefix input { min-width: 0; width: 0; }
+    @keyframes hvSpin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
@@ -229,6 +230,22 @@
           </label>
           <div class="co-error" id="errTerms"></div>
 
+          <!-- ── Human Verification Widget ── -->
+          <div id="humanVerifyBox" style="margin-top:16px;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;background:var(--card);cursor:pointer;user-select:none;" onclick="runHumanVerify()">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div id="hvSpinner" style="width:24px;height:24px;border-radius:50%;border:2.5px solid var(--border);border-top-color:var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <div id="hvCheck" style="display:none;font-size:1rem;">✅</div>
+                <div id="hvAnim" style="width:18px;height:18px;border-radius:50%;border:2px solid transparent;"></div>
+              </div>
+              <span id="hvLabel" style="font-size:0.875rem;font-weight:500;color:var(--text);">ฉันไม่ใช่บอท</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+              <span style="font-size:0.65rem;color:var(--muted);">Protected by</span>
+              <span style="font-size:0.7rem;font-weight:700;color:var(--text-m);">🛡️ RubyGuard</span>
+            </div>
+          </div>
+          <div class="co-error" id="errVerify"></div>
+
           <!-- Trust badges -->
           <div class="trust-badges" style="margin-top:16px;">
             <div class="trust-badge"><span class="trust-badge-icon">🔒</span>ปลอดภัย</div>
@@ -390,13 +407,64 @@
   }
 
   /* ══ BOT PROTECTION ══════════════════════════════════════
-     3 layers: honeypot + timing + user-agent
+     4 layers: honeypot + timing + activity + human widget
   ═══════════════════════════════════════════════════════ */
   const _formOpenedAt = Date.now();
   let _mouseMovedCount = 0;
   let _keyPressCount = 0;
+  let _humanVerified = false;
+  let _hvRunning = false;
   document.addEventListener('mousemove', () => { if (_mouseMovedCount < 50) _mouseMovedCount++; }, { passive: true });
   document.addEventListener('keydown',   () => { if (_keyPressCount   < 50) _keyPressCount++;   }, { passive: true });
+
+  function runHumanVerify() {
+    if (_humanVerified || _hvRunning) return;
+    _hvRunning = true;
+    const box    = document.getElementById('humanVerifyBox');
+    const label  = document.getElementById('hvLabel');
+    const anim   = document.getElementById('hvAnim');
+    const check  = document.getElementById('hvCheck');
+    const spinner = document.getElementById('hvSpinner');
+
+    // Animate spinner
+    label.textContent = 'กำลังตรวจสอบ...';
+    label.style.color = 'var(--muted)';
+    anim.style.cssText = 'width:18px;height:18px;border-radius:50%;border:2px solid var(--border);border-top-color:var(--red);animation:hvSpin .6s linear infinite;';
+    box.style.borderColor = 'var(--red)';
+    box.style.cursor = 'default';
+
+    // Run checks in background
+    setTimeout(() => {
+      const hp1 = document.getElementById('_hp_website')?.value || '';
+      const hp2 = document.getElementById('_hp_email')?.value   || '';
+      const elapsed = (Date.now() - _formOpenedAt) / 1000;
+      const hasActivity = _mouseMovedCount > 0 || _keyPressCount > 0;
+      const isBot = hp1 || hp2 || elapsed < 2 || !hasActivity || !navigator.cookieEnabled;
+
+      if (isBot) {
+        label.textContent = 'ไม่ผ่านการตรวจสอบ ลองใหม่อีกครั้ง';
+        label.style.color = '#E53935';
+        box.style.borderColor = '#E53935';
+        box.style.background = '#FFF1F1';
+        anim.style.cssText = '';
+        check.style.display = 'none';
+        spinner.innerHTML = '<span style="font-size:1rem;">❌</span>';
+        _hvRunning = false;
+        return;
+      }
+
+      // Pass ✅
+      _humanVerified = true;
+      anim.style.cssText = '';
+      check.style.display = 'block';
+      label.textContent  = 'ยืนยันแล้ว — คุณไม่ใช่บอท';
+      label.style.color  = '#16a34a';
+      box.style.borderColor = '#22C55E';
+      box.style.background  = '#F0FFF4';
+      document.getElementById('errVerify').textContent = '';
+      _hvRunning = false;
+    }, 900);
+  }
 
   function _checkBotProtection() {
     // Layer 1: Honeypot — bot กรอก field ที่ซ่อน
@@ -432,7 +500,15 @@
       return;
     }
 
-    // ── Bot protection check ──
+    // ── Human verification widget ──
+    if (!_humanVerified) {
+      document.getElementById('errVerify').textContent = 'กรุณากดยืนยัน "ฉันไม่ใช่บอท" ก่อน';
+      document.getElementById('humanVerifyBox').style.borderColor = '#E53935';
+      document.getElementById('humanVerifyBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    // ── Bot protection check (background layers) ──
     const botCheck = _checkBotProtection();
     if (botCheck.blocked) {
       console.warn('[Security] Order blocked — reason:', botCheck.reason);
