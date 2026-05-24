@@ -1002,6 +1002,7 @@ input, textarea, select {
   justify-content: center;
   font-size: 1.5rem;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 .cart-item-body {

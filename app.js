@@ -253,10 +253,10 @@ function renderCartItems() {
     div.className = 'cart-item';
     div.dataset.key = item.key;
     div.innerHTML = `
-      <div class="cart-item-img" style="background:${item.bg}">${item.emoji}</div>
+      <div class="cart-item-img" style="background:${item.bg || '#F5F5F5'}">${item.emoji || '🛍️'}</div>
       <div class="cart-item-body">
         <div class="cart-item-name">${item.name}</div>
-        ${item.variant ? `<div class="cart-item-variant">${item.variant}</div>` : ''}
+        ${(item.variant && item.variant !== 'undefined') ? `<div class="cart-item-variant">${item.variant}</div>` : ''}
         <div class="cart-item-price">฿${item.price.toLocaleString()}</div>
         <div class="cart-item-controls">
           <button class="qty-btn" onclick="updateQty('${item.key}', -1)">−</button>
