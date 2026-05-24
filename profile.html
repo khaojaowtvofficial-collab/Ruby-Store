@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruby Store — บัญชีของฉัน</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── Profile specific ── */
+    .profile-hero {
+      text-align: center;
+      padding: 28px 0 20px;
+    }
+    .profile-avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--red-l);
+      border: 3px solid var(--red);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.2rem;
+      margin: 0 auto 12px;
+    }
+    .profile-uid-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 4px 14px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 1px;
+      cursor: pointer;
+    }
+    .cloud-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #F0FDF4; color: #16A34A;
+      border-radius: var(--radius-pill);
+      padding: 3px 10px; font-size: 0.72rem; font-weight: 700;
+    }
+    .local-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #FFFBEB; color: #92400E;
+      border-radius: var(--radius-pill);
+      padding: 3px 10px; font-size: 0.72rem; font-weight: 700;
+    }
+
+    /* ── Section header ── */
+    .section-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: 1rem; font-weight: 800;
+    }
+
+    /* ── Order history card ── */
+    .order-hist-card {
+      background: var(--card);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+    }
+    .order-hist-card:hover { box-shadow: var(--shadow-md); }
+
+    .order-hist-head {
+      display: flex; align-items: center;
+      padding: 14px 16px 10px;
+      gap: 10px;
+    }
+    .order-hist-no {
+      font-weight: 800; font-size: 0.9rem; flex: 1;
+    }
+    .order-hist-date {
+      font-size: 0.72rem; color: var(--muted);
+    }
+
+    .order-hist-items {
+      padding: 0 16px 10px;
+      display: flex; gap: 8px; overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .order-hist-items::-webkit-scrollbar { display: none; }
+    .order-hist-thumb {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+    }
+
+    .order-hist-foot {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px 14px;
+      border-top: 1px solid var(--line-soft);
+    }
+    .order-hist-total {
+      font-size: 1rem; font-weight: 800; color: var(--red);
+    }
+    .order-hist-ch {
+      font-size: 0.78rem; color: var(--muted);
+    }
+
+    /* ── Order status pill ── */
+    .o-status { display: inline-flex; align-items: center; gap: 4px; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 100px; }
+    .o-status.pending   { background:#FEF3C7; color:#92400E; }
+    .o-status.confirmed { background:#DBEAFE; color:#1E40AF; }
+    .o-status.completed { background:#D1FAE5; color:#065F46; }
+    .o-status.cancelled { background:#FEE2E2; color:#991B1B; }
+    .o-status.pending::before   { content:'🕐 '; }
+    .o-status.confirmed::before { content:'✅ '; }
+    .o-status.completed::before { content:'📦 '; }
+    .o-status.cancelled::before { content:'❌ '; }
+
+    /* ── Empty state ── */
+    .order-empty {
+      text-align: center; padding: 40px 20px;
+      color: var(--muted);
+    }
+    .order-empty-icon { font-size: 3rem; margin-bottom: 12px; }
+
+    /* ── Quick links ── */
+    .ql-card {
+      background: var(--card);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden; margin-bottom: 16px;
+    }
+    .ql-title {
+      font-size: 0.78rem; font-weight: 700; color: var(--muted);
+      padding: 12px 16px 8px; text-transform: uppercase; letter-spacing: .5px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .ql-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--line-soft);
+      text-decoration: none; color: inherit;
+      transition: background 0.15s;
+    }
+    .ql-row:last-child { border-bottom: none; }
+    .ql-row:hover { background: var(--bg); }
+    .ql-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .ql-icon.red   { background: var(--red-l); }
+    .ql-icon.green { background: #F0FDF4; }
+    .ql-icon.blue  { background: #EFF6FF; }
+    .ql-icon.amber { background: #FFFBEB; }
+    .ql-body { flex: 1; }
+    .ql-label { font-weight: 600; font-size: 0.875rem; }
+    .ql-desc  { font-size: 0.75rem; color: var(--muted); }
+    .ql-arrow { color: var(--border); }
+
+    /* admin tap zone */
+    .admin-tap { text-align: center; padding: 16px; font-size: 0.72rem; color: var(--border); cursor: pointer; user-select: none; }
+  </style>
+</head>
+<body>
+
+<!-- ===================== NAVBAR ===================== -->
+<nav class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="navbar-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 0 1-8 0"/>
+      </svg>
+      Ruby <span>Store</span>
+    </a>
+    <nav class="navbar-nav">
+      <a href="index.html">หน้าแรก</a>
+      <a href="shop.html">สินค้า</a>
+      <a href="index.html#stores">ร้านค้า</a>
+    </nav>
+    <div class="navbar-spacer"></div>
+    <div class="navbar-actions">
+      <button class="nav-cart-btn" id="cartBtn" aria-label="ตะกร้าสินค้า">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        <span class="cart-badge hidden" id="cartBadge">0</span>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="เมนู">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">🏠 หน้าแรก</a>
+  <a href="shop.html">🛍️ สินค้า</a>
+  <a href="index.html#stores">🏪 ร้านค้า</a>
+</div>
+
+<!-- ===================== MAIN ===================== -->
+<div class="page-body">
+  <div class="container" style="max-width:540px;">
+
+    <!-- Hero -->
+    <div class="profile-hero">
+      <div class="profile-avatar">👤</div>
+      <div style="font-size:1.1rem;font-weight:800;margin-bottom:6px;">บัญชีของฉัน</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
+        <div class="profile-uid-chip" id="uidChip" title="กด copy">
+          🔑 <span id="uidDisplay">--------</span>
+        </div>
+        <span id="cloudBadge"></span>
+      </div>
+      <div style="font-size:0.72rem;color:var(--muted);margin-top:6px;">ID ของคุณบนเครื่องนี้ — ไม่ต้องสมัครสมาชิก</div>
+    </div>
+
+    <!-- ── ORDER HISTORY ── -->
+    <div class="section-head">
+      <div class="section-title">📦 ประวัติการสั่งซื้อ</div>
+      <button class="btn btn-outline btn-sm" id="refreshBtn" onclick="loadOrders()">🔄 รีเฟรช</button>
+    </div>
+
+    <div id="ordersLoading" style="text-align:center;padding:20px;color:var(--muted);font-size:0.875rem;">
+      กำลังโหลด...
+    </div>
+    <div id="ordersList" style="display:none;"></div>
+    <div id="ordersEmpty" class="order-empty" style="display:none;">
+      <div class="order-empty-icon">📭</div>
+      <div style="font-weight:700;margin-bottom:6px;">ยังไม่มีประวัติการสั่งซื้อ</div>
+      <div style="font-size:0.82rem;margin-bottom:20px;">เริ่มเลือกสินค้าได้เลย!</div>
+      <a href="shop.html" class="btn btn-primary">🛍️ ไปเลือกสินค้า</a>
+    </div>
+
+    <!-- ── QUICK LINKS ── -->
+    <div class="ql-card" style="margin-top:24px;">
+      <div class="ql-title">ร้านค้า</div>
+      <a href="shop.html" class="ql-row">
+        <div class="ql-icon red">🛍️</div>
+        <div class="ql-body"><div class="ql-label">เลือกซื้อสินค้า</div><div class="ql-desc">สินค้าจาก 3 ร้านในระบบ</div></div>
+        <div class="ql-arrow">›</div>
+      </a>
+      <a href="shop.html#pet" class="ql-row">
+        <div class="ql-icon red">🐾</div>
+        <div class="ql-body"><div class="ql-label">Ruby Pet Shop</div><div class="ql-desc">อาหารและของเล่นสัตว์เลี้ยง</div></div>
+        <div class="ql-arrow">›</div>
+      </a>
+      <a href="shop.html#computer" class="ql-row">
+        <div class="ql-icon blue">💻</div>
+        <div class="ql-body"><div class="ql-label">Ruby Computer</div><div class="ql-desc">คอมพิวเตอร์และอุปกรณ์</div></div>
+        <div class="ql-arrow">›</div>
+      </a>
+      <a href="shop.html#toy" class="ql-row">
+        <div class="ql-icon amber">🧸</div>
+        <div class="ql-body"><div class="ql-label">Ruby Toy Shop</div><div class="ql-desc">ของเล่นเด็กและสะสม</div></div>
+        <div class="ql-arrow">›</div>
+      </a>
+    </div>
+
+    <div class="ql-card">
+      <div class="ql-title">ติดต่อร้านค้า</div>
+      <a href="https://wa.me/8562078926245" target="_blank" class="ql-row">
+        <div class="ql-icon green">💬</div>
+        <div class="ql-body"><div class="ql-label">WhatsApp</div><div class="ql-desc">สอบถาม / ติดตามออเดอร์</div></div>
+        <div class="ql-arrow">›</div>
+      </a>
+      <a href="https://m.me/rubystore" target="_blank" class="ql-row">
+        <div class="ql-icon blue">💬</div>
+        <div class="ql-body"><div class="ql-label">Facebook Messenger</div><div class="ql-desc">inbox ร้านได้เลย</div></div>
+        <div class="ql-arrow">›</div>
+      </a>
+    </div>
+
+    <div class="ql-card">
+      <div class="ql-title">ตะกร้า</div>
+      <div class="ql-row" id="profileCartBtn" style="cursor:pointer;">
+        <div class="ql-icon red">🛒</div>
+        <div class="ql-body"><div class="ql-label">ดูตะกร้าสินค้า</div><div class="ql-desc" id="profileCartDesc">ยังไม่มีสินค้าในตะกร้า</div></div>
+        <div class="ql-arrow">›</div>
+      </div>
+    </div>
+
+    <!-- Secret admin tap -->
+    <div class="admin-tap" id="adminTap">© 2026 Ruby Store</div>
+
+  </div>
+</div>
+
+<!-- ===================== CART SIDEBAR ===================== -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h3>🛒 ตะกร้าสินค้า</h3>
+    <button class="cart-close" id="cartClose">×</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty" id="cartEmpty">
+      <div class="cart-empty-icon">🛒</div>
+      <p>ตะกร้าว่างเปล่า</p>
+    </div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none;">
+    <div class="cart-subtotal">
+      <span class="label">ราคาสินค้า</span>
+      <span class="value" id="cartSubtotalVal">฿0</span>
+    </div>
+    <div class="cart-total">
+      <span>รวมทั้งหมด</span>
+      <span class="price" id="cartTotalVal">฿0</span>
+    </div>
+    <a href="checkout.html" class="btn btn-primary btn-block">ดำเนินการสั่งซื้อ →</a>
+  </div>
+</div>
+
+<!-- ===================== MOBILE BOTTOM NAV ===================== -->
+<nav class="mobile-bottom-nav">
+  <a href="index.html" class="nav-item">
+    <span class="icon">🏠</span><span>หน้าแรก</span>
+  </a>
+  <a href="shop.html" class="nav-item">
+    <span class="icon">🛍️</span><span>ร้านค้า</span>
+  </a>
+  <a href="#" class="nav-item" id="mobileCartBtn">
+    <span class="icon">🛒</span>
+    <div class="cart-dot" id="mobileCartDot"></div>
+    <span>ตะกร้า</span>
+  </a>
+  <a href="profile.html" class="nav-item active">
+    <span class="icon">👤</span><span>บัญชี</span>
+  </a>
+</nav>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="db.js"></script>
+<script src="app.js"></script>
+<script>
+  const STATUS_TH = {
+    pending:   'รอยืนยัน',
+    confirmed: 'ยืนยันแล้ว',
+    completed: 'จัดส่งแล้ว',
+    cancelled: 'ยกเลิก',
+  };
+  const CH_TH = { wa: '💬 WhatsApp', msg: '💬 Messenger' };
+
+  function fmtDate(iso) {
+    if (!iso) return '-';
+    return new Date(iso).toLocaleDateString('th-TH', {
+      year: 'numeric', month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit',
+    });
+  }
+
+  function buildOrderCard(order) {
+    const items  = Array.isArray(order.items) ? order.items : [];
+    const status = order.status || 'pending';
+    const thumbs = items.slice(0, 5).map(it =>
+      `<div class="order-hist-thumb" style="background:${it.bg || '#FFF1F1'}">${it.emoji || '📦'}</div>`
+    ).join('');
+    const moreCount = items.length > 5 ? `<div class="order-hist-thumb" style="background:var(--bg);font-size:0.75rem;font-weight:700;color:var(--muted);">+${items.length - 5}</div>` : '';
+    const itemNames = items.map(i => `${i.name} x${i.qty}`).join(', ') || 'ไม่มีข้อมูลสินค้า';
+
+    return `
+      <div class="order-hist-card" onclick="toggleOrderDetail(this)">
+        <div class="order-hist-head">
+          <div class="order-hist-no">${order.orderNo || '-'}</div>
+          <span class="o-status ${status}">${STATUS_TH[status] || status}</span>
+        </div>
+        <div class="order-hist-items">${thumbs}${moreCount}</div>
+        <div class="order-hist-foot">
+          <div>
+            <div class="order-hist-total">฿${(order.total || 0).toLocaleString()}</div>
+            <div class="order-hist-ch">${CH_TH[order.channel] || order.channel || '-'} • ${fmtDate(order.createdAt)}</div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="chevron" style="transition:transform 0.2s;color:var(--border)">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+        <!-- Detail (collapsed) -->
+        <div class="order-detail" style="display:none;padding:12px 16px 16px;border-top:1px solid var(--line-soft);background:var(--bg);">
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:700;">รายละเอียดออเดอร์</div>
+          <div style="font-size:0.82rem;color:var(--text-m);line-height:1.8;">
+            <b>สินค้า:</b> ${itemNames}<br>
+            <b>ชื่อ:</b> ${order.name || '-'}<br>
+            <b>โทร:</b> ${order.phone || '-'}<br>
+            <b>ที่อยู่:</b> ${order.address || '-'}<br>
+            <b>จัดส่ง:</b> ${order.delivery || '-'}
+            ${order.note ? `<br><b>หมายเหตุ:</b> ${order.note}` : ''}
+          </div>
+          <div style="margin-top:12px;display:flex;gap:8px;">
+            <a href="https://wa.me/8562078926245?text=${encodeURIComponent('สอบถามออเดอร์ ' + (order.orderNo||''))}"
+               target="_blank" class="btn btn-wa btn-sm" style="font-size:0.78rem;">💬 ติดตามออเดอร์ทาง WA</a>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function toggleOrderDetail(card) {
+    const detail  = card.querySelector('.order-detail');
+    const chevron = card.querySelector('.chevron');
+    const open    = detail.style.display === 'block';
+    detail.style.display  = open ? 'none' : 'block';
+    chevron.style.transform = open ? '' : 'rotate(180deg)';
+  }
+
+  async function loadOrders() {
+    document.getElementById('ordersLoading').style.display = 'block';
+    document.getElementById('ordersList').style.display    = 'none';
+    document.getElementById('ordersEmpty').style.display   = 'none';
+
+    const orders = await RubyDB.fetchMyOrders();
+
+    document.getElementById('ordersLoading').style.display = 'none';
+
+    if (!orders || orders.length === 0) {
+      document.getElementById('ordersEmpty').style.display = 'block';
+      return;
+    }
+
+    const list = document.getElementById('ordersList');
+    list.innerHTML = orders.map(buildOrderCard).join('');
+    list.style.display = 'block';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // UID display
+    document.getElementById('uidDisplay').textContent = RubyDB.getShortUID();
+    document.getElementById('uidChip').addEventListener('click', () => {
+      navigator.clipboard.writeText(RubyDB.getUID()).then(() => showToast('คัดลอก ID แล้ว'));
+    });
+
+    // Cloud badge
+    const badge = document.getElementById('cloudBadge');
+    badge.innerHTML = RubyDB.isCloudEnabled()
+      ? '<span class="cloud-badge">☁️ Cloud Sync</span>'
+      : '<span class="local-badge">💾 เก็บในเครื่อง</span>';
+
+    // Cart shortcut
+    const count = cart.reduce((s, i) => s + i.qty, 0);
+    if (count > 0) document.getElementById('profileCartDesc').textContent = `${count} รายการ — ฿${getCartTotal().toLocaleString()}`;
+    document.getElementById('profileCartBtn').addEventListener('click', openCart);
+
+    // Load orders
+    loadOrders();
+
+    // Secret admin tap (5×)
+    let tapCount = 0, tapTimer;
+    document.getElementById('adminTap').addEventListener('click', () => {
+      tapCount++;
+      clearTimeout(tapTimer);
+      tapTimer = setTimeout(() => { tapCount = 0; }, 2000);
+      if (tapCount >= 5) { tapCount = 0; window.location.href = 'admin.html'; }
+      else if (tapCount >= 3) showToast(`อีก ${5 - tapCount} ครั้ง...`);
+    });
+  });
+</script>
+</body>
+</html>
