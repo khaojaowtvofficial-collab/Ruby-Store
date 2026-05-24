@@ -18,8 +18,8 @@
 
 // ── SUPABASE CONFIG ──────────────────────────────────────
 // Leave blank to use localStorage only (works fine without this)
-const SUPABASE_URL     = '';  // 'https://xxxxxxxxxxxx.supabase.co'
-const SUPABASE_ANON_KEY = ''; // 'eyJhbGciOiJIUzI1NiIsInR5cCI6...'
+const SUPABASE_URL     = 'https://wqxzobxqkwyrffvibdxg.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxeHpvYnhxa3d5cmZmdmliZHhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MzIzMjIsImV4cCI6MjA5NTIwODMyMn0.5KcfdZF9uZ1XsgmtRAIiVKAGin7L-mlPaQ958p2GqqU';
 
 // ─────────────────────────────────────────────────────────
 
