@@ -47,9 +47,9 @@
 
 <!-- Mobile Menu -->
 <div class="mobile-menu" id="mobileMenu">
-  <a href="index.html">🏠 ໜ້າຫຼັກ</a>
-  <a href="shop.html" class="active">🛍️ ສິນຄ້າ</a>
-  <a href="index.html#stores">🏪 ຮ້ານຄ້າ</a>
+  <a href="index.html"><span class="menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></span>ໜ້າຫຼັກ</a>
+  <a href="shop.html" class="active"><span class="menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></span>ສິນຄ້າ</a>
+  <a href="index.html#stores"><span class="menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>ຮ້ານຄ້າ</a>
   <a href="index.html#about">ℹ️ ກ່ຽວກັບ</a>
 </div>
 
@@ -133,12 +133,12 @@
 <div class="cart-overlay" id="cartOverlay"></div>
 <div class="cart-sidebar" id="cartSidebar">
   <div class="cart-header">
-    <h3>🛒 <span data-i18n="cart_title">ກະຕ່າສິນຄ້າ</span></h3>
+    <h3><span class="cart-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg></span> <span data-i18n="cart_title">ກະຕ່າສິນຄ້າ</span></h3>
     <button class="cart-close" id="cartClose">×</button>
   </div>
   <div class="cart-items" id="cartItems">
     <div class="cart-empty" id="cartEmpty">
-      <div class="cart-empty-icon">🛒</div>
+      <div class="cart-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg></div>
       <p><span data-i18n="cart_empty">ກະຕ່າວ່າງເປົ່າ</span></p>
     </div>
   </div>
@@ -159,7 +159,7 @@
 <div class="wa-modal-overlay" id="waModalOverlay">
   <div class="wa-modal">
     <div class="wa-modal-header" id="waModalHeader">
-      <div class="wa-modal-header-icon">💬</div>
+      <div class="wa-modal-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
       <div class="wa-modal-header-text">
         <div style="font-weight:800;font-size:1rem;">ສັ່ງຊື້ຜ່ານ <span id="waChannelName">WhatsApp</span></div>
         <div style="font-size:0.78rem;opacity:.85;">ຂໍ້ຄວາມສັ່ງຊື້ພ້ອມສົ່ງ</div>
@@ -170,8 +170,8 @@
       <div class="wa-bubble" id="waModalMsg"></div>
     </div>
     <div class="wa-modal-footer">
-      <button class="wa-copy-btn" id="waCopyBtn">📋 ສຳເນົາ</button>
-      <button class="btn btn-wa wa-open-btn" id="waOpenBtn">📱 ເປີດ WhatsApp</button>
+      <button class="wa-copy-btn" id="waCopyBtn"><span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></span> ສຳເນົາ</button>
+      <button class="btn btn-wa wa-open-btn" id="waOpenBtn"><span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></span> ເປີດ WhatsApp</button>
     </div>
   </div>
 </div>
@@ -184,24 +184,24 @@
       <div id="stickyProductName" style="font-size:.8rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text);"></div>
       <div id="stickyProductPrice" style="font-size:1rem;font-weight:800;color:var(--red);"></div>
     </div>
-    <button onclick="handleAddToCart()" style="flex:1;padding:11px;border-radius:12px;border:none;background:var(--red);color:#fff;font-weight:700;font-size:.875rem;font-family:inherit;cursor:pointer;">🛒 ໃສ່ກະຕ່າ</button>
+    <button onclick="handleAddToCart()" style="flex:1;padding:11px;border-radius:12px;border:none;background:var(--red);color:#fff;font-weight:700;font-size:.875rem;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg>ໃສ່ກະຕ່າ</button>
   </div>
 </div>
 
 <nav class="mobile-bottom-nav">
   <a href="index.html" class="nav-item">
-    <span class="icon">🏠</span><span data-i18n="nav_home">ໜ້າຫຼັກ</span>
+    <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></span><span data-i18n="nav_home">ໜ້າຫຼັກ</span>
   </a>
   <a href="shop.html" class="nav-item active">
-    <span class="icon">🛍️</span><span data-i18n="nav_stores">ຮ້ານຄ້າ</span>
+    <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></span><span data-i18n="nav_stores">ຮ້ານຄ້າ</span>
   </a>
   <a href="#" class="nav-item" id="mobileCartBtn">
-    <span class="icon">🛒</span>
+    <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg></span>
     <div class="cart-dot" id="mobileCartDot"></div>
     <span data-i18n="nav_cart">ກະຕ່າ</span>
   </a>
   <a href="profile.html" class="nav-item">
-    <span class="icon">👤</span><span data-i18n="nav_account">ບັນຊີ</span>
+    <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span data-i18n="nav_account">ບັນຊີ</span>
   </a>
 </nav>
 

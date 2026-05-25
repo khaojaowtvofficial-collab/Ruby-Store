@@ -3219,3 +3219,88 @@ input, textarea, select {
 .gap-8 { gap: 8px; }
 .gap-12 { gap: 12px; }
 .gap-16 { gap: 16px; }
+
+/* =====================================================
+   SVG ICON SYSTEM — replaces emoji stickers
+   ===================================================== */
+
+/* Bottom nav icons */
+.mobile-bottom-nav .nav-item .icon { font-size: 0; line-height: 0; }
+.mobile-bottom-nav .nav-item .icon svg { width: 24px; height: 24px; display: block; }
+
+/* Hero tag icon */
+.hero-tag .icon-svg { display: inline-flex; align-items: center; vertical-align: middle; }
+.hero-tag .icon-svg svg { width: 18px; height: 18px; }
+
+/* Hero stat icons */
+.hero-stat-icon { font-size: 0; }
+.hero-stat-icon svg { width: 20px; height: 20px; display: block; }
+
+/* Section title icons */
+.sec-icon { display: inline-flex; align-items: center; vertical-align: middle; margin-right: 4px; }
+.sec-icon svg { width: 22px; height: 22px; }
+
+/* Store card icons */
+.store-card-icon { font-size: 0; }
+.store-card-icon svg { width: 28px; height: 28px; display: block; }
+
+/* Store switcher tab icons */
+.store-tab .tab-icon svg { width: 16px; height: 16px; vertical-align: middle; }
+
+/* Category chip icons */
+.cat-chip-icon { font-size: 0; display: inline-flex; align-items: center; vertical-align: middle; }
+.cat-chip-icon svg { width: 15px; height: 15px; display: block; }
+
+/* Cart empty icon */
+.cart-empty-icon { font-size: 0; }
+.cart-empty-icon svg { width: 52px; height: 52px; display: block; margin: 0 auto; color: var(--muted); }
+
+/* Cart title icon */
+.cart-title-icon svg { width: 20px; height: 20px; vertical-align: middle; display: inline-block; }
+
+/* Channel selector icons */
+.channel-icon-box { font-size: 0; }
+.channel-icon-box svg { width: 30px; height: 30px; display: block; }
+
+/* Checkout form title icons */
+.co-form-title .co-icon { display: inline-flex; align-items: center; vertical-align: middle; margin-right: 6px; }
+.co-form-title .co-icon svg { width: 18px; height: 18px; }
+
+/* Trust badge icons */
+.trust-badge-icon { font-size: 0; display: inline-flex; align-items: center; }
+.trust-badge-icon svg { width: 16px; height: 16px; display: block; }
+
+/* WA modal header icon */
+.wa-modal-header-icon { font-size: 0; }
+.wa-modal-header-icon svg { width: 28px; height: 28px; display: block; color: #fff; }
+
+/* WA copy/open button icons */
+.btn-icon svg { width: 16px; height: 16px; vertical-align: middle; display: inline-block; }
+
+/* Profile avatar */
+.profile-avatar { font-size: 0; }
+.profile-avatar svg { width: 38px; height: 38px; display: block; color: var(--red); }
+
+/* Profile section title icons */
+.profile-sec-icon svg { width: 20px; height: 20px; vertical-align: middle; display: inline-block; }
+
+/* Profile order-empty icon */
+.order-empty-icon { font-size: 0; }
+.order-empty-icon svg { width: 52px; height: 52px; display: block; margin: 0 auto; color: var(--muted); }
+
+/* Profile quick-link icons */
+.ql-icon { font-size: 0; }
+.ql-icon svg { width: 22px; height: 22px; display: block; }
+
+/* Navbar secure badge icon */
+.navbar-secure-icon svg { width: 14px; height: 14px; vertical-align: middle; display: inline-block; }
+
+/* Mobile menu link icons */
+.mobile-menu a .menu-icon { display: inline-flex; align-items: center; vertical-align: middle; margin-right: 6px; }
+.mobile-menu a .menu-icon svg { width: 16px; height: 16px; }
+
+/* Product store badge icon */
+.store-badge-icon svg { width: 14px; height: 14px; vertical-align: middle; display: inline-block; }
+
+/* Product page add-to-cart button icon */
+.btn-cart-icon svg { width: 18px; height: 18px; vertical-align: middle; display: inline-block; margin-right: 4px; }

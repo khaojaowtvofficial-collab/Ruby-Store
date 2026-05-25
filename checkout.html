@@ -31,7 +31,7 @@
       Ruby <span>Store</span>
     </a>
     <div class="navbar-spacer"></div>
-    <div class="navbar-secure-badge">🔒 ປອດໄພ</div>
+    <div class="navbar-secure-badge"><span class="navbar-secure-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span> ປອດໄພ</div>
   </div>
 </nav>
 
@@ -42,7 +42,7 @@
     <!-- Mobile Order Summary (accordion) -->
     <div id="mobileCartSummary" style="display:none;background:var(--card);border:1.5px solid var(--border);border-radius:16px;margin-bottom:20px;overflow:hidden;">
       <button onclick="toggleMobileSummary()" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:none;border:none;cursor:pointer;font-family:inherit;font-size:.9rem;font-weight:700;color:var(--text);">
-        <span>🛒 ລາຍການສິນຄ້າ</span>
+        <span><span class="cart-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg></span> ລາຍການສິນຄ້າ</span>
         <span style="display:flex;align-items:center;gap:8px;">
           <span style="color:var(--red);font-size:1rem;" id="mobileSummaryTotal">₭0</span>
           <svg id="mobileSummaryChevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transition:transform .25s;"><polyline points="6 9 12 15 18 9"/></svg>
@@ -77,7 +77,7 @@
       <!-- ── STEP 1: Shipping Form ─────────────────── -->
       <div class="checkout-step-panel" id="step1Panel">
         <div class="co-form">
-          <div class="co-form-title">📦 <span data-i18n="co_shipping">ຂໍ້ມູນການຈັດສົ່ງ</span></div>
+          <div class="co-form-title"><span class="co-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span><span data-i18n="co_shipping">ຂໍ້ມູນການຈັດສົ່ງ</span></div>
 
           <div class="co-form-row">
             <div class="co-field">
@@ -115,7 +115,7 @@
           </div>
 
           <!-- Delivery Options -->
-          <div class="co-form-title" style="margin-top:24px;">🚚 <span data-i18n="co_delivery">ວິທີຈັດສົ່ງ</span></div>
+          <div class="co-form-title" style="margin-top:24px;"><span class="co-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span><span data-i18n="co_delivery">ວິທີຈັດສົ່ງ</span></div>
           <div class="delivery-opts" id="deliveryOpts">
             <label class="delivery-opt">
               <input type="radio" name="delivery" value="ສົ່ງດ່ວນ BCEL One" checked>
@@ -153,7 +153,7 @@
       <!-- ── STEP 2: Channel Selector ─────────────── -->
       <div class="checkout-step-panel" id="step2Panel" style="display:none;">
         <div class="co-form">
-          <div class="co-form-title">💬 ເລືອກຊ່ອງທາງສັ່ງຊື້</div>
+          <div class="co-form-title"><span class="co-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span>ເລືອກຊ່ອງທາງສັ່ງຊື້</div>
           <p style="font-size:0.875rem;color:var(--text-m);margin-bottom:20px;">ເລືອກຊ່ອງທາງທີ່ສະດວກ ຮ້ານສິໄດ້ຮັບຂໍ້ຄວາມສັ່ງຊື້ໂດຍອັດຕະໂນມັດ</p>
 
           <div class="channel-opts" id="channelOpts">
@@ -161,7 +161,7 @@
               <input type="radio" name="channel" value="wa" checked>
               <div class="channel-opt-card">
                 <div class="channel-check"></div>
-                <div class="channel-icon-box wa">💬</div>
+                <div class="channel-icon-box wa"><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
                 <div>
                   <div class="channel-name">WhatsApp</div>
                   <div class="channel-desc">ສົ່ງຂໍ້ຄວາມສັ່ງຊື້ໂດຍອັດຕະໂນມັດ</div>
@@ -172,7 +172,7 @@
               <input type="radio" name="channel" value="msg">
               <div class="channel-opt-card">
                 <div class="channel-check"></div>
-                <div class="channel-icon-box msg">💬</div>
+                <div class="channel-icon-box msg"><svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
                 <div>
                   <div class="channel-name">Facebook Messenger</div>
                   <div class="channel-desc">ສົ່ງຜ່ານ Messenger</div>
@@ -210,17 +210,17 @@
       <!-- ── STEP 3: Confirm ─────────────────────── -->
       <div class="checkout-step-panel" id="step3Panel" style="display:none;">
         <div class="co-form">
-          <div class="co-form-title">✅ ຢືນຢັນຄຳສັ່ງຊື້</div>
+          <div class="co-form-title"><span class="co-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>ຢືນຢັນຄຳສັ່ງຊື້</div>
 
           <!-- Recap shipping -->
           <div style="background:var(--bg);border-radius:12px;padding:16px;margin-bottom:16px;">
-            <div style="font-size:0.8rem;color:var(--muted);font-weight:600;margin-bottom:8px;">📦 ຂໍ້ມູນຈັດສົ່ງ</div>
+            <div style="font-size:0.8rem;color:var(--muted);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:5px;"><span class="co-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>ຂໍ້ມູນຈັດສົ່ງ</div>
             <div style="font-size:0.875rem;color:var(--text);line-height:1.8;" id="recapShipping">-</div>
           </div>
 
           <!-- Channel recap -->
           <div style="background:var(--bg);border-radius:12px;padding:16px;margin-bottom:20px;">
-            <div style="font-size:0.8rem;color:var(--muted);font-weight:600;margin-bottom:8px;">💬 ຊ່ອງທາງ</div>
+            <div style="font-size:0.8rem;color:var(--muted);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:5px;"><span class="co-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span>ຊ່ອງທາງ</div>
             <div style="font-size:0.875rem;font-weight:700;color:var(--text);" id="recapChannel">-</div>
           </div>
 
@@ -249,15 +249,15 @@
 
           <!-- Trust badges -->
           <div class="trust-badges" style="margin-top:16px;">
-            <div class="trust-badge"><span class="trust-badge-icon">🔒</span>ປອດໄພ</div>
-            <div class="trust-badge"><span class="trust-badge-icon">✅</span>ບໍ່ຕັດເງິນອອນລາຍ</div>
-            <div class="trust-badge"><span class="trust-badge-icon">💬</span>ຮ້ານຢືນຢັນອໍເດີ</div>
+            <div class="trust-badge"><span class="trust-badge-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span>ປອດໄພ</div>
+            <div class="trust-badge"><span class="trust-badge-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>ບໍ່ຕັດເງິນອອນລາຍ</div>
+            <div class="trust-badge"><span class="trust-badge-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span>ຮ້ານຢືນຢັນອໍເດີ</div>
           </div>
 
           <div class="checkout-ctas">
             <button class="btn btn-outline" onclick="gotoStep(2)">← ກັບຄືນ</button>
             <button class="btn btn-wa" style="flex:1;" id="confirmWABtn" onclick="confirmOrder()">
-              💬 ສົ່ງຂໍ້ຄວາມສັ່ງຊື້
+              <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span> ສົ່ງຂໍ້ຄວາມສັ່ງຊື້
             </button>
           </div>
         </div>
@@ -294,7 +294,7 @@
 <div class="wa-modal-overlay" id="waModalOverlay">
   <div class="wa-modal">
     <div class="wa-modal-header" id="waModalHeader">
-      <div class="wa-modal-header-icon">💬</div>
+      <div class="wa-modal-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
       <div class="wa-modal-header-text">
         <div style="font-weight:800;font-size:1rem;">ສັ່ງຊື້ຜ່ານ <span id="waChannelName">WhatsApp</span></div>
         <div style="font-size:0.78rem;opacity:.85;">ສຳເນົາ ຫຼື ເປີດແອັບໄດ້ເລີຍ</div>
@@ -305,8 +305,8 @@
       <div class="wa-bubble" id="waModalMsg"></div>
     </div>
     <div class="wa-modal-footer">
-      <button class="wa-copy-btn" id="waCopyBtn">📋 ສຳເນົາ</button>
-      <button class="btn btn-wa wa-open-btn" id="waOpenBtn">📱 ເປີດ WhatsApp</button>
+      <button class="wa-copy-btn" id="waCopyBtn"><span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></span> ສຳເນົາ</button>
+      <button class="btn btn-wa wa-open-btn" id="waOpenBtn"><span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></span> ເປີດ WhatsApp</button>
     </div>
   </div>
 </div>
