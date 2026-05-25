@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="lo">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -151,7 +151,7 @@
   <div class="pin-box">
     <div class="pin-logo">🔐</div>
     <div class="pin-title">Ruby Store Admin</div>
-    <div class="pin-sub">กรอก PIN เพื่อเข้าใช้งาน</div>
+    <div class="pin-sub">ກອກ PIN ເພື່ອເຂົ້າໃຊ້ງານ</div>
     <div class="pin-dots" id="pinDots">
       <div class="pin-dot" id="pd0"></div>
       <div class="pin-dot" id="pd1"></div>
@@ -168,7 +168,7 @@
       <button class="pin-key" onclick="pinKey('7')">7</button>
       <button class="pin-key" onclick="pinKey('8')">8</button>
       <button class="pin-key" onclick="pinKey('9')">9</button>
-      <button class="pin-key" onclick="pinClear()" style="font-size:.85rem;">ล้าง</button>
+      <button class="pin-key" onclick="pinClear()" style="font-size:.85rem;">ລ້າງ</button>
       <button class="pin-key" onclick="pinKey('0')">0</button>
       <button class="pin-key del" onclick="pinDelete()">⌫</button>
     </div>
@@ -180,31 +180,31 @@
 <!-- ===================== CHANGE PIN MODAL ===================== -->
 <div id="changePinOverlay" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;">
   <div style="background:#fff;border-radius:20px;padding:28px 24px;width:320px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,.25);">
-    <div style="font-size:1.1rem;font-weight:800;margin-bottom:4px;">🔑 เปลี่ยน PIN</div>
-    <div style="font-size:.82rem;color:var(--muted);margin-bottom:18px;">กรอก PIN ปัจจุบัน แล้วตั้ง PIN ใหม่ 4 หลัก</div>
+    <div style="font-size:1.1rem;font-weight:800;margin-bottom:4px;">🔑 ປ່ຽນ PIN</div>
+    <div style="font-size:.82rem;color:var(--muted);margin-bottom:18px;">ກອກ PIN ປັດຈຸບັນ ແລ້ວຕັ້ງ PIN ໃໝ່ 4 ຕົວເລກ</div>
     <div style="display:flex;flex-direction:column;gap:12px;">
       <div>
-        <label style="font-size:.8rem;font-weight:600;color:var(--text-m);">PIN ปัจจุบัน</label>
+        <label style="font-size:.8rem;font-weight:600;color:var(--text-m);">PIN ປັດຈຸບັນ</label>
         <input type="password" id="cpCurrent" maxlength="4" inputmode="numeric" pattern="[0-9]*"
           style="width:100%;margin-top:4px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:1rem;font-family:inherit;box-sizing:border-box;"
           placeholder="• • • •">
       </div>
       <div>
-        <label style="font-size:.8rem;font-weight:600;color:var(--text-m);">PIN ใหม่</label>
+        <label style="font-size:.8rem;font-weight:600;color:var(--text-m);">PIN ໃໝ່</label>
         <input type="password" id="cpNew" maxlength="4" inputmode="numeric" pattern="[0-9]*"
           style="width:100%;margin-top:4px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:1rem;font-family:inherit;box-sizing:border-box;"
           placeholder="• • • •">
       </div>
       <div>
-        <label style="font-size:.8rem;font-weight:600;color:var(--text-m);">ยืนยัน PIN ใหม่</label>
+        <label style="font-size:.8rem;font-weight:600;color:var(--text-m);">ຢືນຢັນ PIN ໃໝ່</label>
         <input type="password" id="cpConfirm" maxlength="4" inputmode="numeric" pattern="[0-9]*"
           style="width:100%;margin-top:4px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:1rem;font-family:inherit;box-sizing:border-box;"
           placeholder="• • • •">
       </div>
       <div id="cpError" style="font-size:.82rem;color:#DC2626;min-height:18px;"></div>
       <div style="display:flex;gap:10px;margin-top:4px;">
-        <button onclick="closeChangePinModal()" style="flex:1;padding:10px;border:1.5px solid var(--border);border-radius:10px;background:none;font-family:inherit;font-size:.9rem;cursor:pointer;">ยกเลิก</button>
-        <button onclick="saveNewPin()" style="flex:1;padding:10px;border:none;border-radius:10px;background:var(--red);color:#fff;font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;">บันทึก PIN</button>
+        <button onclick="closeChangePinModal()" style="flex:1;padding:10px;border:1.5px solid var(--border);border-radius:10px;background:none;font-family:inherit;font-size:.9rem;cursor:pointer;">ຍົກເລີກ</button>
+        <button onclick="saveNewPin()" style="flex:1;padding:10px;border:none;border-radius:10px;background:var(--red);color:#fff;font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;">ບັນທຶກ PIN</button>
       </div>
     </div>
   </div>
@@ -230,25 +230,25 @@
       </a>
       <a href="#" class="admin-nav-link" onclick="showPanel('orders',this);return false;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
-        คำสั่งซื้อ
+        ອໍເດີ
         <span id="ordersBadge" style="margin-left:auto;background:var(--red);color:#fff;font-size:.7rem;padding:2px 8px;border-radius:100px;display:none;">0</span>
       </a>
       <a href="#" class="admin-nav-link" onclick="showPanel('stores',this);return false;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        ร้านค้า
+        ຮ້ານຄ້າ
       </a>
       <a href="#" class="admin-nav-link" onclick="showPanel('products',this);return false;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-        สินค้า
+        ສິນຄ້າ
       </a>
       <a href="#" class="admin-nav-link" onclick="showPanel('customers',this);return false;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        ลูกค้า
+        ລູກຄ້າ
       </a>
       <div style="border-top:1px solid rgba(255,255,255,.08);margin:12px 0;"></div>
       <a href="index.html" class="admin-nav-link">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
-        กลับร้านค้า
+        ກັບຮ້ານຄ້າ
       </a>
     </nav>
   </aside>
@@ -263,14 +263,14 @@
         <div class="admin-topbar-date" id="topbarDate"></div>
       </div>
       <div style="position:relative;">
-        <div class="admin-avatar" id="adminAvatarBtn" onclick="toggleAdminMenu()" style="cursor:pointer;" title="เมนูผู้ดูแล">A</div>
+        <div class="admin-avatar" id="adminAvatarBtn" onclick="toggleAdminMenu()" style="cursor:pointer;" title="ເມນູຜູ້ດູແລ">A</div>
         <div id="adminDropdown" style="display:none;position:absolute;right:0;top:calc(100%+8px);background:#fff;border:1.5px solid var(--border);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.14);min-width:180px;z-index:500;overflow:hidden;">
           <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-size:.78rem;color:var(--muted);">Ruby Store Admin</div>
           <button onclick="openChangePinModal()" style="width:100%;text-align:left;padding:11px 16px;border:none;background:none;font-family:inherit;font-size:.875rem;cursor:pointer;color:var(--text);display:flex;align-items:center;gap:8px;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">
-            🔑 เปลี่ยน PIN
+            🔑 ປ່ຽນ PIN
           </button>
           <button onclick="adminLogout()" style="width:100%;text-align:left;padding:11px 16px;border:none;background:none;font-family:inherit;font-size:.875rem;cursor:pointer;color:#DC2626;display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);" onmouseover="this.style.background='#FEF2F2'" onmouseout="this.style.background='none'">
-            🔒 ล็อกหน้าจอ
+            🔒 ລັອກໜ້າຈໍ
           </button>
         </div>
       </div>
@@ -281,34 +281,34 @@
       <div class="kpi-row">
         <div class="kpi-card">
           <div class="kpi-icon blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg></div>
-          <div class="kpi-label">คำสั่งซื้อทั้งหมด</div>
+          <div class="kpi-label">ອໍເດີທັງໝົດ</div>
           <div class="kpi-num blue" id="kpiOrders">0</div>
           <div class="kpi-sub" id="kpiOrdersSub">—</div>
         </div>
         <div class="kpi-card">
           <div class="kpi-icon amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-          <div class="kpi-label">ยอดขายรวม</div>
-          <div class="kpi-num amber" id="kpiRevenue">฿0</div>
+          <div class="kpi-label">ຍອດຂາຍລວມ</div>
+          <div class="kpi-num amber" id="kpiRevenue">₭0</div>
           <div class="kpi-sub" id="kpiRevenueSub">—</div>
         </div>
         <div class="kpi-card">
           <div class="kpi-icon green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-          <div class="kpi-label">สำเร็จแล้ว</div>
+          <div class="kpi-label">ສຳເລັດແລ້ວ</div>
           <div class="kpi-num green" id="kpiCompleted">0</div>
           <div class="kpi-sub" id="kpiCompletedSub">—</div>
         </div>
         <div class="kpi-card">
           <div class="kpi-icon indigo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
-          <div class="kpi-label">สินค้าทั้งหมด</div>
+          <div class="kpi-label">ສິນຄ້າທັງໝົດ</div>
           <div class="kpi-num indigo" id="kpiProducts">0</div>
-          <div class="kpi-sub">ใน 3 ร้านค้า</div>
+          <div class="kpi-sub">ໃນ 3 ຮ້ານຄ້າ</div>
         </div>
       </div>
 
       <!-- Charts Row -->
       <div class="charts-row">
         <div class="chart-card">
-          <div class="chart-card-title">ยอดขาย 7 วันย้อนหลัง <span style="font-size:.72rem;font-weight:400;color:var(--muted);margin-left:6px;">จากออเดอร์จริง</span></div>
+          <div class="chart-card-title">ຍອດຂາຍ 7 ວັນຜ່ານມາ <span style="font-size:.72rem;font-weight:400;color:var(--muted);margin-left:6px;">ຈາກອໍເດີຈິງ</span></div>
           <svg class="chart-svg" viewBox="0 0 340 120" xmlns="http://www.w3.org/2000/svg">
             <line x1="40" y1="10" x2="330" y2="10" stroke="#E5E7EB" stroke-width="1"/>
             <line x1="40" y1="35" x2="330" y2="35" stroke="#E5E7EB" stroke-width="1"/>
@@ -327,17 +327,17 @@
             <circle cx="130" cy="52" r="4" fill="#E53935"/><circle cx="170" cy="40" r="4" fill="#E53935"/>
             <circle cx="210" cy="55" r="4" fill="#E53935"/><circle cx="250" cy="28" r="4" fill="#E53935"/>
             <circle cx="290" cy="18" r="4" fill="#E53935"/>
-            <text x="44" y="122" fill="#9CA3AF" font-size="8">18 พ.ค.</text>
-            <text x="84" y="122" fill="#9CA3AF" font-size="8">19 พ.ค.</text>
-            <text x="124" y="122" fill="#9CA3AF" font-size="8">20 พ.ค.</text>
-            <text x="164" y="122" fill="#9CA3AF" font-size="8">21 พ.ค.</text>
-            <text x="204" y="122" fill="#9CA3AF" font-size="8">22 พ.ค.</text>
-            <text x="244" y="122" fill="#9CA3AF" font-size="8">23 พ.ค.</text>
-            <text x="284" y="122" fill="#9CA3AF" font-size="8">24 พ.ค.</text>
+            <text x="44" y="122" fill="#9CA3AF" font-size="8">18 ພ.ພ.</text>
+            <text x="84" y="122" fill="#9CA3AF" font-size="8">19 ພ.ພ.</text>
+            <text x="124" y="122" fill="#9CA3AF" font-size="8">20 ພ.ພ.</text>
+            <text x="164" y="122" fill="#9CA3AF" font-size="8">21 ພ.ພ.</text>
+            <text x="204" y="122" fill="#9CA3AF" font-size="8">22 ພ.ພ.</text>
+            <text x="244" y="122" fill="#9CA3AF" font-size="8">23 ພ.ພ.</text>
+            <text x="284" y="122" fill="#9CA3AF" font-size="8">24 ພ.ພ.</text>
           </svg>
         </div>
         <div class="chart-card">
-          <div class="chart-card-title">ยอดขายแยกร้าน <span style="font-size:.72rem;font-weight:400;color:var(--muted);margin-left:6px;">จากออเดอร์จริง</span></div>
+          <div class="chart-card-title">ຍອດຂາຍແຍກຮ້ານ <span style="font-size:.72rem;font-weight:400;color:var(--muted);margin-left:6px;">ຈາກອໍເດີຈິງ</span></div>
           <div class="donut-wrap">
             <svg viewBox="0 0 120 120" width="140" height="140">
               <circle cx="60" cy="60" r="40" fill="none" stroke="#E53935" stroke-width="18" stroke-dasharray="113 138" stroke-dashoffset="35" transform="rotate(-90 60 60)"/>
@@ -358,12 +358,12 @@
       <!-- Recent Orders -->
       <div class="admin-table-card">
         <div class="admin-table-header">
-          <div class="admin-table-title">คำสั่งซื้อล่าสุด</div>
-          <button class="btn btn-outline btn-sm" onclick="showPanel('orders',null)">ดูทั้งหมด →</button>
+          <div class="admin-table-title">ອໍເດີຫຼ້າສຸດ</div>
+          <button class="btn btn-outline btn-sm" onclick="showPanel('orders',null)">ເບິ່ງທັງໝົດ →</button>
         </div>
         <div style="overflow-x:auto;">
           <table class="admin-table">
-            <thead><tr><th>ออเดอร์</th><th>ลูกค้า</th><th>สินค้า</th><th>ยอด</th><th>ช่องทาง</th><th>สถานะ</th><th>วันที่</th></tr></thead>
+            <thead><tr><th>ອໍເດີ</th><th>ລູກຄ້າ</th><th>ສິນຄ້າ</th><th>ຍອດ</th><th>ຊ່ອງທາງ</th><th>ສະຖານະ</th><th>ວັນທີ</th></tr></thead>
             <tbody id="dashOrdersBody"></tbody>
           </table>
         </div>
@@ -373,22 +373,22 @@
     <!-- ══ ORDERS PANEL ══ -->
     <div class="admin-content admin-panel" id="panelOrders" style="display:none;">
       <div class="orders-filter-bar">
-        <h2>คำสั่งซื้อทั้งหมด</h2>
+        <h2>ອໍເດີທັງໝົດ</h2>
         <div style="position:relative;flex:1;min-width:160px;max-width:260px;">
           <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="orderSearch" placeholder="ค้นหาออเดอร์ / ชื่อลูกค้า" autocomplete="off"
+          <input type="text" id="orderSearch" placeholder="ຄົ້ນຫາອໍເດີ / ຊື່ລູກຄ້າ" autocomplete="off"
             style="width:100%;padding:7px 10px 7px 30px;border:1.5px solid var(--border);border-radius:100px;font-size:.82rem;font-family:inherit;outline:none;"
             oninput="applyOrderFilters()" onfocus="this.style.borderColor='var(--red)'" onblur="this.style.borderColor='var(--border)'">
         </div>
         <select class="co-input" id="filterStatus" style="width:auto;padding:6px 12px;font-size:.82rem;" onchange="applyOrderFilters()">
-          <option value="">ทุกสถานะ</option>
-          <option value="pending">รอยืนยัน</option>
-          <option value="confirmed">ยืนยันแล้ว</option>
-          <option value="completed">สำเร็จ</option>
-          <option value="cancelled">ยกเลิก</option>
+          <option value="">ທຸກສະຖານະ</option>
+          <option value="pending">ລໍຖ້າຢືນຢັນ</option>
+          <option value="confirmed">ຢືນຢັນແລ້ວ</option>
+          <option value="completed">ສຳເລັດ</option>
+          <option value="cancelled">ຍົກເລີກ</option>
         </select>
         <select class="co-input" id="filterChannel" style="width:auto;padding:6px 12px;font-size:.82rem;" onchange="applyOrderFilters()">
-          <option value="">ทุกช่องทาง</option>
+          <option value="">ທຸກຊ່ອງທາງ</option>
           <option value="wa">WhatsApp</option>
           <option value="msg">Messenger</option>
         </select>
@@ -397,7 +397,7 @@
       <div class="admin-table-card">
         <div style="overflow-x:auto;">
           <table class="admin-table">
-            <thead><tr><th>ออเดอร์</th><th>ลูกค้า</th><th>สินค้า</th><th>ยอด</th><th>ช่องทาง</th><th>สถานะ</th><th>วันที่</th><th>จัดการ</th></tr></thead>
+            <thead><tr><th>ອໍເດີ</th><th>ລູກຄ້າ</th><th>ສິນຄ້າ</th><th>ຍອດ</th><th>ຊ່ອງທາງ</th><th>ສະຖານະ</th><th>ວັນທີ</th><th>ຈັດການ</th></tr></thead>
             <tbody id="allOrdersBody"></tbody>
           </table>
         </div>
@@ -407,48 +407,48 @@
     <!-- ══ STORES PANEL ══ -->
     <div class="admin-content admin-panel" id="panelStores" style="display:none;">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
-        <h2 style="font-size:1.05rem;font-weight:800;margin:0;flex:1;">จัดการร้านค้า</h2>
-        <button class="btn btn-primary btn-sm" onclick="openProductModal(null,null)">+ เพิ่มสินค้าใหม่</button>
+        <h2 style="font-size:1.05rem;font-weight:800;margin:0;flex:1;">ຈັດການຮ້ານຄ້າ</h2>
+        <button class="btn btn-primary btn-sm" onclick="openProductModal(null,null)">+ ເພີ່ມສິນຄ້າໃໝ່</button>
       </div>
       <!-- Store Cards -->
       <div class="store-cards-grid">
         <div class="store-card-admin">
           <div class="sca-icon">🐾</div>
           <div class="sca-name">Ruby Pet Shop</div>
-          <div class="sca-count" id="petCount">— สินค้า</div>
+          <div class="sca-count" id="petCount">— ລາຍການ</div>
           <div class="sca-actions">
-            <button class="btn btn-outline btn-sm" onclick="showStoreProducts('pet')">ดูสินค้า</button>
-            <button class="btn btn-primary btn-sm" onclick="openProductModal(null,'pet')">+ เพิ่ม</button>
+            <button class="btn btn-outline btn-sm" onclick="showStoreProducts('pet')">ເບິ່ງສິນຄ້າ</button>
+            <button class="btn btn-primary btn-sm" onclick="openProductModal(null,'pet')">+ ເພີ່ມ</button>
           </div>
         </div>
         <div class="store-card-admin">
           <div class="sca-icon">💻</div>
           <div class="sca-name">Ruby Computer</div>
-          <div class="sca-count" id="computerCount">— สินค้า</div>
+          <div class="sca-count" id="computerCount">— ລາຍການ</div>
           <div class="sca-actions">
-            <button class="btn btn-outline btn-sm" onclick="showStoreProducts('computer')">ดูสินค้า</button>
-            <button class="btn btn-primary btn-sm" onclick="openProductModal(null,'computer')">+ เพิ่ม</button>
+            <button class="btn btn-outline btn-sm" onclick="showStoreProducts('computer')">ເບິ່ງສິນຄ້າ</button>
+            <button class="btn btn-primary btn-sm" onclick="openProductModal(null,'computer')">+ ເພີ່ມ</button>
           </div>
         </div>
         <div class="store-card-admin">
           <div class="sca-icon">🧸</div>
           <div class="sca-name">Ruby Toy Shop</div>
-          <div class="sca-count" id="toyCount">— สินค้า</div>
+          <div class="sca-count" id="toyCount">— ລາຍການ</div>
           <div class="sca-actions">
-            <button class="btn btn-outline btn-sm" onclick="showStoreProducts('toy')">ดูสินค้า</button>
-            <button class="btn btn-primary btn-sm" onclick="openProductModal(null,'toy')">+ เพิ่ม</button>
+            <button class="btn btn-outline btn-sm" onclick="showStoreProducts('toy')">ເບິ່ງສິນຄ້າ</button>
+            <button class="btn btn-primary btn-sm" onclick="openProductModal(null,'toy')">+ ເພີ່ມ</button>
           </div>
         </div>
       </div>
       <!-- Store Products Section -->
       <div class="store-section" id="storeProductsSection" style="display:none;">
         <div class="store-section-hd">
-          <h3 id="storeProductsTitle">สินค้าในร้าน</h3>
-          <button class="btn btn-primary btn-sm" id="storeAddBtn" onclick="">+ เพิ่มสินค้า</button>
+          <h3 id="storeProductsTitle">ສິນຄ້າໃນຮ້ານ</h3>
+          <button class="btn btn-primary btn-sm" id="storeAddBtn" onclick="">+ ເພີ່ມສິນຄ້າ</button>
         </div>
         <div style="overflow-x:auto;">
           <table class="admin-table">
-            <thead><tr><th>ID</th><th>สินค้า</th><th>ราคา</th><th>หมวด</th><th>Badge</th><th>จัดการ</th></tr></thead>
+            <thead><tr><th>ID</th><th>ສິນຄ້າ</th><th>ລາຄາ</th><th>ໝວດ</th><th>Badge</th><th>ຈັດການ</th></tr></thead>
             <tbody id="storeProductsBody"></tbody>
           </table>
         </div>
@@ -458,19 +458,19 @@
     <!-- ══ PRODUCTS PANEL ══ -->
     <div class="admin-content admin-panel" id="panelProducts" style="display:none;">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
-        <h2 style="font-size:1.05rem;font-weight:800;margin:0;flex:1;">สินค้าทั้งหมด</h2>
+        <h2 style="font-size:1.05rem;font-weight:800;margin:0;flex:1;">ສິນຄ້າທັງໝົດ</h2>
         <select class="co-input" id="productStoreFilter" style="width:auto;padding:6px 12px;font-size:.82rem;" onchange="renderProducts()">
-          <option value="">ทุกร้านค้า</option>
+          <option value="">ທຸກຮ້ານຄ້າ</option>
           <option value="pet">Ruby Pet Shop</option>
           <option value="computer">Ruby Computer</option>
           <option value="toy">Ruby Toy Shop</option>
         </select>
-        <button class="btn btn-primary btn-sm" onclick="openProductModal(null,null)">+ เพิ่มสินค้า</button>
+        <button class="btn btn-primary btn-sm" onclick="openProductModal(null,null)">+ ເພີ່ມສິນຄ້າ</button>
       </div>
       <div class="admin-table-card">
         <div style="overflow-x:auto;">
           <table class="admin-table">
-            <thead><tr><th>ID</th><th>สินค้า</th><th>ร้าน</th><th>ราคา</th><th>หมวด</th><th>Badge</th><th>จัดการ</th></tr></thead>
+            <thead><tr><th>ID</th><th>ສິນຄ້າ</th><th>ຮ້ານ</th><th>ລາຄາ</th><th>ໝວດ</th><th>Badge</th><th>ຈັດການ</th></tr></thead>
             <tbody id="productsBody"></tbody>
           </table>
         </div>
@@ -480,13 +480,13 @@
     <!-- ══ CUSTOMERS PANEL ══ -->
     <div class="admin-content admin-panel" id="panelCustomers" style="display:none;">
       <div style="margin-bottom:20px;">
-        <h2 style="font-size:1.05rem;font-weight:800;margin:0;">ลูกค้า</h2>
-        <p style="font-size:.82rem;color:var(--muted);margin:4px 0 0;">รวบรวมจากออเดอร์ทั้งหมดที่มีในระบบ</p>
+        <h2 style="font-size:1.05rem;font-weight:800;margin:0;">ລູກຄ້າ</h2>
+        <p style="font-size:.82rem;color:var(--muted);margin:4px 0 0;">ລວບລວມຈາກອໍເດີທັງໝົດທີ່ມີໃນລະບົບ</p>
       </div>
       <div class="admin-table-card">
         <div style="overflow-x:auto;">
           <table class="admin-table">
-            <thead><tr><th>ชื่อ</th><th>โทร</th><th>ออเดอร์ล่าสุด</th><th>ยอดรวม</th><th>ช่องทาง</th><th>ออเดอร์ทั้งหมด</th></tr></thead>
+            <thead><tr><th>ຊື່</th><th>ໂທ</th><th>ອໍເດີຫຼ້າສຸດ</th><th>ຍອດລວມ</th><th>ຊ່ອງທາງ</th><th>ອໍເດີທັງໝົດ</th></tr></thead>
             <tbody id="customersBody"></tbody>
           </table>
         </div>
@@ -500,7 +500,7 @@
 <div class="admin-modal-overlay" id="orderModal">
   <div class="admin-modal">
     <div class="admin-modal-hd">
-      <h3 id="orderModalTitle">จัดการออเดอร์</h3>
+      <h3 id="orderModalTitle">ຈັດການອໍເດີ</h3>
       <button class="admin-modal-close" onclick="closeOrderModal()">×</button>
     </div>
     <div class="admin-modal-body">
@@ -508,20 +508,20 @@
       <div class="order-detail-grid" id="orderDetailGrid"></div>
       <!-- Items -->
       <div style="margin-top:14px;">
-        <div class="admin-form-label" style="margin-bottom:6px;">สินค้าในออเดอร์</div>
+        <div class="admin-form-label" style="margin-bottom:6px;">ສິນຄ້າໃນອໍເດີ</div>
         <div class="order-items-box" id="orderItemsBox"></div>
       </div>
       <!-- Status -->
       <div style="margin-top:18px;">
-        <div class="admin-form-label">เปลี่ยนสถานะ</div>
+        <div class="admin-form-label">ປ່ຽນສະຖານະ</div>
         <div class="status-btn-group" id="statusBtnGroup"></div>
       </div>
       <!-- Contact -->
       <div id="orderContactSection" style="margin-top:18px;"></div>
     </div>
     <div class="admin-modal-footer">
-      <button class="btn btn-outline btn-sm" onclick="closeOrderModal()">ปิด</button>
-      <button class="btn btn-primary btn-sm" onclick="saveOrderStatus()">💾 บันทึกสถานะ</button>
+      <button class="btn btn-outline btn-sm" onclick="closeOrderModal()">ປິດ</button>
+      <button class="btn btn-primary btn-sm" onclick="saveOrderStatus()">💾 ບັນທຶກສະຖານະ</button>
     </div>
   </div>
 </div>
@@ -530,14 +530,14 @@
 <div class="admin-modal-overlay" id="productModal">
   <div class="admin-modal">
     <div class="admin-modal-hd">
-      <h3 id="productModalTitle">เพิ่มสินค้า</h3>
+      <h3 id="productModalTitle">ເພີ່ມສິນຄ້າ</h3>
       <button class="admin-modal-close" onclick="closeProductModal()">×</button>
     </div>
     <div class="admin-modal-body">
       <div class="admin-form-grid">
         <!-- Image / Emoji -->
         <div class="admin-form-group full">
-          <label class="admin-form-label">รูปสินค้า</label>
+          <label class="admin-form-label">ຮູບສິນຄ້າ</label>
           <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">
             <!-- Preview -->
             <div id="imgPreviewBox" style="width:80px;height:80px;border-radius:12px;background:#f5f5f5;border:2px dashed #ddd;display:flex;align-items:center;justify-content:center;font-size:2rem;overflow:hidden;flex-shrink:0;">
@@ -547,14 +547,14 @@
             <div style="flex:1;min-width:200px;">
               <!-- Upload file -->
               <label style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:var(--red);color:#fff;border-radius:20px;font-size:0.8rem;font-weight:600;cursor:pointer;margin-bottom:8px;">
-                📁 อัปโหลดรูป
+                📁 ອັບໂຫລດຮູບ
                 <input type="file" id="pImgFile" accept="image/*" style="display:none;" onchange="handleImgUpload(this)">
               </label>
               <!-- URL input -->
-              <input class="admin-form-input" id="pImgUrl" placeholder="หรือวาง URL รูปภาพ" style="margin-bottom:8px;" oninput="previewImgUrl(this.value)">
+              <input class="admin-form-input" id="pImgUrl" placeholder="ຫຼືວາງ URL ຮູບພາບ" style="margin-bottom:8px;" oninput="previewImgUrl(this.value)">
               <!-- Emoji fallback -->
               <div style="display:flex;align-items:center;gap:8px;">
-                <span style="font-size:0.78rem;color:var(--muted);">Emoji (ถ้าไม่มีรูป):</span>
+                <span style="font-size:0.78rem;color:var(--muted);">Emoji (ຖ້າບໍ່ມີຮູບ):</span>
                 <input class="admin-form-input" id="pEmoji" value="📦" maxlength="4" style="width:60px;font-size:1.2rem;text-align:center;padding:4px;" oninput="previewEmoji(this.value)">
               </div>
             </div>
@@ -563,22 +563,22 @@
         </div>
         <!-- Name -->
         <div class="admin-form-group full">
-          <label class="admin-form-label">ชื่อสินค้า *</label>
-          <input class="admin-form-input" id="pName" placeholder="ชื่อสินค้า">
+          <label class="admin-form-label">ຊື່ສິນຄ້າ *</label>
+          <input class="admin-form-input" id="pName" placeholder="ຊື່ສິນຄ້າ">
         </div>
         <!-- Price -->
         <div class="admin-form-group">
-          <label class="admin-form-label">ราคา (฿) *</label>
+          <label class="admin-form-label">ລາຄາ (₭) *</label>
           <input type="number" class="admin-form-input" id="pPrice" placeholder="0" min="0">
         </div>
         <!-- Old Price -->
         <div class="admin-form-group">
-          <label class="admin-form-label">ราคาเดิม (ก่อนลด)</label>
-          <input type="number" class="admin-form-input" id="pOldPrice" placeholder="ว่างถ้าไม่มี" min="0">
+          <label class="admin-form-label">ລາຄາເດີມ (ກ່ອນລົດ)</label>
+          <input type="number" class="admin-form-input" id="pOldPrice" placeholder="ຫວ່າງຖ້າບໍ່ມີ" min="0">
         </div>
         <!-- Store -->
         <div class="admin-form-group">
-          <label class="admin-form-label">ร้านค้า *</label>
+          <label class="admin-form-label">ຮ້ານຄ້າ *</label>
           <select class="admin-form-input" id="pStore">
             <option value="pet">🐾 Ruby Pet Shop</option>
             <option value="computer">💻 Ruby Computer</option>
@@ -587,58 +587,58 @@
         </div>
         <!-- Category -->
         <div class="admin-form-group">
-          <label class="admin-form-label">หมวดหมู่ *</label>
+          <label class="admin-form-label">ໝວດໝູ່ *</label>
           <select class="admin-form-input" id="pCat">
-            <option value="food">🍖 อาหาร</option>
-            <option value="toy-pet">🎾 ของเล่นสัตว์</option>
-            <option value="dog">🐶 น้องหมา</option>
-            <option value="cat">🐱 น้องแมว</option>
-            <option value="computer">💻 คอมพิวเตอร์</option>
-            <option value="equip">🔧 อุปกรณ์</option>
-            <option value="toy">🧸 ของเล่นเด็ก</option>
+            <option value="food">🍖 ອາຫານ</option>
+            <option value="toy-pet">🎾 ຂອງຫຼິ້ນສັດ</option>
+            <option value="dog">🐶 ໝາ</option>
+            <option value="cat">🐱 ແມວ</option>
+            <option value="computer">💻 ຄອມພິວເຕີ</option>
+            <option value="equip">🔧 ອຸປະກອນ</option>
+            <option value="toy">🧸 ຂອງຫຼິ້ນເດັກ</option>
           </select>
         </div>
         <!-- Badge -->
         <div class="admin-form-group">
           <label class="admin-form-label">Badge</label>
           <select class="admin-form-input" id="pBadge">
-            <option value="">ไม่มี</option>
+            <option value="">ບໍ່ມີ</option>
             <option value="sale">🏷️ Sale</option>
-            <option value="new">✨ ใหม่</option>
-            <option value="hot">🔥 ขายดี</option>
+            <option value="new">✨ ໃໝ່</option>
+            <option value="hot">🔥 ຂາຍດີ</option>
           </select>
         </div>
         <!-- BG Color -->
         <div class="admin-form-group">
-          <label class="admin-form-label">สีพื้นหลัง</label>
+          <label class="admin-form-label">ສີພື້ນຫຼັງ</label>
           <select class="admin-form-input" id="pBg">
-            <option value="#FFF5F5">ชมพู (Pet)</option>
-            <option value="#F0FFF4">เขียว (Tech)</option>
-            <option value="#FFF8F0">ส้ม (Toy)</option>
-            <option value="#F5F0FF">ม่วง</option>
-            <option value="#F0F8FF">ฟ้า</option>
-            <option value="#FFFEF0">เหลือง</option>
+            <option value="#FFF5F5">ບົວ (Pet)</option>
+            <option value="#F0FFF4">ຂຽວ (Tech)</option>
+            <option value="#FFF8F0">ສົ້ມ (Toy)</option>
+            <option value="#F5F0FF">ມ່ວງ</option>
+            <option value="#F0F8FF">ຟ້າ</option>
+            <option value="#FFFEF0">ເຫຼືອງ</option>
           </select>
         </div>
         <!-- Description -->
         <div class="admin-form-group full">
-          <label class="admin-form-label">รายละเอียด (optional)</label>
-          <textarea class="admin-form-input" id="pDesc" rows="2" placeholder="รายละเอียดสินค้า"></textarea>
+          <label class="admin-form-label">ລາຍລະອຽດ (optional)</label>
+          <textarea class="admin-form-input" id="pDesc" rows="2" placeholder="ລາຍລະອຽດສິນຄ້າ"></textarea>
         </div>
       </div>
       <!-- Delete confirm -->
       <div class="confirm-inline" id="deleteConfirm">
-        ⚠️ ยืนยันลบสินค้านี้? การลบไม่สามารถกู้คืนได้
+        ⚠️ ຢືນຢັນລົບສິນຄ້ານີ້? ການລົບບໍ່ສາມາດກູ້ຄືນໄດ້
         <div style="display:flex;gap:8px;margin-top:10px;">
-          <button class="btn btn-sm btn-outline" onclick="document.getElementById('deleteConfirm').classList.remove('show')">ยกเลิก</button>
-          <button class="btn btn-sm" style="background:#DC2626;color:#fff;" onclick="confirmDeleteProduct()">ลบเลย</button>
+          <button class="btn btn-sm btn-outline" onclick="document.getElementById('deleteConfirm').classList.remove('show')">ຍົກເລີກ</button>
+          <button class="btn btn-sm" style="background:#DC2626;color:#fff;" onclick="confirmDeleteProduct()">ລົບເລີຍ</button>
         </div>
       </div>
     </div>
     <div class="admin-modal-footer">
-      <button class="btn btn-outline btn-sm btn-danger" id="deleteProductBtn" onclick="askDeleteProduct()" style="display:none;">🗑 ลบสินค้า</button>
-      <button class="btn btn-outline btn-sm" onclick="closeProductModal()">ยกเลิก</button>
-      <button class="btn btn-primary btn-sm" onclick="saveProduct()">💾 บันทึก</button>
+      <button class="btn btn-outline btn-sm btn-danger" id="deleteProductBtn" onclick="askDeleteProduct()" style="display:none;">🗑 ລົບສິນຄ້າ</button>
+      <button class="btn btn-outline btn-sm" onclick="closeProductModal()">ຍົກເລີກ</button>
+      <button class="btn btn-primary btn-sm" onclick="saveProduct()">💾 ບັນທຶກ</button>
     </div>
   </div>
 </div>
@@ -651,8 +651,8 @@
    DATA LAYER
 ═══════════════════════════════════════════ */
 const STORE_NAMES = { pet:'Ruby Pet Shop', computer:'Ruby Computer', toy:'Ruby Toy Shop' };
-const STATUS_LABELS = { pending:'🕐 รอยืนยัน', confirmed:'✅ ยืนยันแล้ว', completed:'📦 สำเร็จ', cancelled:'❌ ยกเลิก' };
-const STATUS_RAW = { pending:'รอยืนยัน', confirmed:'ยืนยันแล้ว', completed:'สำเร็จ', cancelled:'ยกเลิก' };
+const STATUS_LABELS = { pending:'🕐 ລໍຖ້າຢືນຢັນ', confirmed:'✅ ຢືນຢັນແລ້ວ', completed:'📦 ສຳເລັດ', cancelled:'❌ ຍົກເລີກ' };
+const STATUS_RAW = { pending:'ລໍຖ້າຢືນຢັນ', confirmed:'ຢືນຢັນແລ້ວ', completed:'ສຳເລັດ', cancelled:'ຍົກເລີກ' };
 
 const MOCK_ORDERS = [];
 
@@ -661,7 +661,7 @@ function getAdminOrders() {
   const source = local;
   return source.map(o => ({
     orderNo: o.orderNo || o.no || '',
-    name: o.name || 'ไม่ระบุ',
+    name: o.name || 'ບໍ່ລະບຸ',
     phone: o.phone || '',
     address: o.address || '',
     delivery: o.delivery || '',
@@ -672,7 +672,7 @@ function getAdminOrders() {
     status: o.status || 'pending',
     note: o.note || '',
     createdAt: o.createdAt || null,
-    date: o.createdAt ? new Date(o.createdAt).toLocaleString('th-TH',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '-',
+    date: o.createdAt ? new Date(o.createdAt).toLocaleString('lo-LA',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '-',
   }));
 }
 
@@ -717,13 +717,13 @@ function statusPill(s) {
 
 function orderRow(o, showAction) {
   const action = showAction
-    ? `<td><button class="btn btn-outline btn-sm" style="font-size:.75rem;padding:4px 12px;" onclick="openOrderModal('${o.orderNo}')">จัดการ</button></td>`
+    ? `<td><button class="btn btn-outline btn-sm" style="font-size:.75rem;padding:4px 12px;" onclick="openOrderModal('${o.orderNo}')">ຈັດການ</button></td>`
     : '';
   return `<tr>
     <td style="font-weight:700;font-size:.82rem;">${o.orderNo}</td>
     <td>${o.name}</td>
     <td style="color:var(--text-m);font-size:.82rem;max-width:200px;">${o.itemsStr}</td>
-    <td style="font-weight:700;color:var(--red);">฿${(o.total||0).toLocaleString()}</td>
+    <td style="font-weight:700;color:var(--red);">₭${(o.total||0).toLocaleString()}</td>
     <td>${chPill(o.channel)}</td>
     <td>${statusPill(o.status)}</td>
     <td style="font-size:.78rem;color:var(--muted);">${o.date}</td>
@@ -739,17 +739,17 @@ function renderDashboard() {
   const prods = getAdminProducts();
   document.getElementById('kpiOrders').textContent = orders.length;
   const pending = orders.filter(o=>o.status==='pending').length;
-  document.getElementById('kpiOrdersSub').textContent = pending > 0 ? `รอยืนยัน ${pending} รายการ` : 'ไม่มีรอยืนยัน';
+  document.getElementById('kpiOrdersSub').textContent = pending > 0 ? `ລໍຖ້າຢືນຢັນ ${pending} ລາຍການ` : 'ບໍ່ມີລໍຖ້າຢືນຢັນ';
   const revenue = orders.filter(o=>o.status!=='cancelled').reduce((s,o)=>s+o.total,0);
-  document.getElementById('kpiRevenue').textContent = '฿' + revenue.toLocaleString();
-  document.getElementById('kpiRevenueSub').textContent = `จาก ${orders.filter(o=>o.status!=='cancelled').length} ออเดอร์`;
+  document.getElementById('kpiRevenue').textContent = '₭' + revenue.toLocaleString();
+  document.getElementById('kpiRevenueSub').textContent = `ຈາກ ${orders.filter(o=>o.status!=='cancelled').length} ອໍເດີ`;
   const completed = orders.filter(o=>o.status==='completed').length;
   document.getElementById('kpiCompleted').textContent = completed;
-  document.getElementById('kpiCompletedSub').textContent = `ยกเลิก ${orders.filter(o=>o.status==='cancelled').length} รายการ`;
+  document.getElementById('kpiCompletedSub').textContent = `ຍົກເລີກ ${orders.filter(o=>o.status==='cancelled').length} ລາຍການ`;
   document.getElementById('kpiProducts').textContent = prods.length;
   // recent 5
   const el = document.getElementById('dashOrdersBody');
-  if (el) el.innerHTML = orders.slice(0,5).map(o=>orderRow(o,false)).join('') || '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--muted);">ยังไม่มีออเดอร์</td></tr>';
+  if (el) el.innerHTML = orders.slice(0,5).map(o=>orderRow(o,false)).join('') || '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--muted);">ຍັງບໍ່ມີອໍເດີ</td></tr>';
   // badge
   const badge = document.getElementById('ordersBadge');
   if (pending > 0) { badge.textContent = pending; badge.style.display='inline'; }
@@ -761,7 +761,7 @@ function renderDashboard() {
 /* ═══════════════════════════════════════════
    REAL DASHBOARD CHARTS
 ═══════════════════════════════════════════ */
-const MONTH_TH = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const MONTH_TH = ['ມ.ກ.','ກ.ພ.','ມີ.ນ.','ເມ.ສ.','ພ.ພ.','ມິ.ຖ.','ກ.ລ.','ສ.ຫ.','ກ.ຍ.','ຕ.ລ.','ພ.ຈ.','ທ.ວ.'];
 
 function renderDashboardCharts(orders, prods) {
   _renderLineChart(orders);
@@ -832,7 +832,7 @@ function _renderLineChart(orders) {
   // Tooltip dots with title
   const dots = pts.map(p =>
     `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="${p.total > 0 ? '#E53935' : '#D1D5DB'}" stroke="#fff" stroke-width="1.5">
-      <title>฿${p.total.toLocaleString()}</title>
+      <title>₭${p.total.toLocaleString()}</title>
     </circle>`
   ).join('');
 
@@ -943,12 +943,12 @@ function applyOrderFilters() {
   const el = document.getElementById('allOrdersBody');
   el.innerHTML = filtered.length
     ? filtered.map(o=>orderRow(o,true)).join('')
-    : '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--muted);">ไม่พบออเดอร์</td></tr>';
+    : '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--muted);">ບໍ່ພົບອໍເດີ</td></tr>';
 }
 
 function exportOrdersCSV() {
   const orders = _cachedOrders || getAdminOrders();
-  const rows = [['ออเดอร์','ลูกค้า','โทร','ที่อยู่','จัดส่ง','สินค้า','ยอด','ช่องทาง','สถานะ','วันที่']];
+  const rows = [['ອໍເດີ','ລູກຄ້າ','ໂທ','ທີ່ຢູ່','ຈັດສົ່ງ','ສິນຄ້າ','ຍອດ','ຊ່ອງທາງ','ສະຖານະ','ວັນທີ']];
   orders.forEach(o => {
     rows.push([
       o.orderNo, o.name, o.phone, o.address, o.delivery,
@@ -962,7 +962,7 @@ function exportOrdersCSV() {
   const a = document.createElement('a');
   a.href = url; a.download = `ruby-orders-${new Date().toISOString().slice(0,10)}.csv`;
   a.click(); URL.revokeObjectURL(url);
-  showToast('📥 Export CSV สำเร็จ');
+  showToast('📥 Export CSV ສຳເລັດ');
 }
 
 function renderProducts(storeFilter) {
@@ -973,13 +973,13 @@ function renderProducts(storeFilter) {
   if (!el) return;
   el.innerHTML = filtered.length
     ? filtered.map(p=>productRow(p,true)).join('')
-    : '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);">ไม่มีสินค้า</td></tr>';
+    : '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);">ບໍ່ມີສິນຄ້າ</td></tr>';
 }
 
 function productRow(p, showStore) {
   const storeTd = showStore ? `<td style="font-size:.8rem;color:var(--muted);">${STORE_NAMES[p.store]||p.store}</td>` : '';
   const badgeHtml = p.badge
-    ? `<span style="font-size:.75rem;padding:2px 8px;border-radius:100px;background:${p.badge==='sale'?'#FEF3C7':p.badge==='new'?'#ECFDF5':'#FEE2E2'};color:${p.badge==='sale'?'#92400E':p.badge==='new'?'#065F46':'#991B1B'};">${p.badge==='sale'?'Sale':p.badge==='new'?'ใหม่':'ขายดี'}</span>`
+    ? `<span style="font-size:.75rem;padding:2px 8px;border-radius:100px;background:${p.badge==='sale'?'#FEF3C7':p.badge==='new'?'#ECFDF5':'#FEE2E2'};color:${p.badge==='sale'?'#92400E':p.badge==='new'?'#065F46':'#991B1B'};">${p.badge==='sale'?'Sale':p.badge==='new'?'ໃໝ່':'ຂາຍດີ'}</span>`
     : '<span style="color:var(--muted);font-size:.78rem;">—</span>';
   return `<tr>
     <td style="font-size:.78rem;color:var(--muted);">${p.id}</td>
@@ -990,11 +990,11 @@ function productRow(p, showStore) {
       </div>
     </td>
     ${storeTd}
-    <td style="font-weight:700;color:var(--red);">฿${(p.price||0).toLocaleString()}</td>
+    <td style="font-weight:700;color:var(--red);">₭${(p.price||0).toLocaleString()}</td>
     <td><span style="font-size:.78rem;background:var(--bg);padding:2px 10px;border-radius:100px;">${p.cat||'—'}</span></td>
     <td>${badgeHtml}</td>
     <td>
-      <button class="btn btn-outline btn-sm" style="font-size:.75rem;padding:4px 12px;" onclick="openProductModal('${p.id}',null)">แก้ไข</button>
+      <button class="btn btn-outline btn-sm" style="font-size:.75rem;padding:4px 12px;" onclick="openProductModal('${p.id}',null)">ແກ້ໄຂ</button>
     </td>
   </tr>`;
 }
@@ -1016,11 +1016,11 @@ function renderCustomers() {
         <td style="font-weight:700;">${c.name}</td>
         <td style="color:var(--text-m);">${c.phone}</td>
         <td style="font-size:.82rem;color:var(--muted);">${c.lastDate}</td>
-        <td style="font-weight:700;color:var(--red);">฿${c.total.toLocaleString()}</td>
+        <td style="font-weight:700;color:var(--red);">₭${c.total.toLocaleString()}</td>
         <td>${chPill(c.channel)}</td>
         <td style="text-align:center;">${c.count}</td>
       </tr>`).join('')
-    : '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);">ไม่มีข้อมูลลูกค้า</td></tr>';
+    : '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);">ບໍ່ມີຂໍ້ມູນລູກຄ້າ</td></tr>';
 }
 
 function renderStores() {
@@ -1028,7 +1028,7 @@ function renderStores() {
   ['pet','computer','toy'].forEach(s => {
     const cnt = prods.filter(p=>p.store===s).length;
     const el = document.getElementById(s+'Count');
-    if (el) el.textContent = `${cnt} สินค้า`;
+    if (el) el.textContent = `${cnt} ລາຍການ`;
   });
 }
 
@@ -1037,13 +1037,13 @@ function showStoreProducts(store) {
   _currentStore = store;
   const section = document.getElementById('storeProductsSection');
   section.style.display = 'block';
-  document.getElementById('storeProductsTitle').textContent = `สินค้าใน ${STORE_NAMES[store]}`;
+  document.getElementById('storeProductsTitle').textContent = `ສິນຄ້າໃນ ${STORE_NAMES[store]}`;
   document.getElementById('storeAddBtn').setAttribute('onclick', `openProductModal(null,'${store}')`);
   const prods = getAdminProducts().filter(p=>p.store===store);
   const el = document.getElementById('storeProductsBody');
   el.innerHTML = prods.length
     ? prods.map(p=>productRow(p,false)).join('')
-    : `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);">ยังไม่มีสินค้าในร้านนี้</td></tr>`;
+    : `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);">ຍັງບໍ່ມີສິນຄ້າໃນຮ້ານນີ້</td></tr>`;
   section.scrollIntoView({behavior:'smooth', block:'nearest'});
 }
 
@@ -1060,41 +1060,41 @@ function openOrderModal(orderNo) {
   _currentOrderNo = orderNo;
   _currentOrderStatus = o.status;
 
-  document.getElementById('orderModalTitle').textContent = `จัดการออเดอร์ ${orderNo}`;
+  document.getElementById('orderModalTitle').textContent = `ຈັດການອໍເດີ ${orderNo}`;
 
   // Detail grid
   document.getElementById('orderDetailGrid').innerHTML = `
-    <span class="odg-label">ลูกค้า</span><span class="odg-val">${o.name}</span>
-    <span class="odg-label">โทรศัพท์</span><span class="odg-val">${o.phone||'—'}</span>
-    <span class="odg-label">ที่อยู่</span><span class="odg-val">${o.address||'—'}</span>
-    <span class="odg-label">จัดส่ง</span><span class="odg-val">${o.delivery||'—'}</span>
-    <span class="odg-label">ช่องทาง</span><span class="odg-val">${chPill(o.channel)}</span>
-    <span class="odg-label">ยอดรวม</span><span class="odg-val" style="font-weight:800;color:var(--red);">฿${(o.total||0).toLocaleString()}</span>
-    ${o.note ? `<span class="odg-label">หมายเหตุ</span><span class="odg-val">${o.note}</span>` : ''}
-    <span class="odg-label">วันที่</span><span class="odg-val">${o.date}</span>
+    <span class="odg-label">ລູກຄ້າ</span><span class="odg-val">${o.name}</span>
+    <span class="odg-label">ໂທລະສັບ</span><span class="odg-val">${o.phone||'—'}</span>
+    <span class="odg-label">ທີ່ຢູ່</span><span class="odg-val">${o.address||'—'}</span>
+    <span class="odg-label">ຈັດສົ່ງ</span><span class="odg-val">${o.delivery||'—'}</span>
+    <span class="odg-label">ຊ່ອງທາງ</span><span class="odg-val">${chPill(o.channel)}</span>
+    <span class="odg-label">ຍອດລວມ</span><span class="odg-val" style="font-weight:800;color:var(--red);">₭${(o.total||0).toLocaleString()}</span>
+    ${o.note ? `<span class="odg-label">ໝາຍເຫດ</span><span class="odg-val">${o.note}</span>` : ''}
+    <span class="odg-label">ວັນທີ</span><span class="odg-val">${o.date}</span>
   `;
 
   // Items
   const itemsHtml = o.items.length
-    ? o.items.map(i=>`<div class="order-item-row"><span>${i.name}${i.variant?' ('+i.variant+')':''}</span><span>x${i.qty} = ฿${((i.price||0)*i.qty).toLocaleString()}</span></div>`).join('')
-    : '<div style="color:var(--muted);font-size:.83rem;">ไม่มีข้อมูลสินค้า</div>';
+    ? o.items.map(i=>`<div class="order-item-row"><span>${i.name}${i.variant?' ('+i.variant+')':''}</span><span>x${i.qty} = ₭${((i.price||0)*i.qty).toLocaleString()}</span></div>`).join('')
+    : '<div style="color:var(--muted);font-size:.83rem;">ບໍ່ມີຂໍ້ມູນສິນຄ້າ</div>';
   document.getElementById('orderItemsBox').innerHTML = itemsHtml;
 
   // Status buttons
   const statuses = ['pending','confirmed','completed','cancelled'];
-  const labels = { pending:'🕐 รอยืนยัน', confirmed:'✅ ยืนยันแล้ว', completed:'📦 สำเร็จ', cancelled:'❌ ยกเลิก' };
+  const labels = { pending:'🕐 ລໍຖ້າຢືນຢັນ', confirmed:'✅ ຢືນຢັນແລ້ວ', completed:'📦 ສຳເລັດ', cancelled:'❌ ຍົກເລີກ' };
   document.getElementById('statusBtnGroup').innerHTML = statuses.map(s=>`
     <button class="status-btn s-${s} ${o.status===s?'sel':''}" onclick="selectOrderStatus('${s}',this)">${labels[s]}</button>
   `).join('');
 
   // Contact
   const phone = (o.phone||'').replace(/[-\s]/g,'');
-  const msg = encodeURIComponent(`🛍️ Ruby Store\nออเดอร์ ${o.orderNo} — สถานะ: ${STATUS_RAW[o.status]||o.status}\nสินค้า: ${o.itemsStr}\nยอด: ฿${o.total.toLocaleString()}`);
+  const msg = encodeURIComponent(`🛍️ Ruby Store\nອໍເດີ ${o.orderNo} — ສະຖານະ: ${STATUS_RAW[o.status]||o.status}\nສິນຄ້າ: ${o.itemsStr}\nຍອດ: ₭${o.total.toLocaleString()}`);
   document.getElementById('orderContactSection').innerHTML = `
-    <div class="admin-form-label" style="margin-bottom:8px;">ติดต่อลูกค้า</div>
+    <div class="admin-form-label" style="margin-bottom:8px;">ຕິດຕໍ່ລູກຄ້າ</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <a href="https://wa.me/66${phone.replace(/^0/,'')}?text=${msg}" target="_blank" class="btn btn-sm" style="background:#25D366;color:#fff;text-decoration:none;">💬 WhatsApp</a>
-      <a href="tel:${o.phone}" class="btn btn-sm btn-outline" style="text-decoration:none;">📞 โทร</a>
+      <a href="https://wa.me/856${phone.replace(/^0/,'')}?text=${msg}" target="_blank" class="btn btn-sm" style="background:#25D366;color:#fff;text-decoration:none;">💬 WhatsApp</a>
+      <a href="tel:${o.phone}" class="btn btn-sm btn-outline" style="text-decoration:none;">📞 ໂທ</a>
     </div>`;
 
   document.getElementById('orderModal').classList.add('open');
@@ -1110,7 +1110,7 @@ function saveOrderStatus() {
   if (!_currentOrderNo || !_currentOrderStatus) return;
   updateOrderStatusLocal(_currentOrderNo, _currentOrderStatus);
   closeOrderModal();
-  showToast(`✅ อัพเดทสถานะ ${_currentOrderNo} เป็น ${STATUS_RAW[_currentOrderStatus]}`);
+  showToast(`✅ ອັບເດດສະຖານະ ${_currentOrderNo} ເປັນ ${STATUS_RAW[_currentOrderStatus]}`);
   // Re-render
   if (document.getElementById('panelOrders').style.display !== 'none') renderAllOrders();
   if (document.getElementById('panelDashboard').style.display !== 'none' || document.getElementById('panelDashboard').classList.contains('active')) renderDashboard();
@@ -1140,7 +1140,7 @@ function openProductModal(productId, prefilledStore) {
     // Edit mode
     const p = getAdminProducts().find(x=>x.id===productId);
     if (!p) return;
-    document.getElementById('productModalTitle').textContent = 'แก้ไขสินค้า';
+    document.getElementById('productModalTitle').textContent = 'ແກ້ໄຂສິນຄ້າ';
     document.getElementById('pEmoji').value = p.emoji || '📦';
     document.getElementById('pName').value = p.name || '';
     document.getElementById('pPrice').value = p.price || '';
@@ -1156,7 +1156,7 @@ function openProductModal(productId, prefilledStore) {
     document.getElementById('deleteProductBtn').style.display = 'inline-flex';
   } else {
     // Add mode
-    document.getElementById('productModalTitle').textContent = 'เพิ่มสินค้า';
+    document.getElementById('productModalTitle').textContent = 'ເພີ່ມສິນຄ້າ';
     document.getElementById('pEmoji').value = '📦';
     document.getElementById('pName').value = '';
     document.getElementById('pPrice').value = '';
@@ -1221,8 +1221,8 @@ function handleImgUpload(input) {
 function saveProduct() {
   const name = document.getElementById('pName').value.trim();
   const price = parseInt(document.getElementById('pPrice').value) || 0;
-  if (!name) { showToast('กรุณาใส่ชื่อสินค้า','error'); return; }
-  if (!price) { showToast('กรุณาใส่ราคา','error'); return; }
+  if (!name) { showToast('ກະລຸນາໃສ່ຊື່ສິນຄ້າ','error'); return; }
+  if (!price) { showToast('ກະລຸນາໃສ່ລາຄາ','error'); return; }
 
   const prods = getAdminProducts();
   const oldPrice = parseInt(document.getElementById('pOldPrice').value) || null;
@@ -1244,7 +1244,7 @@ function saveProduct() {
         desc: document.getElementById('pDesc').value.trim() || undefined,
       };
     }
-    showToast(`✅ อัพเดท "${name}" แล้ว`);
+    showToast(`✅ ອັບເດດ "${name}" ແລ້ວ`);
   } else {
     // Add new
     const newId = 'P' + String(Date.now()).slice(-4).padStart(3,'0');
@@ -1261,7 +1261,7 @@ function saveProduct() {
       bg: document.getElementById('pBg').value || '#FFF5F5',
       desc: document.getElementById('pDesc').value.trim() || undefined,
     });
-    showToast(`✅ เพิ่ม "${name}" แล้ว`);
+    showToast(`✅ ເພີ່ມ "${name}" ແລ້ວ`);
   }
 
   saveAdminProducts(prods);
@@ -1280,7 +1280,7 @@ function askDeleteProduct() {
 function confirmDeleteProduct() {
   const prods = getAdminProducts().filter(p=>p.id!==_editProductId);
   saveAdminProducts(prods);
-  showToast('🗑 ลบสินค้าแล้ว');
+  showToast('🗑 ລົບສິນຄ້າແລ້ວ');
   closeProductModal();
   renderProducts();
   renderStores();
@@ -1297,7 +1297,7 @@ function closeProductModal() {
 /* ═══════════════════════════════════════════
    PANEL NAVIGATION
 ═══════════════════════════════════════════ */
-const PANEL_TITLES = { dashboard:'Dashboard', orders:'คำสั่งซื้อ', stores:'ร้านค้า', products:'สินค้า', customers:'ลูกค้า' };
+const PANEL_TITLES = { dashboard:'Dashboard', orders:'ອໍເດີ', stores:'ຮ້ານຄ້າ', products:'ສິນຄ້າ', customers:'ລູກຄ້າ' };
 
 function showPanel(name, linkEl) {
   document.querySelectorAll('.admin-panel').forEach(p=>{
@@ -1399,7 +1399,7 @@ async function checkPin() {
     sessionStorage.setItem('rubyAdminAuthed', '1');
     document.getElementById('pinOverlay').style.display = 'none';
   } else {
-    document.getElementById('pinError').textContent = '❌ PIN ไม่ถูกต้อง ลองอีกครั้ง';
+    document.getElementById('pinError').textContent = '❌ PIN ບໍ່ຖືກຕ້ອງ ລອງໃໝ່';
     document.querySelectorAll('.pin-dot').forEach(d => {
       d.classList.add('shake');
       setTimeout(() => d.classList.remove('shake'), 350);
@@ -1430,21 +1430,21 @@ async function saveNewPin() {
   const errEl   = document.getElementById('cpError');
 
   if (!/^\d{4}$/.test(current) || !/^\d{4}$/.test(newPin) || !/^\d{4}$/.test(confirm)) {
-    errEl.textContent = '⚠️ PIN ต้องเป็นตัวเลข 4 หลักเท่านั้น'; return;
+    errEl.textContent = '⚠️ PIN ຕ້ອງເປັນຕົວເລກ 4 ຕົວເທົ່ານັ້ນ'; return;
   }
   if (newPin !== confirm) {
-    errEl.textContent = '⚠️ PIN ใหม่และยืนยันไม่ตรงกัน'; return;
+    errEl.textContent = '⚠️ PIN ໃໝ່ ແລະ ຢືນຢັນບໍ່ຕົງກັນ'; return;
   }
 
   const currentHash = await _sha256(current);
   if (currentHash !== _getStoredHash()) {
-    errEl.textContent = '❌ PIN ปัจจุบันไม่ถูกต้อง'; return;
+    errEl.textContent = '❌ PIN ປັດຈຸບັນບໍ່ຖືກຕ້ອງ'; return;
   }
 
   const newHash = await _sha256(newPin);
   localStorage.setItem('ruby_admin_pin_hash', newHash);
   closeChangePinModal();
-  showToast('✅ เปลี่ยน PIN สำเร็จ');
+  showToast('✅ ປ່ຽນ PIN ສຳເລັດ');
 }
 
 // Close change-pin overlay on background click
@@ -1472,7 +1472,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const now = new Date();
   document.getElementById('topbarDate').textContent =
-    now.toLocaleDateString('th-TH', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    now.toLocaleDateString('lo-LA', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
   renderDashboard();
 });
 </script>

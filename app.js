@@ -9,8 +9,8 @@
 window.PRODUCTS = [];
 
 /* ─── MERGE ADMIN PRODUCT OVERRIDES ────────────────────── */
-/* ถ้า Admin แก้ไข/เพิ่มสินค้า จะ save ลง ruby_products    */
-/* ทุกหน้าจะใช้ข้อมูลจาก localStorage แทน hardcoded list  */
+/* Admin edits save to ruby_products in localStorage        */
+/* All pages load from localStorage instead of hardcoded    */
 (function () {
   try {
     const override = localStorage.getItem('ruby_products');
@@ -62,7 +62,7 @@ function addToCart(productId, qty = 1, variant = null) {
   }
   saveCart();
   updateCartUI();
-  showToast(`เพิ่ม "${product.name}" ลงตะกร้าแล้ว`, 'success');
+  showToast(`ເພີ່ມ "${product.name}" ໃສ່ກະຕ່າແລ້ວ`, 'success');
 }
 
 function removeFromCart(key) {
@@ -97,8 +97,8 @@ function updateCartUI() {
   const sub = getCartTotal();
   const subEl = document.getElementById('cartSubtotalVal');
   const totEl = document.getElementById('cartTotalVal');
-  if (subEl) subEl.textContent = '฿' + sub.toLocaleString();
-  if (totEl) totEl.textContent = '฿' + sub.toLocaleString();
+  if (subEl) subEl.textContent = '₭' + sub.toLocaleString();
+  if (totEl) totEl.textContent = '₭' + sub.toLocaleString();
   // Footer visibility
   const footer = document.getElementById('cartFooter');
   if (footer) footer.style.display = cart.length ? 'block' : 'none';
@@ -128,7 +128,7 @@ function renderCartItems() {
       <div class="cart-item-body">
         <div class="cart-item-name">${item.name}</div>
         ${(item.variant && item.variant !== 'undefined') ? `<div class="cart-item-variant">${item.variant}</div>` : ''}
-        <div class="cart-item-price">฿${item.price.toLocaleString()}</div>
+        <div class="cart-item-price">₭${item.price.toLocaleString()}</div>
         <div class="cart-item-controls">
           <button class="qty-btn" onclick="updateQty('${item.key}', -1)">−</button>
           <span class="qty-display">${item.qty}</span>
@@ -207,10 +207,10 @@ function initCartButtons() {
 // NOTE: use hash (#P001) not query param — npx serve strips query strings
 function buildProductCard(p) {
   const badgeHtml = p.badge
-    ? `<span class="product-badge ${p.badge}">${p.badge === 'new' ? '✨ ใหม่' : '🏷️ Sale'}</span>`
+    ? `<span class="product-badge ${p.badge}">${p.badge === 'new' ? '✨ ໃໝ່' : '🏷️ Sale'}</span>`
     : '';
   const oldPriceHtml = p.oldPrice
-    ? `<span style="text-decoration:line-through;color:var(--muted);font-size:0.8rem;font-weight:400;">฿${p.oldPrice.toLocaleString()}</span>`
+    ? `<span style="text-decoration:line-through;color:var(--muted);font-size:0.8rem;font-weight:400;">₭${p.oldPrice.toLocaleString()}</span>`
     : '';
   return `
     <div class="product-card" data-id="${p.id}">
@@ -224,9 +224,9 @@ function buildProductCard(p) {
         <div class="product-store">${p.storeName}</div>
         <a href="product.html#${p.id}" class="product-name" style="text-decoration:none;color:inherit;">${p.name}</a>
         <div class="product-price">
-          ฿${p.price.toLocaleString()} ${oldPriceHtml}
+          ₭${p.price.toLocaleString()} ${oldPriceHtml}
         </div>
-        <button class="product-add-btn" onclick="addToCart('${p.id}')">+ ใส่ตะกร้า</button>
+        <button class="product-add-btn" onclick="addToCart('${p.id}')">+ ໃສ່ກະຕ່າ</button>
       </div>
     </div>`;
 }
@@ -240,24 +240,24 @@ const WA_NUMBER = '8562078926245'; // shop WA number
 const MSG_LINK = 'https://m.me/rubystore';
 
 function buildOrderMessage(form) {
-  const name = form?.name || 'ลูกค้า';
-  const phone = form?.phone || '-';
-  const address = form?.address || '-';
-  const delivery = form?.delivery || 'ส่งพัสดุ';
-  const note = form?.note || '-';
+  const name     = form?.name     || 'ລູກຄ້າ';
+  const phone    = form?.phone    || '-';
+  const address  = form?.address  || '-';
+  const delivery = form?.delivery || 'ຈັດສົ່ງພັດສະດຸ';
+  const note     = form?.note     || '-';
 
-  let lines = ['🛍️ *สั่งซื้อจาก Ruby Store*\n'];
+  let lines = ['🛍️ *ສັ່ງຊື້ຈາກ Ruby Store*\n'];
   cart.forEach((item, i) => {
-    lines.push(`${i + 1}. ${item.name}${item.variant ? ` (${item.variant})` : ''} x${item.qty} = ฿${(item.price * item.qty).toLocaleString()}`);
+    lines.push(`${i + 1}. ${item.name}${item.variant ? ` (${item.variant})` : ''} x${item.qty} = ₭${(item.price * item.qty).toLocaleString()}`);
   });
   lines.push('');
-  lines.push(`💰 รวม: ฿${getCartTotal().toLocaleString()}`);
-  lines.push(`🚚 จัดส่ง: ${delivery}`);
+  lines.push(`💰 ລວມ: ₭${getCartTotal().toLocaleString()}`);
+  lines.push(`🚚 ຈັດສົ່ງ: ${delivery}`);
   lines.push('');
-  lines.push(`👤 ชื่อ: ${name}`);
-  lines.push(`📞 โทร: ${phone}`);
-  lines.push(`📍 ที่อยู่: ${address}`);
-  if (note && note !== '-') lines.push(`📝 หมายเหตุ: ${note}`);
+  lines.push(`👤 ຊື່: ${name}`);
+  lines.push(`📞 ໂທ: ${phone}`);
+  lines.push(`📍 ທີ່ຢູ່: ${address}`);
+  if (note && note !== '-') lines.push(`📝 ໝາຍເຫດ: ${note}`);
   return lines.join('\n');
 }
 
@@ -276,7 +276,7 @@ function openWAModal(channel, form) {
     if (channelName) channelName.textContent = 'WhatsApp';
     if (openBtn) {
       openBtn.className = 'btn btn-wa wa-open-btn';
-      openBtn.textContent = '📱 เปิด WhatsApp';
+      openBtn.textContent = '📱 ເປີດ WhatsApp';
       openBtn.onclick = () => {
         const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
         window.open(url, '_blank');
@@ -287,7 +287,7 @@ function openWAModal(channel, form) {
     if (channelName) channelName.textContent = 'Messenger';
     if (openBtn) {
       openBtn.className = 'btn btn-msg wa-open-btn msg';
-      openBtn.textContent = '💬 เปิด Messenger';
+      openBtn.textContent = '💬 ເປີດ Messenger';
       openBtn.onclick = () => window.open(MSG_LINK, '_blank');
     }
   }
@@ -295,7 +295,7 @@ function openWAModal(channel, form) {
   const copyBtn = document.getElementById('waCopyBtn');
   if (copyBtn) {
     copyBtn.onclick = () => {
-      navigator.clipboard.writeText(msg).then(() => showToast('คัดลอกข้อความแล้ว', 'success'));
+      navigator.clipboard.writeText(msg).then(() => showToast('ສຳເນົາຂໍ້ຄວາມແລ້ວ', 'success'));
     };
   }
 
@@ -350,7 +350,7 @@ function renderOrderSummary(containerId) {
           <div class="order-item-name">${item.name}${item.variant ? ` <small>(${item.variant})</small>` : ''}</div>
           <div class="order-item-qty">x${item.qty}</div>
         </div>
-        <div class="order-item-price">฿${(item.price * item.qty).toLocaleString()}</div>
+        <div class="order-item-price">₭${(item.price * item.qty).toLocaleString()}</div>
       </div>`;
   });
   el.innerHTML = html;

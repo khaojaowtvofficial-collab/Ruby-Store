@@ -4,7 +4,7 @@
    ===================================================== */
 
 /* ---- Google Fonts ---- */
-@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;500;600;700;800&family=Prompt:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 /* ---- CSS Variables ---- */
 :root {
@@ -26,7 +26,7 @@
   --shadow-md:  0 4px 16px rgba(0,0,0,.10);
   --radius-card: 20px;
   --radius-pill: 100px;
-  --font-th: 'Prompt', 'Inter', -apple-system, sans-serif;
+  --font-th: 'Noto Sans Lao', 'Prompt', 'Inter', -apple-system, sans-serif;
 }
 
 /* =====================================================
@@ -173,34 +173,7 @@ input, textarea, select {
   gap: 8px;
 }
 
-/* ── Language Switcher ── */
-.lang-switcher {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  background: var(--bg);
-  border-radius: 20px;
-  padding: 3px;
-}
-.lang-btn {
-  padding: 4px 10px;
-  border-radius: 16px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  font-family: var(--font-th);
-  color: var(--text-m);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-.lang-btn:hover { background: var(--card); color: var(--text); }
-.lang-btn.active {
-  background: var(--card);
-  color: var(--red);
-  box-shadow: var(--shadow-sm);
-}
+/* Language Switcher removed — ໃຊ້ລາວຕະຫຼອດ */
 
 .nav-cart-btn {
   position: relative;

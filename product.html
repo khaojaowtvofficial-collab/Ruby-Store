@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="lo">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ruby Store — รายละเอียดสินค้า</title>
+  <title>Ruby Store — ລາຍລະອຽດສິນຄ້າ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -24,22 +24,21 @@
       Ruby <span>Store</span>
     </a>
     <nav class="navbar-nav">
-      <a href="index.html" data-i18n="nav_home">หน้าแรก</a>
-      <a href="shop.html" class="active" data-i18n="nav_shop">สินค้า</a>
-      <a href="index.html#stores" data-i18n="nav_stores">ร้านค้า</a>
-      <a href="index.html#about" data-i18n="nav_about">เกี่ยวกับ</a>
+      <a href="index.html" data-i18n="nav_home">ໜ້າຫຼັກ</a>
+      <a href="shop.html" class="active" data-i18n="nav_shop">ສິນຄ້າ</a>
+      <a href="index.html#stores" data-i18n="nav_stores">ຮ້ານຄ້າ</a>
+      <a href="index.html#about" data-i18n="nav_about">ກ່ຽວກັບ</a>
     </nav>
     <div class="navbar-spacer"></div>
-    <div id="langSwitcherMount"></div>
     <div class="navbar-actions">
-      <button class="nav-cart-btn" id="cartBtn" aria-label="ตะกร้าสินค้า">
+      <button class="nav-cart-btn" id="cartBtn" aria-label="ກະຕ່າສິນຄ້າ">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
           <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
         </svg>
         <span class="cart-badge hidden" id="cartBadge">0</span>
       </button>
-      <button class="hamburger" id="hamburger" aria-label="เมนู">
+      <button class="hamburger" id="hamburger" aria-label="ເມນູ">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -48,10 +47,10 @@
 
 <!-- Mobile Menu -->
 <div class="mobile-menu" id="mobileMenu">
-  <a href="index.html">🏠 หน้าแรก</a>
-  <a href="shop.html" class="active">🛍️ สินค้า</a>
-  <a href="index.html#stores">🏪 ร้านค้า</a>
-  <a href="index.html#about">ℹ️ เกี่ยวกับ</a>
+  <a href="index.html">🏠 ໜ້າຫຼັກ</a>
+  <a href="shop.html" class="active">🛍️ ສິນຄ້າ</a>
+  <a href="index.html#stores">🏪 ຮ້ານຄ້າ</a>
+  <a href="index.html#about">ℹ️ ກ່ຽວກັບ</a>
 </div>
 
 <!-- ===================== MAIN ===================== -->
@@ -60,27 +59,27 @@
 
     <!-- Breadcrumb -->
     <div class="breadcrumb">
-      <a href="index.html">หน้าแรก</a>
+      <a href="index.html">ໜ້າຫຼັກ</a>
       <span class="sep">›</span>
-      <a href="shop.html" id="breadcrumbStore">สินค้า</a>
+      <a href="shop.html" id="breadcrumbStore">ສິນຄ້າ</a>
       <span class="sep">›</span>
-      <span class="current" id="breadcrumbName">รายละเอียดสินค้า</span>
+      <span class="current" id="breadcrumbName">ລາຍລະອຽດສິນຄ້າ</span>
     </div>
 
     <!-- Product Detail -->
     <div class="product-detail-wrap">
       <div class="product-detail-grid" id="productDetailGrid">
         <!-- Populated by JS -->
-        <div style="text-align:center;padding:60px 0;color:var(--muted);">กำลังโหลด...</div>
+        <div style="text-align:center;padding:60px 0;color:var(--muted);">ກຳລັງໂຫຼດ...</div>
       </div>
     </div>
 
     <!-- Product Tabs (description/details) -->
     <div style="background:var(--card);border-radius:var(--radius-card);padding:20px;margin-bottom:32px;box-shadow:var(--shadow-sm);" id="productTabsSection">
       <div class="product-tabs">
-        <button class="product-tab active" data-tab="desc" onclick="switchTab('desc')" data-i18n="prod_tab_desc_full">รายละเอียดสินค้า</button>
-        <button class="product-tab" data-tab="specs" onclick="switchTab('specs')" data-i18n="prod_tab_specs">ข้อมูลเพิ่มเติม</button>
-        <button class="product-tab" data-tab="reviews" onclick="switchTab('reviews')" data-i18n="prod_tab_rev">รีวิว</button>
+        <button class="product-tab active" data-tab="desc" onclick="switchTab('desc')" data-i18n="prod_tab_desc_full">ລາຍລະອຽດສິນຄ້າ</button>
+        <button class="product-tab" data-tab="specs" onclick="switchTab('specs')" data-i18n="prod_tab_specs">ຂໍ້ມູນເພີ່ມເຕີມ</button>
+        <button class="product-tab" data-tab="reviews" onclick="switchTab('reviews')" data-i18n="prod_tab_rev">ລີວິວ</button>
       </div>
       <div class="product-tab-content active" id="tab-desc">
         <p id="tabDescText">-</p>
@@ -97,7 +96,7 @@
 
     <!-- Related Products -->
     <div class="mb-32" id="relatedSection">
-      <h2 style="font-size:1.1rem;font-weight:800;margin-bottom:16px;" data-i18n="prod_related">สินค้าที่เกี่ยวข้อง</h2>
+      <h2 style="font-size:1.1rem;font-weight:800;margin-bottom:16px;" data-i18n="prod_related">ສິນຄ້າທີ່ກ່ຽວຂ້ອງ</h2>
       <div class="related-row" id="relatedRow"></div>
     </div>
 
@@ -117,10 +116,10 @@
           </svg>
           Ruby Store
         </div>
-        <p class="footer-tagline">Social Commerce สำหรับร้านไทย</p>
+        <p class="footer-tagline">Social Commerce ສຳລັບຮ້ານໃນລາວ</p>
       </div>
       <div class="footer-links-col">
-        <h4>ร้านค้า</h4>
+        <h4>ຮ້ານຄ້າ</h4>
         <a href="shop.html?store=pet">Ruby Pet Shop</a>
         <a href="shop.html?store=computer">Ruby Computer</a>
         <a href="shop.html?store=toy">Ruby Toy Shop</a>
@@ -134,25 +133,25 @@
 <div class="cart-overlay" id="cartOverlay"></div>
 <div class="cart-sidebar" id="cartSidebar">
   <div class="cart-header">
-    <h3>🛒 <span data-i18n="cart_title">ตะกร้าสินค้า</span></h3>
+    <h3>🛒 <span data-i18n="cart_title">ກະຕ່າສິນຄ້າ</span></h3>
     <button class="cart-close" id="cartClose">×</button>
   </div>
   <div class="cart-items" id="cartItems">
     <div class="cart-empty" id="cartEmpty">
       <div class="cart-empty-icon">🛒</div>
-      <p><span data-i18n="cart_empty">ตะกร้าว่างเปล่า</span></p>
+      <p><span data-i18n="cart_empty">ກະຕ່າວ່າງເປົ່າ</span></p>
     </div>
   </div>
   <div class="cart-footer" id="cartFooter" style="display:none;">
     <div class="cart-subtotal">
-      <span class="label" data-i18n="cart_subtotal">ราคาสินค้า</span>
-      <span class="value" id="cartSubtotalVal">฿0</span>
+      <span class="label" data-i18n="cart_subtotal">ລາຄາສິນຄ້າ</span>
+      <span class="value" id="cartSubtotalVal">₭0</span>
     </div>
     <div class="cart-total">
-      <span data-i18n="cart_total">รวมทั้งหมด</span>
-      <span class="price" id="cartTotalVal">฿0</span>
+      <span data-i18n="cart_total">ລວມທັງໝົດ</span>
+      <span class="price" id="cartTotalVal">₭0</span>
     </div>
-    <a href="checkout.html" class="btn btn-primary btn-block" data-i18n="cart_checkout">ดำเนินการสั่งซื้อ →</a>
+    <a href="checkout.html" class="btn btn-primary btn-block" data-i18n="cart_checkout">ດຳເນີນການສັ່ງຊື້ →</a>
   </div>
 </div>
 
@@ -162,8 +161,8 @@
     <div class="wa-modal-header" id="waModalHeader">
       <div class="wa-modal-header-icon">💬</div>
       <div class="wa-modal-header-text">
-        <div style="font-weight:800;font-size:1rem;">สั่งซื้อผ่าน <span id="waChannelName">WhatsApp</span></div>
-        <div style="font-size:0.78rem;opacity:.85;">ข้อความสั่งซื้อพร้อมส่ง</div>
+        <div style="font-weight:800;font-size:1rem;">ສັ່ງຊື້ຜ່ານ <span id="waChannelName">WhatsApp</span></div>
+        <div style="font-size:0.78rem;opacity:.85;">ຂໍ້ຄວາມສັ່ງຊື້ພ້ອມສົ່ງ</div>
       </div>
       <button class="wa-modal-close" id="waModalClose">×</button>
     </div>
@@ -171,8 +170,8 @@
       <div class="wa-bubble" id="waModalMsg"></div>
     </div>
     <div class="wa-modal-footer">
-      <button class="wa-copy-btn" id="waCopyBtn">📋 คัดลอก</button>
-      <button class="btn btn-wa wa-open-btn" id="waOpenBtn">📱 เปิด WhatsApp</button>
+      <button class="wa-copy-btn" id="waCopyBtn">📋 ສຳເນົາ</button>
+      <button class="btn btn-wa wa-open-btn" id="waOpenBtn">📱 ເປີດ WhatsApp</button>
     </div>
   </div>
 </div>
@@ -185,24 +184,24 @@
       <div id="stickyProductName" style="font-size:.8rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text);"></div>
       <div id="stickyProductPrice" style="font-size:1rem;font-weight:800;color:var(--red);"></div>
     </div>
-    <button onclick="handleAddToCart()" style="flex:1;padding:11px;border-radius:12px;border:none;background:var(--red);color:#fff;font-weight:700;font-size:.875rem;font-family:inherit;cursor:pointer;">🛒 ใส่ตะกร้า</button>
+    <button onclick="handleAddToCart()" style="flex:1;padding:11px;border-radius:12px;border:none;background:var(--red);color:#fff;font-weight:700;font-size:.875rem;font-family:inherit;cursor:pointer;">🛒 ໃສ່ກະຕ່າ</button>
   </div>
 </div>
 
 <nav class="mobile-bottom-nav">
   <a href="index.html" class="nav-item">
-    <span class="icon">🏠</span><span data-i18n="nav_home">หน้าแรก</span>
+    <span class="icon">🏠</span><span data-i18n="nav_home">ໜ້າຫຼັກ</span>
   </a>
   <a href="shop.html" class="nav-item active">
-    <span class="icon">🛍️</span><span data-i18n="nav_stores">ร้านค้า</span>
+    <span class="icon">🛍️</span><span data-i18n="nav_stores">ຮ້ານຄ້າ</span>
   </a>
   <a href="#" class="nav-item" id="mobileCartBtn">
     <span class="icon">🛒</span>
     <div class="cart-dot" id="mobileCartDot"></div>
-    <span data-i18n="nav_cart">ตะกร้า</span>
+    <span data-i18n="nav_cart">ກະຕ່າ</span>
   </a>
   <a href="profile.html" class="nav-item">
-    <span class="icon">👤</span><span data-i18n="nav_account">บัญชี</span>
+    <span class="icon">👤</span><span data-i18n="nav_account">ບັນຊີ</span>
   </a>
 </nav>
 
@@ -231,7 +230,7 @@
     // Breadcrumb
     const storeNames = { pet: 'Ruby Pet Shop', computer: 'Ruby Computer', toy: 'Ruby Toy Shop' };
     const storeLinkEl = document.getElementById('breadcrumbStore');
-    if (storeLinkEl) { storeLinkEl.href = `shop.html#${p.store}`; storeLinkEl.textContent = storeNames[p.store] || 'สินค้า'; }
+    if (storeLinkEl) { storeLinkEl.href = `shop.html#${p.store}`; storeLinkEl.textContent = storeNames[p.store] || 'ສິນຄ້າ'; }
     document.getElementById('breadcrumbName').textContent = p.name;
     document.title = `${p.name} — Ruby Store`;
 
@@ -263,17 +262,17 @@
           <span class="stars">${'★'.repeat(Math.round(p.rating))}</span>
           <span>${p.rating}</span>
           <span style="color:var(--border)">|</span>
-          <span>${p.reviews} รีวิว</span>
-        </div>` : `<div style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">ยังไม่มีรีวิว</div>`}
-        <div class="product-detail-price">฿${p.price.toLocaleString()}
-          ${p.oldPrice ? `<span style="font-size:1rem;font-weight:400;text-decoration:line-through;color:var(--muted);">฿${p.oldPrice.toLocaleString()}</span>` : ''}
+          <span>${p.reviews} ລີວິວ</span>
+        </div>` : `<div style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">ຍັງບໍ່ມີລີວິວ</div>`}
+        <div class="product-detail-price">₭${p.price.toLocaleString()}
+          ${p.oldPrice ? `<span style="font-size:1rem;font-weight:400;text-decoration:line-through;color:var(--muted);">₭${p.oldPrice.toLocaleString()}</span>` : ''}
         </div>
-        <div class="stock-badge">มีสินค้า</div>
+        <div class="stock-badge">ມີສິນຄ້າ</div>
 
         <!-- Variants (if applicable) -->
         ${p.store === 'pet' && p.cat === 'food' ? `
         <div class="variant-section">
-          <div class="variant-label">ขนาด</div>
+          <div class="variant-label">ຂະໜາດ</div>
           <div class="variant-pills">
             <button class="variant-pill active" onclick="selectVariant(this,'1kg')">1 kg</button>
             <button class="variant-pill" onclick="selectVariant(this,'3kg')">3 kg</button>
@@ -283,7 +282,7 @@
         </div>` : ''}
 
         <!-- Qty -->
-        <div style="margin-bottom:8px;font-size:0.85rem;color:var(--text-m);font-weight:600;">จำนวน</div>
+        <div style="margin-bottom:8px;font-size:0.85rem;color:var(--text-m);font-weight:600;">ຈຳນວນ</div>
         <div class="qty-stepper">
           <button onclick="changeQty(-1)">−</button>
           <input type="number" id="qtyInput" value="1" min="1" max="99" oninput="currentQty=parseInt(this.value)||1">
@@ -292,16 +291,16 @@
 
         <!-- CTAs -->
         <div class="product-ctas">
-          <button class="btn btn-primary" onclick="handleAddToCart()">🛒 ใส่ตะกร้า</button>
-          <button class="btn btn-wa" onclick="handleBuyWA()">💬 สั่งผ่าน WA</button>
+          <button class="btn btn-primary" onclick="handleAddToCart()">🛒 ໃສ່ກະຕ່າ</button>
+          <button class="btn btn-wa" onclick="handleBuyWA()">💬 ສັ່ງຜ່ານ WA</button>
         </div>
 
         <!-- Trust strip -->
         <div class="trust-strip">
-          <div class="trust-strip-item"><span class="t-icon">🚚</span>ส่งทั่วไทย</div>
-          <div class="trust-strip-item"><span class="t-icon">🔄</span>คืนได้ 7 วัน</div>
-          <div class="trust-strip-item"><span class="t-icon">✅</span>สินค้าแท้</div>
-          <div class="trust-strip-item"><span class="t-icon">💬</span>ตอบเร็ว</div>
+          <div class="trust-strip-item"><span class="t-icon">🚚</span>ສົ່ງທົ່ວລາວ</div>
+          <div class="trust-strip-item"><span class="t-icon">🔄</span>ຄືນໄດ້ 7 ວັນ</div>
+          <div class="trust-strip-item"><span class="t-icon">✅</span>ສິນຄ້າແທ້</div>
+          <div class="trust-strip-item"><span class="t-icon">💬</span>ຕອບໄວ</div>
         </div>
       </div>`;
 
@@ -314,7 +313,7 @@
     if (SAMPLE_REVIEWS.length === 0) {
       reviewsEl.innerHTML = `<div style="text-align:center;padding:32px 0;color:var(--muted);">
         <div style="font-size:2rem;margin-bottom:8px;">💬</div>
-        <div style="font-size:0.9rem;">ยังไม่มีรีวิวสินค้านี้</div>
+        <div style="font-size:0.9rem;">ຍັງບໍ່ມີລີວິວ</div>
       </div>`;
     } else {
       reviewsEl.innerHTML = SAMPLE_REVIEWS.map(r => `
@@ -370,7 +369,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       document.getElementById('productDetailGrid').innerHTML =
-        `<div style="padding:60px;text-align:center;color:var(--muted);">ไม่พบสินค้า "${id}"</div>`;
+        `<div style="padding:60px;text-align:center;color:var(--muted);">ບໍ່ພົບສິນຄ້າ "${id}"</div>`;
     }
   }
 
@@ -388,7 +387,7 @@
     const nameEl = document.getElementById('stickyProductName');
     const priceEl = document.getElementById('stickyProductPrice');
     if (nameEl) nameEl.textContent = p.name;
-    if (priceEl) priceEl.textContent = '฿' + p.price.toLocaleString();
+    if (priceEl) priceEl.textContent = '₭' + p.price.toLocaleString();
 
     // Disconnect previous observer (when product changes via hash)
     if (_stickyObserver) { _stickyObserver.disconnect(); _stickyObserver = null; }
@@ -405,13 +404,10 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    RubyI18n.injectLangSwitcher('#langSwitcherMount');
     loadProductFromHash();
   });
   // Re-load when clicking related products (hash changes without page reload)
   window.addEventListener('hashchange', loadProductFromHash);
-  // Re-render product detail on language change
-  window.addEventListener('langchange', loadProductFromHash);
 </script>
 </body>
 </html>

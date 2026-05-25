@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="lo">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ruby Store — บัญชีของฉัน</title>
+  <title>Ruby Store — ບັນຊີຂອງຂ້ອຍ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -177,30 +177,29 @@
       Ruby <span>Store</span>
     </a>
     <nav class="navbar-nav">
-      <a href="index.html" data-i18n="nav_home">หน้าแรก</a>
-      <a href="shop.html" data-i18n="nav_shop">สินค้า</a>
-      <a href="index.html#stores" data-i18n="nav_stores">ร้านค้า</a>
+      <a href="index.html" data-i18n="nav_home">ໜ້າຫຼັກ</a>
+      <a href="shop.html" data-i18n="nav_shop">ສິນຄ້າ</a>
+      <a href="index.html#stores" data-i18n="nav_stores">ຮ້ານຄ້າ</a>
     </nav>
     <div class="navbar-spacer"></div>
-    <div id="langSwitcherMount"></div>
     <div class="navbar-actions">
-      <button class="nav-cart-btn" id="cartBtn" aria-label="ตะกร้าสินค้า">
+      <button class="nav-cart-btn" id="cartBtn" aria-label="ກະຕ່າສິນຄ້າ">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
           <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
         </svg>
         <span class="cart-badge hidden" id="cartBadge">0</span>
       </button>
-      <button class="hamburger" id="hamburger" aria-label="เมนู">
+      <button class="hamburger" id="hamburger" aria-label="ເມນູ">
         <span></span><span></span><span></span>
       </button>
     </div>
   </div>
 </nav>
 <div class="mobile-menu" id="mobileMenu">
-  <a href="index.html">🏠 หน้าแรก</a>
-  <a href="shop.html">🛍️ สินค้า</a>
-  <a href="index.html#stores">🏪 ร้านค้า</a>
+  <a href="index.html">🏠 ໜ້າຫຼັກ</a>
+  <a href="shop.html">🛍️ ສິນຄ້າ</a>
+  <a href="index.html#stores">🏪 ຮ້ານຄ້າ</a>
 </div>
 
 <!-- ===================== MAIN ===================== -->
@@ -210,77 +209,77 @@
     <!-- Hero -->
     <div class="profile-hero">
       <div class="profile-avatar">👤</div>
-      <div style="font-size:1.1rem;font-weight:800;margin-bottom:6px;" data-i18n="prof_account">บัญชีของฉัน</div>
+      <div style="font-size:1.1rem;font-weight:800;margin-bottom:6px;" data-i18n="prof_account">ບັນຊີຂອງຂ້ອຍ</div>
       <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
-        <div class="profile-uid-chip" id="uidChip" title="กด copy">
+        <div class="profile-uid-chip" id="uidChip" title="ກົດ copy">
           🔑 <span id="uidDisplay">--------</span>
         </div>
         <span id="cloudBadge"></span>
       </div>
-      <div style="font-size:0.72rem;color:var(--muted);margin-top:6px;">ID ของคุณบนเครื่องนี้ — ไม่ต้องสมัครสมาชิก</div>
+      <div style="font-size:0.72rem;color:var(--muted);margin-top:6px;">ID ຂອງທ່ານໃນເຄື່ອງນີ້ — ບໍ່ຕ້ອງສະໝັກສະມາຊິກ</div>
     </div>
 
     <!-- ── ORDER HISTORY ── -->
     <div class="section-head">
-      <div class="section-title">📦 <span data-i18n="prof_history">ประวัติการสั่งซื้อ</span></div>
-      <button class="btn btn-outline btn-sm" id="refreshBtn" onclick="loadOrders()">🔄 รีเฟรช</button>
+      <div class="section-title">📦 <span data-i18n="prof_history">ປະຫວັດການສັ່ງຊື້</span></div>
+      <button class="btn btn-outline btn-sm" id="refreshBtn" onclick="loadOrders()">🔄 ໂຫຼດໃໝ່</button>
     </div>
 
     <div id="ordersLoading" style="text-align:center;padding:20px;color:var(--muted);font-size:0.875rem;" data-i18n="loading">
-      กำลังโหลด...
+      ກຳລັງໂຫຼດ...
     </div>
     <div id="ordersList" style="display:none;"></div>
     <div id="ordersEmpty" class="order-empty" style="display:none;">
       <div class="order-empty-icon">📭</div>
-      <div style="font-weight:700;margin-bottom:6px;" data-i18n="prof_no_order">ยังไม่มีประวัติการสั่งซื้อ</div>
-      <div style="font-size:0.82rem;margin-bottom:20px;" data-i18n="prof_start_shop">เริ่มเลือกสินค้าได้เลย!</div>
-      <a href="shop.html" class="btn btn-primary">🛍️ ไปเลือกสินค้า</a>
+      <div style="font-weight:700;margin-bottom:6px;" data-i18n="prof_no_order">ຍັງບໍ່ມີຄຳສັ່ງຊື້</div>
+      <div style="font-size:0.82rem;margin-bottom:20px;" data-i18n="prof_start_shop">ເລີ່ມເລືອກສິນຄ້າໄດ້ເລີຍ!</div>
+      <a href="shop.html" class="btn btn-primary">🛍️ ໄປເລືອກສິນຄ້າ</a>
     </div>
 
     <!-- ── QUICK LINKS ── -->
     <div class="ql-card" style="margin-top:24px;">
-      <div class="ql-title" data-i18n="nav_stores">ร้านค้า</div>
+      <div class="ql-title" data-i18n="nav_stores">ຮ້ານຄ້າ</div>
       <a href="shop.html" class="ql-row">
         <div class="ql-icon red">🛍️</div>
-        <div class="ql-body"><div class="ql-label">เลือกซื้อสินค้า</div><div class="ql-desc">สินค้าจาก 3 ร้านในระบบ</div></div>
+        <div class="ql-body"><div class="ql-label">ເລືອກຊື້ສິນຄ້າ</div><div class="ql-desc">ສິນຄ້າຈາກ 3 ຮ້ານໃນລະບົບ</div></div>
         <div class="ql-arrow">›</div>
       </a>
       <a href="shop.html#pet" class="ql-row">
         <div class="ql-icon red">🐾</div>
-        <div class="ql-body"><div class="ql-label">Ruby Pet Shop</div><div class="ql-desc">อาหารและของเล่นสัตว์เลี้ยง</div></div>
+        <div class="ql-body"><div class="ql-label">Ruby Pet Shop</div><div class="ql-desc">ອາຫານ ຂອງຫຼິ້ນ ສັດລ້ຽງ</div></div>
         <div class="ql-arrow">›</div>
       </a>
       <a href="shop.html#computer" class="ql-row">
         <div class="ql-icon blue">💻</div>
-        <div class="ql-body"><div class="ql-label">Ruby Computer</div><div class="ql-desc">คอมพิวเตอร์และอุปกรณ์</div></div>
+        <div class="ql-body"><div class="ql-label">Ruby Computer</div><div class="ql-desc">ຄອມພິວເຕີ ແລະ ອຸປະກອນ</div></div>
         <div class="ql-arrow">›</div>
       </a>
       <a href="shop.html#toy" class="ql-row">
         <div class="ql-icon amber">🧸</div>
-        <div class="ql-body"><div class="ql-label">Ruby Toy Shop</div><div class="ql-desc">ของเล่นเด็กและสะสม</div></div>
+        <div class="ql-body"><div class="ql-label">Ruby Toy Shop</div><div class="ql-desc">ຂອງຫຼິ້ນເດັກ ຂອງສະສົມ</div></div>
         <div class="ql-arrow">›</div>
       </a>
     </div>
 
     <div class="ql-card">
-      <div class="ql-title" data-i18n="prof_contact">ติดต่อร้านค้า</div>
+      <div class="ql-title" data-i18n="prof_contact">ຕິດຕໍ່ຮ້ານຄ້າ</div>
       <a href="https://wa.me/8562078926245" target="_blank" class="ql-row">
         <div class="ql-icon green">💬</div>
-        <div class="ql-body"><div class="ql-label">WhatsApp</div><div class="ql-desc">สอบถาม / ติดตามออเดอร์</div></div>
+        <div class="ql-body"><div class="ql-label">WhatsApp</div><div class="ql-desc">ສອບຖາມ / ຕິດຕາມອໍເດີ</div></div>
         <div class="ql-arrow">›</div>
       </a>
       <a href="https://m.me/rubystore" target="_blank" class="ql-row">
         <div class="ql-icon blue">💬</div>
-        <div class="ql-body"><div class="ql-label">Facebook Messenger</div><div class="ql-desc">inbox ร้านได้เลย</div></div>
+        <div class="ql-body"><div class="ql-label">Facebook Messenger</div><div class="ql-desc">inbox ຮ້ານໄດ້ເລີຍ</div></div>
         <div class="ql-arrow">›</div>
       </a>
     </div>
 
     <div class="ql-card">
-      <div class="ql-title" data-i18n="nav_cart">ตะกร้า</div>
+      <div class="ql-title" data-i18n="nav_cart">ກະຕ່າ</div>
       <div class="ql-row" id="profileCartBtn" style="cursor:pointer;">
         <div class="ql-icon red">🛒</div>
-        <div class="ql-body"><div class="ql-label">ดูตะกร้าสินค้า</div><div class="ql-desc" id="profileCartDesc">ยังไม่มีสินค้าในตะกร้า</div></div>
+        <div class="ql-body"><div class="ql-label">ເບິ່ງກະຕ່າສິນຄ້າ</div><div class="ql-desc" id="profileCartDesc">ຍັງບໍ່ມີສິນຄ້າໃນກະຕ່າ</div></div>
         <div class="ql-arrow">›</div>
       </div>
     </div>
@@ -295,43 +294,43 @@
 <div class="cart-overlay" id="cartOverlay"></div>
 <div class="cart-sidebar" id="cartSidebar">
   <div class="cart-header">
-    <h3>🛒 <span data-i18n="cart_title">ตะกร้าสินค้า</span></h3>
+    <h3>🛒 <span data-i18n="cart_title">ກະຕ່າສິນຄ້າ</span></h3>
     <button class="cart-close" id="cartClose">×</button>
   </div>
   <div class="cart-items" id="cartItems">
     <div class="cart-empty" id="cartEmpty">
       <div class="cart-empty-icon">🛒</div>
-      <p><span data-i18n="cart_empty">ตะกร้าว่างเปล่า</span></p>
+      <p><span data-i18n="cart_empty">ກະຕ່າວ່າງເປົ່າ</span></p>
     </div>
   </div>
   <div class="cart-footer" id="cartFooter" style="display:none;">
     <div class="cart-subtotal">
-      <span class="label" data-i18n="cart_subtotal">ราคาสินค้า</span>
-      <span class="value" id="cartSubtotalVal">฿0</span>
+      <span class="label" data-i18n="cart_subtotal">ລາຄາສິນຄ້າ</span>
+      <span class="value" id="cartSubtotalVal">₭0</span>
     </div>
     <div class="cart-total">
-      <span data-i18n="cart_total">รวมทั้งหมด</span>
-      <span class="price" id="cartTotalVal">฿0</span>
+      <span data-i18n="cart_total">ລວມທັງໝົດ</span>
+      <span class="price" id="cartTotalVal">₭0</span>
     </div>
-    <a href="checkout.html" class="btn btn-primary btn-block" data-i18n="cart_checkout">ดำเนินการสั่งซื้อ →</a>
+    <a href="checkout.html" class="btn btn-primary btn-block" data-i18n="cart_checkout">ດຳເນີນການສັ່ງຊື້ →</a>
   </div>
 </div>
 
 <!-- ===================== MOBILE BOTTOM NAV ===================== -->
 <nav class="mobile-bottom-nav">
   <a href="index.html" class="nav-item">
-    <span class="icon">🏠</span><span data-i18n="nav_home">หน้าแรก</span>
+    <span class="icon">🏠</span><span data-i18n="nav_home">ໜ້າຫຼັກ</span>
   </a>
   <a href="shop.html" class="nav-item">
-    <span class="icon">🛍️</span><span data-i18n="nav_stores">ร้านค้า</span>
+    <span class="icon">🛍️</span><span data-i18n="nav_stores">ຮ້ານຄ້າ</span>
   </a>
   <a href="#" class="nav-item" id="mobileCartBtn">
     <span class="icon">🛒</span>
     <div class="cart-dot" id="mobileCartDot"></div>
-    <span data-i18n="nav_cart">ตะกร้า</span>
+    <span data-i18n="nav_cart">ກະຕ່າ</span>
   </a>
   <a href="profile.html" class="nav-item active">
-    <span class="icon">👤</span><span data-i18n="nav_account">บัญชี</span>
+    <span class="icon">👤</span><span data-i18n="nav_account">ບັນຊີ</span>
   </a>
 </nav>
 
@@ -340,17 +339,17 @@
 <script src="db.js"></script>
 <script src="app.js"></script>
 <script>
-  const STATUS_TH = {
-    pending:   'รอยืนยัน',
-    confirmed: 'ยืนยันแล้ว',
-    completed: 'จัดส่งแล้ว',
-    cancelled: 'ยกเลิก',
+  const STATUS_LAO = {
+    pending:   'ລໍຖ້າຢືນຢັນ',
+    confirmed: 'ຢືນຢັນແລ້ວ',
+    completed: 'ສຳເລັດ',
+    cancelled: 'ຍົກເລີກ',
   };
-  const CH_TH = { wa: '💬 WhatsApp', msg: '💬 Messenger' };
+  const CH_LAO = { wa: '💬 WhatsApp', msg: '💬 Messenger' };
 
   function fmtDate(iso) {
     if (!iso) return '-';
-    return new Date(iso).toLocaleDateString('th-TH', {
+    return new Date(iso).toLocaleDateString('lo-LA', {
       year: 'numeric', month: 'short', day: 'numeric',
       hour: '2-digit', minute: '2-digit',
     });
@@ -363,19 +362,19 @@
       `<div class="order-hist-thumb" style="background:${it.bg || '#FFF1F1'}">${it.emoji || '📦'}</div>`
     ).join('');
     const moreCount = items.length > 5 ? `<div class="order-hist-thumb" style="background:var(--bg);font-size:0.75rem;font-weight:700;color:var(--muted);">+${items.length - 5}</div>` : '';
-    const itemNames = items.map(i => `${i.name} x${i.qty}`).join(', ') || 'ไม่มีข้อมูลสินค้า';
+    const itemNames = items.map(i => `${i.name} x${i.qty}`).join(', ') || 'ບໍ່ມີຂໍ້ມູນ';
 
     return `
       <div class="order-hist-card" onclick="toggleOrderDetail(this)">
         <div class="order-hist-head">
           <div class="order-hist-no">${order.orderNo || '-'}</div>
-          <span class="o-status ${status}">${STATUS_TH[status] || status}</span>
+          <span class="o-status ${status}">${STATUS_LAO[status] || status}</span>
         </div>
         <div class="order-hist-items">${thumbs}${moreCount}</div>
         <div class="order-hist-foot">
           <div>
-            <div class="order-hist-total">฿${(order.total || 0).toLocaleString()}</div>
-            <div class="order-hist-ch">${CH_TH[order.channel] || order.channel || '-'} • ${fmtDate(order.createdAt)}</div>
+            <div class="order-hist-total">₭${(order.total || 0).toLocaleString()}</div>
+            <div class="order-hist-ch">${CH_LAO[order.channel] || order.channel || '-'} • ${fmtDate(order.createdAt)}</div>
           </div>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="chevron" style="transition:transform 0.2s;color:var(--border)">
             <polyline points="6 9 12 15 18 9"/>
@@ -383,18 +382,18 @@
         </div>
         <!-- Detail (collapsed) -->
         <div class="order-detail" style="display:none;padding:12px 16px 16px;border-top:1px solid var(--line-soft);background:var(--bg);">
-          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:700;">รายละเอียดออเดอร์</div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:700;">ລາຍລະອຽດອໍເດີ</div>
           <div style="font-size:0.82rem;color:var(--text-m);line-height:1.8;">
-            <b>สินค้า:</b> ${itemNames}<br>
-            <b>ชื่อ:</b> ${order.name || '-'}<br>
-            <b>โทร:</b> ${order.phone || '-'}<br>
-            <b>ที่อยู่:</b> ${order.address || '-'}<br>
-            <b>จัดส่ง:</b> ${order.delivery || '-'}
-            ${order.note ? `<br><b>หมายเหตุ:</b> ${order.note}` : ''}
+            <b>ສິນຄ້າ:</b> ${itemNames}<br>
+            <b>ຊື່:</b> ${order.name || '-'}<br>
+            <b>ໂທ:</b> ${order.phone || '-'}<br>
+            <b>ທີ່ຢູ່:</b> ${order.address || '-'}<br>
+            <b>ຈັດສົ່ງ:</b> ${order.delivery || '-'}
+            ${order.note ? `<br><b>ໝາຍເຫດ:</b> ${order.note}` : ''}
           </div>
           <div style="margin-top:12px;display:flex;gap:8px;">
-            <a href="https://wa.me/8562078926245?text=${encodeURIComponent('สอบถามออเดอร์ ' + (order.orderNo||''))}"
-               target="_blank" class="btn btn-wa btn-sm" style="font-size:0.78rem;">💬 ติดตามออเดอร์ทาง WA</a>
+            <a href="https://wa.me/8562078926245?text=${encodeURIComponent('ສອບຖາມອໍເດີ ' + (order.orderNo||''))}"
+               target="_blank" class="btn btn-wa btn-sm" style="font-size:0.78rem;">💬 ຕິດຕາມອໍເດີທາງ WA</a>
           </div>
         </div>
       </div>`;
@@ -428,23 +427,21 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    RubyI18n.injectLangSwitcher('#langSwitcherMount');
-
     // UID display
     document.getElementById('uidDisplay').textContent = RubyDB.getShortUID();
     document.getElementById('uidChip').addEventListener('click', () => {
-      navigator.clipboard.writeText(RubyDB.getUID()).then(() => showToast('คัดลอก ID แล้ว'));
+      navigator.clipboard.writeText(RubyDB.getUID()).then(() => showToast('ສຳເນົາ ID ແລ້ວ'));
     });
 
     // Cloud badge
     const badge = document.getElementById('cloudBadge');
     badge.innerHTML = RubyDB.isCloudEnabled()
       ? '<span class="cloud-badge">☁️ Cloud Sync</span>'
-      : '<span class="local-badge">💾 เก็บในเครื่อง</span>';
+      : '<span class="local-badge">💾 ເກັບໃນເຄື່ອງ</span>';
 
     // Cart shortcut
     const count = cart.reduce((s, i) => s + i.qty, 0);
-    if (count > 0) document.getElementById('profileCartDesc').textContent = `${count} รายการ — ฿${getCartTotal().toLocaleString()}`;
+    if (count > 0) document.getElementById('profileCartDesc').textContent = `${count} ລາຍການ — ₭${getCartTotal().toLocaleString()}`;
     document.getElementById('profileCartBtn').addEventListener('click', openCart);
 
     // Load orders
@@ -457,7 +454,7 @@
       clearTimeout(tapTimer);
       tapTimer = setTimeout(() => { tapCount = 0; }, 2000);
       if (tapCount >= 5) { tapCount = 0; window.location.href = 'admin.html'; }
-      else if (tapCount >= 3) showToast(`อีก ${5 - tapCount} ครั้ง...`);
+      else if (tapCount >= 3) showToast(`ອີກ ${5 - tapCount} ເທື່ອ...`);
     });
   });
 </script>

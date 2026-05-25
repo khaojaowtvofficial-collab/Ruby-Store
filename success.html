@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="lo">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ruby Store — สั่งซื้อสำเร็จ!</title>
+  <title>Ruby Store — ສົ່ງຂໍ້ຄວາມສຳເລັດ!</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -53,12 +53,12 @@
 
       <!-- Check Circle -->
       <div class="success-check">✓</div>
-      <h1 style="font-size:1.6rem;font-weight:800;margin-bottom:8px;">ส่งข้อความสำเร็จ!</h1>
-      <p class="sub">ร้านจะยืนยันออเดอร์ภายใน 24 ชั่วโมง</p>
+      <h1 style="font-size:1.6rem;font-weight:800;margin-bottom:8px;">ສົ່ງຂໍ້ຄວາມສຳເລັດ!</h1>
+      <p class="sub">ຮ້ານສິຢືນຢັນອໍເດີພາຍໃນ 24 ຊົ່ວໂມງ</p>
 
       <!-- Order Number -->
       <div class="order-number-card">
-        <div class="order-number-label">หมายเลขออเดอร์</div>
+        <div class="order-number-label">ໝາຍເລກອໍເດີ</div>
         <div class="order-number" id="orderNumber">RB------</div>
       </div>
 
@@ -67,28 +67,28 @@
         <div class="order-info-item">
           <span style="font-size:1.2rem;">👤</span>
           <div>
-            <div style="font-size:0.72rem;color:var(--muted);">ชื่อ</div>
+            <div style="font-size:0.72rem;color:var(--muted);">ຊື່</div>
             <div style="font-weight:700;font-size:0.875rem;" id="infoName">-</div>
           </div>
         </div>
         <div class="order-info-item">
           <span style="font-size:1.2rem;">💬</span>
           <div>
-            <div style="font-size:0.72rem;color:var(--muted);">ช่องทาง</div>
+            <div style="font-size:0.72rem;color:var(--muted);">ຊ່ອງທາງ</div>
             <div style="font-weight:700;font-size:0.875rem;" id="infoChannel">-</div>
           </div>
         </div>
         <div class="order-info-item">
           <span style="font-size:1.2rem;">💰</span>
           <div>
-            <div style="font-size:0.72rem;color:var(--muted);">ยอดรวม</div>
+            <div style="font-size:0.72rem;color:var(--muted);">ຍອດລວມ</div>
             <div style="font-weight:700;font-size:0.875rem;color:var(--red);" id="infoTotal">-</div>
           </div>
         </div>
         <div class="order-info-item">
           <span style="font-size:1.2rem;">🚚</span>
           <div>
-            <div style="font-size:0.72rem;color:var(--muted);">จัดส่ง</div>
+            <div style="font-size:0.72rem;color:var(--muted);">ຈັດສົ່ງ</div>
             <div style="font-weight:700;font-size:0.875rem;" id="infoDelivery">-</div>
           </div>
         </div>
@@ -96,34 +96,34 @@
 
       <!-- Timeline -->
       <div class="order-timeline">
-        <div class="timeline-title">สถานะออเดอร์</div>
+        <div class="timeline-title">ສະຖານະອໍເດີ</div>
         <div class="timeline-items">
           <div class="timeline-item">
             <div class="timeline-dot done"></div>
             <div class="timeline-text">
-              <div class="t-title">ส่งข้อความสำเร็จ</div>
+              <div class="t-title">ສົ່ງຂໍ້ຄວາມສຳເລັດ</div>
               <div class="t-sub" id="tlDate">-</div>
             </div>
           </div>
           <div class="timeline-item">
             <div class="timeline-dot current"></div>
             <div class="timeline-text">
-              <div class="t-title">รอร้านยืนยัน</div>
-              <div class="t-sub">ภายใน 24 ชม.</div>
+              <div class="t-title">ລໍຖ້າຮ້ານຢືນຢັນ</div>
+              <div class="t-sub">ພາຍໃນ 24 ຊມ.</div>
             </div>
           </div>
           <div class="timeline-item">
             <div class="timeline-dot pending"></div>
             <div class="timeline-text">
-              <div class="t-title">เตรียมจัดส่ง</div>
-              <div class="t-sub">1-2 วันทำการ</div>
+              <div class="t-title">ກຽມຈັດສົ່ງ</div>
+              <div class="t-sub">1-2 ວັນທຳການ</div>
             </div>
           </div>
           <div class="timeline-item">
             <div class="timeline-dot pending"></div>
             <div class="timeline-text">
-              <div class="t-title">จัดส่งแล้ว</div>
-              <div class="t-sub">รับ Tracking ทาง WA/Messenger</div>
+              <div class="t-title">ຈັດສົ່ງແລ້ວ</div>
+              <div class="t-sub">ຮັບ Tracking ທາງ WA/Messenger</div>
             </div>
           </div>
         </div>
@@ -131,8 +131,8 @@
 
       <!-- CTAs -->
       <div class="success-btns">
-        <a href="shop.html" class="btn btn-primary">🛍️ ซื้อสินค้าต่อ</a>
-        <a href="index.html" class="btn btn-outline">🏠 กลับหน้าแรก</a>
+        <a href="shop.html" class="btn btn-primary">🛍️ ຊື້ສິນຄ້າຕໍ່</a>
+        <a href="index.html" class="btn btn-outline">🏠 ກັບໜ້າຫຼັກ</a>
       </div>
 
     </div>
@@ -151,16 +151,16 @@
 
     // Date
     const now = new Date();
-    const dateStr = now.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const dateStr = now.toLocaleDateString('lo-LA', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
     document.getElementById('tlDate').textContent = dateStr;
 
     // lastOrder already loaded above
     if (lastOrder.name) document.getElementById('infoName').textContent = lastOrder.name;
     if (lastOrder.channel) document.getElementById('infoChannel').textContent = lastOrder.channel === 'wa' ? 'WhatsApp' : 'Messenger';
-    if (lastOrder.total !== undefined) document.getElementById('infoTotal').textContent = '฿' + lastOrder.total.toLocaleString();
+    if (lastOrder.total !== undefined) document.getElementById('infoTotal').textContent = '₭' + lastOrder.total.toLocaleString();
     if (lastOrder.delivery) document.getElementById('infoDelivery').textContent = lastOrder.delivery;
 
-    showToast('สั่งซื้อสำเร็จ! 🎉', 'success');
+    showToast('ສັ່ງຊື້ສຳເລັດ! 🎉', 'success');
   });
 </script>
 </body>

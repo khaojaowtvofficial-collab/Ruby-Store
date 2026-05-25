@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="lo">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ruby Store — สั่งซื้อง่าย ผ่าน WhatsApp & Messenger</title>
+  <title>Ruby Store — ສັ່ງຊື້ງ່າຍ ຜ່ານ WhatsApp & Messenger</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -24,22 +24,21 @@
       Ruby <span>Store</span>
     </a>
     <nav class="navbar-nav">
-      <a href="index.html" class="active" data-i18n="nav_home">หน้าแรก</a>
-      <a href="shop.html" data-i18n="nav_shop">สินค้า</a>
-      <a href="#stores" data-i18n="nav_stores">ร้านค้า</a>
-      <a href="#about" data-i18n="nav_about">เกี่ยวกับ</a>
+      <a href="index.html" class="active" data-i18n="nav_home">ໜ້າຫຼັກ</a>
+      <a href="shop.html" data-i18n="nav_shop">ສິນຄ້າ</a>
+      <a href="#stores" data-i18n="nav_stores">ຮ້ານຄ້າ</a>
+      <a href="#about" data-i18n="nav_about">ກ່ຽວກັບ</a>
     </nav>
     <div class="navbar-spacer"></div>
-    <div id="langSwitcherMount"></div>
     <div class="navbar-actions">
-      <button class="nav-cart-btn" id="cartBtn" aria-label="ตะกร้าสินค้า">
+      <button class="nav-cart-btn" id="cartBtn" aria-label="ກະຕ່າສິນຄ້າ">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
           <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
         </svg>
         <span class="cart-badge hidden" id="cartBadge">0</span>
       </button>
-      <button class="hamburger" id="hamburger" aria-label="เมนู">
+      <button class="hamburger" id="hamburger" aria-label="ເມນູ">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -48,50 +47,50 @@
 
 <!-- Mobile Menu -->
 <div class="mobile-menu" id="mobileMenu">
-  <a href="index.html" class="active">🏠 หน้าแรก</a>
-  <a href="shop.html">🛍️ สินค้า</a>
-  <a href="#stores">🏪 ร้านค้า</a>
-  <a href="#about">ℹ️ เกี่ยวกับ</a>
+  <a href="index.html" class="active">🏠 ໜ້າຫຼັກ</a>
+  <a href="shop.html">🛍️ ສິນຄ້າ</a>
+  <a href="#stores">🏪 ຮ້ານຄ້າ</a>
+  <a href="#about">ℹ️ ກ່ຽວກັບ</a>
 </div>
 
 <!-- ===================== HERO ===================== -->
 <section class="hero">
   <div class="hero-inner">
     <div class="hero-tag">
-      <span>🛍️</span> <span data-i18n="hero_tag">Social Commerce สำหรับร้านค้า</span>
+      <span>🛍️</span> <span data-i18n="hero_tag">Social Commerce ສຳຫຼັບຮ້ານຄ້າ</span>
     </div>
-    <h1><span data-i18n="hero_title1">สั่งง่าย จ่ายสะดวก</span><br><span data-i18n="hero_title2">ผ่าน WhatsApp & Messenger</span></h1>
-    <p class="hero-desc" data-i18n="hero_sub">เลือกสินค้าที่ชอบ แล้วส่งออเดอร์ผ่านแชท ง่ายๆ ไม่ต้องสมัครสมาชิก ไม่ต้องจำรหัสผ่าน</p>
+    <h1><span data-i18n="hero_title1">ສັ່ງງ່າຍ ຈ່າຍສະດວກ</span><br><span data-i18n="hero_title2">ຜ່ານ WhatsApp & Messenger</span></h1>
+    <p class="hero-desc" data-i18n="hero_sub">ເລືອກສິນຄ້າທີ່ມັກ ແລ້ວສົ່ງອໍເດີຜ່ານແຊັດ ງ່າຍໆ ບໍ່ຕ້ອງສະໝັກສະມາຊິກ ບໍ່ຕ້ອງໃຊ້ລະຫັດຜ່ານ</p>
     <div class="hero-ctas">
       <a href="shop.html" class="btn btn-primary btn-lg">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
           <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
         </svg>
-        <span data-i18n="hero_btn_shop">ช้อปเลย</span>
+        <span data-i18n="hero_btn_shop">ຊື້ເລີຍ</span>
       </a>
-      <a href="#stores" class="btn btn-outline btn-lg" data-i18n="hero_btn_stores">ดูร้านค้า</a>
+      <a href="#stores" class="btn btn-outline btn-lg" data-i18n="hero_btn_stores">ເບິ່ງຮ້ານຄ້າ</a>
     </div>
     <div class="hero-stats">
       <div class="hero-stat">
         <div class="hero-stat-icon">📦</div>
         <div class="hero-stat-text">
           <strong id="heroProductCount">—</strong>
-          <span data-i18n="stat_items_lbl">สินค้า</span>
+          <span data-i18n="stat_items_lbl">ສິນຄ້າ</span>
         </div>
       </div>
       <div class="hero-stat">
         <div class="hero-stat-icon">🏪</div>
         <div class="hero-stat-text">
-          <strong>3 <span data-i18n="stat_stores">ร้านค้า</span></strong>
-          <span data-i18n="stat_in_sys">ในระบบ</span>
+          <strong>3 <span data-i18n="stat_stores">ຮ້ານຄ້າ</span></strong>
+          <span data-i18n="stat_in_sys">ໃນລະບົບ</span>
         </div>
       </div>
       <div class="hero-stat">
         <div class="hero-stat-icon">⭐</div>
         <div class="hero-stat-text">
           <strong>4.9★</strong>
-          <span data-i18n="stat_rating_lbl">คะแนนเฉลี่ย</span>
+          <span data-i18n="stat_rating_lbl">ຄະແນນສະເລ່ຍ</span>
         </div>
       </div>
     </div>
@@ -101,15 +100,15 @@
 <!-- ===================== STORES ===================== -->
 <section class="section" id="stores">
   <div class="container">
-    <h2 class="section-title">🏪 <span data-i18n="sec_stores">เลือกร้านค้า</span></h2>
+    <h2 class="section-title">🏪 <span data-i18n="sec_stores">ເລືອກຮ້ານຄ້າ</span></h2>
     <div class="stores-grid">
       <a href="shop.html#pet" class="store-row-card">
         <div class="store-card-icon">🐾</div>
         <div class="store-card-body">
           <div class="store-card-name">Ruby Pet Shop</div>
-          <div class="store-card-desc">อาหาร ของเล่น สำหรับน้องหมาแมว</div>
+          <div class="store-card-desc" data-i18n="store_pet_desc">ອາຫານ ຂອງຫຼິ້ນ ສຳລັບໝາ ແລະ ແມວ</div>
           <div class="store-card-meta">
-            <span class="store-card-count" id="storePetCount">— สินค้า</span>
+            <span class="store-card-count" id="storePetCount">— ລາຍການ</span>
           </div>
         </div>
         <svg class="store-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -120,9 +119,9 @@
         <div class="store-card-icon">💻</div>
         <div class="store-card-body">
           <div class="store-card-name">Ruby Computer</div>
-          <div class="store-card-desc">อุปกรณ์คอมพิวเตอร์ ไอที</div>
+          <div class="store-card-desc" data-i18n="store_comp_desc">ອຸປະກອນຄອມພິວເຕີ ໄອທີ</div>
           <div class="store-card-meta">
-            <span class="store-card-count" id="storeComputerCount">— สินค้า</span>
+            <span class="store-card-count" id="storeComputerCount">— ລາຍການ</span>
           </div>
         </div>
         <svg class="store-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -133,9 +132,9 @@
         <div class="store-card-icon">🧸</div>
         <div class="store-card-body">
           <div class="store-card-name">Ruby Toy Shop</div>
-          <div class="store-card-desc">ของเล่นเด็ก ของสะสม</div>
+          <div class="store-card-desc" data-i18n="store_toy_desc">ຂອງຫຼິ້ນເດັກ ຂອງສະສົມ</div>
           <div class="store-card-meta">
-            <span class="store-card-count" id="storeToyCount">— สินค้า</span>
+            <span class="store-card-count" id="storeToyCount">— ລາຍການ</span>
           </div>
         </div>
         <svg class="store-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -151,25 +150,25 @@
   <div class="container">
     <div class="cat-chips">
       <button class="cat-chip active" data-cat="all">
-        <span class="cat-chip-icon">🛍️</span> ทั้งหมด
+        <span class="cat-chip-icon">🛍️</span> <span data-i18n="filter_all">ທັງໝົດ</span>
       </button>
       <button class="cat-chip" data-cat="food">
-        <span class="cat-chip-icon">🍖</span> อาหาร
+        <span class="cat-chip-icon">🍖</span> <span data-i18n="cat_food">ອາຫານ</span>
       </button>
       <button class="cat-chip" data-cat="toy-pet">
-        <span class="cat-chip-icon">🎾</span> ของเล่น
+        <span class="cat-chip-icon">🎾</span> <span data-i18n="cat_toy">ຂອງຫຼິ້ນ</span>
       </button>
       <button class="cat-chip" data-cat="dog">
-        <span class="cat-chip-icon">🐶</span> น้องหมา
+        <span class="cat-chip-icon">🐶</span> <span data-i18n="cat_dog">ໝາ</span>
       </button>
       <button class="cat-chip" data-cat="cat">
-        <span class="cat-chip-icon">🐱</span> น้องแมว
+        <span class="cat-chip-icon">🐱</span> <span data-i18n="cat_cat">ແມວ</span>
       </button>
       <button class="cat-chip" data-cat="snack">
-        <span class="cat-chip-icon">🍬</span> ขนม
+        <span class="cat-chip-icon">🍬</span> <span data-i18n="cat_snack">ຂະໜົມ</span>
       </button>
       <button class="cat-chip" data-cat="equip">
-        <span class="cat-chip-icon">🔧</span> อุปกรณ์
+        <span class="cat-chip-icon">🔧</span> <span data-i18n="cat_equip">ອຸປະກອນ</span>
       </button>
     </div>
   </div>
@@ -179,15 +178,15 @@
 <section class="section" id="products" style="padding-top: 16px;">
   <div class="container">
     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
-      <h2 class="section-title" style="margin-bottom:0;">🔥 <span data-i18n="sec_bestseller">สินค้าขายดี</span></h2>
-      <a href="shop.html" style="font-size:0.85rem; color:var(--red); font-weight:600;" data-i18n="sec_view_all">ดูทั้งหมด →</a>
+      <h2 class="section-title" style="margin-bottom:0;">🔥 <span data-i18n="sec_bestseller">ສິນຄ້າຂາຍດີ</span></h2>
+      <a href="shop.html" style="font-size:0.85rem; color:var(--red); font-weight:600;" data-i18n="sec_view_all">ເບິ່ງທັງໝົດ →</a>
     </div>
     <!-- Filter Buttons -->
     <div class="filter-bar" id="filterBar">
-      <button class="filter-btn active" data-filter="all" data-i18n="filter_all">ทั้งหมด</button>
-      <button class="filter-btn" data-filter="pet" data-i18n="filter_pet">สัตว์เลี้ยง</button>
-      <button class="filter-btn" data-filter="computer" data-i18n="filter_computer">คอมพิวเตอร์</button>
-      <button class="filter-btn" data-filter="toy" data-i18n="filter_toy">ของเล่น</button>
+      <button class="filter-btn active" data-filter="all" data-i18n="filter_all">ທັງໝົດ</button>
+      <button class="filter-btn" data-filter="pet" data-i18n="filter_pet">ສັດລ້ຽງ</button>
+      <button class="filter-btn" data-filter="computer" data-i18n="filter_computer">ຄອມພິວເຕີ</button>
+      <button class="filter-btn" data-filter="toy" data-i18n="filter_toy">ຂອງຫຼິ້ນ</button>
     </div>
     <!-- Product Grid -->
     <div class="products-grid" id="productsGrid">
@@ -200,26 +199,26 @@
 <section id="about" style="padding: 48px 0 32px; background: var(--card);">
   <div class="container" style="text-align:center; max-width:560px; margin:0 auto;">
     <div style="font-size:2rem; margin-bottom:12px;">💬</div>
-    <h2 style="font-size:1.4rem; font-weight:800; margin-bottom:12px;" data-i18n="sec_how">วิธีการสั่งซื้อ</h2>
+    <h2 style="font-size:1.4rem; font-weight:800; margin-bottom:12px;" data-i18n="sec_how">ວິທີສັ່ງຊື້</h2>
     <p style="font-size:0.9rem; color:var(--text-m); line-height:1.8; margin-bottom:24px;">
-      เลือกสินค้าที่ต้องการ → กด "หยิบใส่ตะกร้า" → ไปที่หน้า Checkout → เลือกช่องทาง WhatsApp หรือ Messenger → ส่งออเดอร์ → รอร้านค้าติดต่อกลับ
+      ເລືອກສິນຄ້າ → ກົດ "ໃສ່ກະຕ່າ" → ໄປໜ້າ Checkout → ເລືອກຊ່ອງທາງ WhatsApp ຫຼື Messenger → ສົ່ງອໍເດີ → ລໍຖ້າຮ້ານຕິດຕໍ່ກັບ
     </p>
     <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
       <div style="background:var(--bg); border-radius:16px; padding:16px 20px; text-align:center; min-width:100px;">
         <div style="font-size:1.5rem; margin-bottom:4px;">1️⃣</div>
-        <div style="font-size:0.8rem; font-weight:600;" data-i18n="how_step1">เลือกสินค้า</div>
+        <div style="font-size:0.8rem; font-weight:600;" data-i18n="how_step1">ເລືອກສິນຄ້າ</div>
       </div>
       <div style="background:var(--bg); border-radius:16px; padding:16px 20px; text-align:center; min-width:100px;">
         <div style="font-size:1.5rem; margin-bottom:4px;">2️⃣</div>
-        <div style="font-size:0.8rem; font-weight:600;" data-i18n="how_step2">กรอกที่อยู่</div>
+        <div style="font-size:0.8rem; font-weight:600;" data-i18n="how_step2">ຕື່ມທີ່ຢູ່</div>
       </div>
       <div style="background:var(--bg); border-radius:16px; padding:16px 20px; text-align:center; min-width:100px;">
         <div style="font-size:1.5rem; margin-bottom:4px;">3️⃣</div>
-        <div style="font-size:0.8rem; font-weight:600;" data-i18n="how_step3">ส่งผ่านแชท</div>
+        <div style="font-size:0.8rem; font-weight:600;" data-i18n="how_step3">ສົ່ງຜ່ານແຊດ</div>
       </div>
       <div style="background:var(--bg); border-radius:16px; padding:16px 20px; text-align:center; min-width:100px;">
         <div style="font-size:1.5rem; margin-bottom:4px;">4️⃣</div>
-        <div style="font-size:0.8rem; font-weight:600;" data-i18n="how_step4">รอรับสินค้า</div>
+        <div style="font-size:0.8rem; font-weight:600;" data-i18n="how_step4">ລໍຖ້າສິນຄ້າ</div>
       </div>
     </div>
   </div>
@@ -238,28 +237,28 @@
           </svg>
           Ruby Store
         </div>
-        <p class="footer-tagline">Social Commerce สำหรับร้านไทย สั่งซื้อง่ายผ่าน WhatsApp & Messenger ไม่ต้องสมัครสมาชิก</p>
+        <p class="footer-tagline">Social Commerce ສຳລັບຮ້ານໃນລາວ ສັ່ງຊື້ງ່າຍຜ່ານ WhatsApp & Messenger ບໍ່ຕ້ອງສະໝັກສະມາຊິກ</p>
         <div class="footer-socials">
           <a href="#" class="footer-social-btn wa" title="WhatsApp">💬</a>
           <a href="#" class="footer-social-btn fb" title="Facebook">f</a>
         </div>
       </div>
       <div class="footer-links-col">
-        <h4>สินค้า</h4>
+        <h4>ສິນຄ້າ</h4>
         <a href="shop.html#pet">Ruby Pet Shop</a>
         <a href="shop.html#computer">Ruby Computer</a>
         <a href="shop.html#toy">Ruby Toy Shop</a>
-        <a href="shop.html">ดูทั้งหมด</a>
+        <a href="shop.html">ເບິ່ງທັງໝົດ</a>
       </div>
       <div class="footer-links-col">
-        <h4>ข้อมูล</h4>
-        <a href="#about">วิธีสั่งซื้อ</a>
-        <a href="#">นโยบายการคืนสินค้า</a>
-        <a href="#">ติดต่อเรา</a>
+        <h4>ຂໍ້ມູນ</h4>
+        <a href="#about">ວິທີສັ່ງຊື້</a>
+        <a href="#">ນະໂຍບາຍຄືນສິນຄ້າ</a>
+        <a href="#">ຕິດຕໍ່ເຮົາ</a>
       </div>
     </div>
     <div class="footer-bottom">
-      © 2026 Ruby Store — Social Commerce for Thai Small Shops
+      © 2026 Ruby Store — Social Commerce ສຳລັບຮ້ານໃນລາວ
     </div>
   </div>
 </footer>
@@ -268,29 +267,29 @@
 <div class="cart-overlay" id="cartOverlay"></div>
 <div class="cart-sidebar" id="cartSidebar">
   <div class="cart-header">
-    <h3>🛒 <span data-i18n="cart_title">ตะกร้าสินค้า</span></h3>
+    <h3>🛒 <span data-i18n="cart_title">ກະຕ່າສິນຄ້າ</span></h3>
     <button class="cart-close" id="cartClose">×</button>
   </div>
   <div class="cart-items" id="cartItems">
     <div class="cart-empty" id="cartEmpty">
       <div class="cart-empty-icon">🛒</div>
-      <p><span data-i18n="cart_empty">ตะกร้าว่างเปล่า</span><br><span data-i18n="cart_empty_sub">เพิ่มสินค้าเพื่อเริ่มสั่งซื้อ</span></p>
+      <p><span data-i18n="cart_empty">ກະຕ່າວ່າງເປົ່າ</span><br><span data-i18n="cart_empty_sub">ເພີ່ມສິນຄ້າເພື່ອເລີ່ມຕົ້ນ</span></p>
     </div>
   </div>
   <div class="cart-footer" id="cartFooter" style="display:none;">
     <div class="cart-subtotal">
-      <span class="label" data-i18n="cart_subtotal">ราคาสินค้า</span>
-      <span class="value" id="cartSubtotalVal">฿0</span>
+      <span class="label" data-i18n="cart_subtotal">ລາຄາສິນຄ້າ</span>
+      <span class="value" id="cartSubtotalVal">₭0</span>
     </div>
     <div class="cart-subtotal">
-      <span class="label" data-i18n="cart_shipping">ค่าส่ง</span>
-      <span class="value" data-i18n="cart_ship_calc">คำนวณขั้นตอนถัดไป</span>
+      <span class="label" data-i18n="cart_shipping">ຄ່າສົ່ງ</span>
+      <span class="value" data-i18n="cart_ship_calc">ຄຳນວນຂັ້ນຕໍ່ໄປ</span>
     </div>
     <div class="cart-total">
-      <span data-i18n="cart_total">รวมทั้งหมด</span>
-      <span class="price" id="cartTotalVal">฿0</span>
+      <span data-i18n="cart_total">ລວມທັງໝົດ</span>
+      <span class="price" id="cartTotalVal">₭0</span>
     </div>
-    <a href="checkout.html" class="btn btn-primary btn-block" data-i18n="cart_checkout">ดำเนินการสั่งซื้อ →</a>
+    <a href="checkout.html" class="btn btn-primary btn-block" data-i18n="cart_checkout">ດຳເນີນການສັ່ງຊື້ →</a>
   </div>
 </div>
 
@@ -298,20 +297,20 @@
 <nav class="mobile-bottom-nav">
   <a href="index.html" class="nav-item active">
     <span class="icon">🏠</span>
-    <span data-i18n="nav_home">หน้าแรก</span>
+    <span data-i18n="nav_home">ໜ້າຫຼັກ</span>
   </a>
   <a href="shop.html" class="nav-item">
     <span class="icon">🛍️</span>
-    <span data-i18n="nav_stores">ร้านค้า</span>
+    <span data-i18n="nav_stores">ຮ້ານຄ້າ</span>
   </a>
   <a href="#" class="nav-item" id="mobileCartBtn">
     <span class="icon">🛒</span>
     <div class="cart-dot" id="mobileCartDot"></div>
-    <span data-i18n="nav_cart">ตะกร้า</span>
+    <span data-i18n="nav_cart">ກະຕ່າ</span>
   </a>
   <a href="profile.html" class="nav-item">
     <span class="icon">👤</span>
-    <span data-i18n="nav_account">บัญชี</span>
+    <span data-i18n="nav_account">ບັນຊີ</span>
   </a>
 </nav>
 
@@ -328,39 +327,29 @@
     if (filter && filter !== 'all') products = products.filter(p => p.store === filter);
     grid.innerHTML = products.length
       ? products.map(p => buildProductCard(p)).join('')
-      : '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);">ไม่พบสินค้า</div>';
+      : '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);">ບໍ່ພົບສິນຄ້າ</div>';
     bindAddToCart();
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    // Inject language switcher
-    RubyI18n.injectLangSwitcher('#langSwitcherMount');
-
     renderHomeProducts('all');
 
     // Update hero & store counts from real PRODUCTS
     const prods = window.PRODUCTS || [];
-    const total = prods.length;
-    const petCnt = prods.filter(p => p.store === 'pet').length;
+    const total  = prods.length;
+    const petCnt  = prods.filter(p => p.store === 'pet').length;
     const compCnt = prods.filter(p => p.store === 'computer').length;
-    const toyCnt = prods.filter(p => p.store === 'toy').length;
+    const toyCnt  = prods.filter(p => p.store === 'toy').length;
 
+    const lbl = RubyI18n.t('stat_products'); // "ລາຍການ"
     const heroCount = document.getElementById('heroProductCount');
-    if (heroCount) heroCount.textContent = total + ' ' + RubyI18n.t('stat_products');
-    const petEl = document.getElementById('storePetCount');
-    if (petEl) petEl.textContent = petCnt + ' ' + RubyI18n.t('nav_shop');
+    if (heroCount) heroCount.textContent = total + ' ' + lbl;
+    const petEl  = document.getElementById('storePetCount');
+    if (petEl)  petEl.textContent  = petCnt  + ' ' + lbl;
     const compEl = document.getElementById('storeComputerCount');
-    if (compEl) compEl.textContent = compCnt + ' ' + RubyI18n.t('nav_shop');
-    const toyEl = document.getElementById('storeToyCount');
-    if (toyEl) toyEl.textContent = toyCnt + ' ' + RubyI18n.t('nav_shop');
-
-    // Re-render counts on language change
-    window.addEventListener('langchange', () => {
-      if (heroCount) heroCount.textContent = total + ' ' + RubyI18n.t('stat_products');
-      if (petEl) petEl.textContent = petCnt + ' ' + RubyI18n.t('nav_shop');
-      if (compEl) compEl.textContent = compCnt + ' ' + RubyI18n.t('nav_shop');
-      if (toyEl) toyEl.textContent = toyCnt + ' ' + RubyI18n.t('nav_shop');
-    });
+    if (compEl) compEl.textContent = compCnt + ' ' + lbl;
+    const toyEl  = document.getElementById('storeToyCount');
+    if (toyEl)  toyEl.textContent  = toyCnt  + ' ' + lbl;
 
     document.querySelectorAll('.filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
