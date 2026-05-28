@@ -65,12 +65,14 @@
     </div>
 
     <!-- Store Switcher -->
+    <div class="store-tabs-wrap">
     <div class="store-switcher" id="storeSwitcher">
       <a href="shop.html#all" class="store-tab" data-store="all"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></span> ທັງໝົດ</a>
       <a href="shop.html#pet" class="store-tab" data-store="pet"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></span> Ruby Pet Shop</a>
       <a href="shop.html#computer" class="store-tab" data-store="computer"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span> Ruby Computer</a>
       <a href="shop.html#toy" class="store-tab" data-store="toy"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></span> Ruby Toy Shop</a>
     </div>
+    </div><!-- end store-tabs-wrap -->
 
     <!-- Search Bar -->
     <div style="position:relative;margin-bottom:16px;">
@@ -332,7 +334,17 @@
     document.getElementById('productCount').textContent = `ສະແດງ ${products.length} ລາຍການ`;
     grid.innerHTML = products.length
       ? products.map(p => buildProductCard(p)).join('')
-      : '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);">ບໍ່ພົບສິນຄ້າ</div>';
+      : `<div style="grid-column:1/-1;text-align:center;padding:48px 20px;">
+          <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:0 auto 12px;">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <div style="font-weight:700;color:var(--text-m);margin-bottom:6px;">ບໍ່ພົບສິນຄ້າ</div>
+          <div style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;">ລອງປ່ຽນ filter ຫຼືຄົ້ນຫາຄຳອື່ນ</div>
+          <button onclick="document.getElementById('searchInput').value='';_searchQuery='';document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));document.querySelector('.cat-chip[data-cat=all]').classList.add('active');renderShopProducts(getStoreFromHash())"
+            style="padding:8px 20px;border-radius:100px;border:1.5px solid var(--border);background:var(--card);font-size:0.82rem;font-weight:600;cursor:pointer;color:var(--text-m);">
+            ລ້າງ filter ທັງໝົດ
+          </button>
+        </div>`;
     bindAddToCart();
   }
 

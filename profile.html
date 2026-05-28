@@ -208,11 +208,14 @@
 
     <!-- Hero -->
     <div class="profile-hero">
-      <div class="profile-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <div class="profile-avatar-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
       <div style="font-size:1.1rem;font-weight:800;margin-bottom:6px;" data-i18n="prof_account">ບັນຊີຂອງຂ້ອຍ</div>
       <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
         <div class="profile-uid-chip" id="uidChip" title="ກົດ copy">
-          🔑 <span id="uidDisplay">--------</span>
+          <span class="uid-key-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg></span>
+          <span id="uidDisplay">--------</span>
         </div>
         <span id="cloudBadge"></span>
       </div>
@@ -435,9 +438,11 @@
 
     // Cloud badge
     const badge = document.getElementById('cloudBadge');
+    const cloudSVG = '<span class="cloud-badge-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z"/></svg></span>';
+    const localSVG = '<span class="cloud-badge-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span>';
     badge.innerHTML = RubyDB.isCloudEnabled()
-      ? '<span class="cloud-badge">☁️ Cloud Sync</span>'
-      : '<span class="local-badge">💾 ເກັບໃນເຄື່ອງ</span>';
+      ? `<span class="cloud-badge">${cloudSVG} Cloud Sync</span>`
+      : `<span class="local-badge">${localSVG} ເກັບໃນເຄື່ອງ</span>`;
 
     // Cart shortcut
     const count = cart.reduce((s, i) => s + i.qty, 0);

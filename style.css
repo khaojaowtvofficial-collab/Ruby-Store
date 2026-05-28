@@ -429,15 +429,14 @@ input, textarea, select {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: rgba(192,57,43,0.07);
+  border: 1.5px solid rgba(192,57,43,0.22);
   border-radius: var(--radius-pill);
   padding: 4px 12px;
   font-size: 0.72rem;
-  font-weight: 500;
-  color: var(--text-m);
+  font-weight: 600;
+  color: var(--red);
   margin-bottom: 10px;
-  box-shadow: var(--shadow-sm);
 }
 
 .hero h1 {
@@ -531,6 +530,14 @@ input, textarea, select {
   border-color: var(--red);
   background: var(--red-l);
 }
+
+/* Per-store accent border */
+.store-row-card.store-pet  { border-left: 4px solid var(--red); }
+.store-row-card.store-comp { border-left: 4px solid #2563EB; }
+.store-row-card.store-toy  { border-left: 4px solid #D97706; }
+.store-row-card.store-pet  .store-card-icon { background: rgba(192,57,43,0.1); }
+.store-row-card.store-comp .store-card-icon { background: rgba(37,99,235,0.1); }
+.store-row-card.store-toy  .store-card-icon { background: rgba(217,119,6,0.1); }
 
 .store-card-icon {
   width: 52px;
@@ -2434,10 +2441,11 @@ input, textarea, select {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 0;
   transition: all 0.2s;
   text-decoration: none;
 }
+.footer-social-btn svg { width: 18px; height: 18px; display: block; }
 
 .footer-social-btn.wa {
   background: var(--wa);
@@ -2951,12 +2959,28 @@ input, textarea, select {
   cursor: pointer;
 }
 
+/* Fade wrapper for store tabs */
+.store-tabs-wrap {
+  position: relative;
+  margin-bottom: 20px;
+}
+.store-tabs-wrap::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 44px;
+  background: linear-gradient(to right, transparent, var(--bg));
+  pointer-events: none;
+  z-index: 1;
+}
+
 .store-switcher {
   display: flex;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 0;
   overflow-x: auto;
   scrollbar-width: none;
+  padding-right: 8px;
 }
 
 .store-switcher::-webkit-scrollbar { display: none; }
@@ -3229,6 +3253,7 @@ input, textarea, select {
   margin-top: 0;
   padding: 0 16px 0;
   background: var(--bg);
+  overflow: hidden;
 }
 
 .store-slider-outer {
@@ -3510,3 +3535,34 @@ input, textarea, select {
 
 /* Product page add-to-cart button icon */
 .btn-cart-icon svg { width: 18px; height: 18px; vertical-align: middle; display: inline-block; margin-right: 4px; }
+
+/* About section step numbers */
+.step-num {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.95rem; font-weight: 800;
+  margin: 0 auto 6px;
+}
+
+/* Profile avatar upgrade */
+.profile-avatar-wrap {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FECACA 0%, var(--red-l) 100%);
+  border: 3px solid var(--red);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+  box-shadow: 0 4px 16px rgba(192,57,43,0.18);
+}
+.profile-avatar-wrap svg { width: 40px; height: 40px; color: var(--red); }
+
+/* Profile key chip SVG */
+.uid-key-icon { font-size: 0; display: inline-flex; align-items: center; }
+.uid-key-icon svg { width: 13px; height: 13px; }
+
+/* Cloud badge SVG */
+.cloud-badge-icon { font-size: 0; display: inline-flex; align-items: center; }
+.cloud-badge-icon svg { width: 13px; height: 13px; }
