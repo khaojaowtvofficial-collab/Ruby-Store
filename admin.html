@@ -1460,6 +1460,30 @@ const PANEL_TITLES = { dashboard:'Dashboard', orders:'ອໍເດີ', stores:'
 const STORE_LOGO_KEY = id => `ruby_store_logo_${id}`;
 const STORE_LOGO_FALLBACK = { pet: '🐾', computer: '💻', toy: '🧸' };
 
+/* ── Image compression helper (Canvas resize → JPEG) ──
+   maxPx : longest edge target in pixels
+   quality: JPEG quality 0-1
+   Returns base64 data URL (~10-150KB instead of 1-5MB)            */
+function _compressImage(file, maxPx, quality, callback) {
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const img = new Image();
+    img.onload = function() {
+      let w = img.width, h = img.height;
+      if (w > maxPx || h > maxPx) {
+        if (w >= h) { h = Math.round(h * maxPx / w); w = maxPx; }
+        else        { w = Math.round(w * maxPx / h); h = maxPx; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      callback(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
 function initStoreLogos() {
   ['pet', 'computer', 'toy'].forEach(id => renderStoreLogoPreview(id));
 }
@@ -1487,19 +1511,15 @@ function uploadStoreLogo(id) {
   inp.onchange = function(e) {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) { showToast('ຮູບໃຫຍ່ເກີນ 2MB', 'error'); return; }
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-      const logoData = ev.target.result;
-      // Save locally immediately
+    if (file.size > 8 * 1024 * 1024) { showToast('ຮູບໃຫຍ່ເກີນ 8MB', 'error'); return; }
+    // Compress to max 240px, JPEG 0.88 → ~15-30KB, fits Supabase easily
+    _compressImage(file, 240, 0.88, function(logoData) {
       localStorage.setItem(STORE_LOGO_KEY(id), logoData);
       _adminCache.settings['store_logo_' + id] = logoData;
       renderStoreLogoPreview(id);
       showToast('ບັນທຶກ Logo ແລ້ວ ✓');
-      // Sync to cloud
-      RubyDB.saveSetting('store_logo_' + id, logoData).catch(e=>console.warn('[Admin] logo sync error:',e));
-    };
-    reader.readAsDataURL(file);
+      RubyDB.saveSetting('store_logo_' + id, logoData).catch(e => console.warn('[Admin] logo sync error:', e));
+    });
   };
   inp.click();
 }
@@ -1546,17 +1566,15 @@ function uploadStoreBg(id) {
   inp.onchange = function(e) {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 3 * 1024 * 1024) { showToast('ຮູບໃຫຍ່ເກີນ 3MB', 'error'); return; }
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-      const bgData = ev.target.result;
+    if (file.size > 15 * 1024 * 1024) { showToast('ຮູບໃຫຍ່ເກີນ 15MB', 'error'); return; }
+    // Compress to max 1000px wide, JPEG 0.82 → ~60-120KB, fits Supabase easily
+    _compressImage(file, 1000, 0.82, function(bgData) {
       localStorage.setItem(STORE_BG_KEY(id), bgData);
       _adminCache.settings['store_bg_' + id] = bgData;
       renderStoreBgPreview(id);
       showToast('ບັນທຶກພື້ນຫຼັງແລ້ວ ✓');
       RubyDB.saveSetting('store_bg_' + id, bgData).catch(e => console.warn('[Admin] bg sync error:', e));
-    };
-    reader.readAsDataURL(file);
+    });
   };
   inp.click();
 }

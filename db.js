@@ -300,7 +300,8 @@ async function fetchSettings() {
   // Fallback: read from localStorage
   const settings = {};
   ['store_name_pet','store_name_computer','store_name_toy',
-   'store_logo_pet','store_logo_computer','store_logo_toy'].forEach(key => {
+   'store_logo_pet','store_logo_computer','store_logo_toy',
+   'store_bg_pet','store_bg_computer','store_bg_toy'].forEach(key => {
     const v = localStorage.getItem('ruby_' + key);
     if (v) settings[key] = v;
   });
