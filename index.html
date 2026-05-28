@@ -110,7 +110,7 @@
           </div>
           <div class="sbc-body">
             <div class="sbc-store-label">ຮ້ານຄ້າ</div>
-            <div class="sbc-name">Ruby Pet Shop</div>
+            <div class="sbc-name" data-store-name="pet">Ruby Pet Shop</div>
             <div class="sbc-desc" data-i18n="store_pet_desc">ອາຫານ ຂອງຫຼິ້ນ ສຳລັບໝາ ແລະ ແມວ</div>
             <div class="sbc-footer">
               <span class="sbc-count" id="slidePetCount">— ລາຍການ</span>
@@ -128,7 +128,7 @@
           </div>
           <div class="sbc-body">
             <div class="sbc-store-label">ຮ້ານຄ້າ</div>
-            <div class="sbc-name">Ruby Computer</div>
+            <div class="sbc-name" data-store-name="computer">Ruby Computer</div>
             <div class="sbc-desc" data-i18n="store_comp_desc">ອຸປະກອນຄອມພິວເຕີ ໄອທີ</div>
             <div class="sbc-footer">
               <span class="sbc-count" id="slideCompCount">— ລາຍການ</span>
@@ -146,7 +146,7 @@
           </div>
           <div class="sbc-body">
             <div class="sbc-store-label">ຮ້ານຄ້າ</div>
-            <div class="sbc-name">Ruby Toy Shop</div>
+            <div class="sbc-name" data-store-name="toy">Ruby Toy Shop</div>
             <div class="sbc-desc" data-i18n="store_toy_desc">ຂອງຫຼິ້ນເດັກ ຂອງສະສົມ</div>
             <div class="sbc-footer">
               <span class="sbc-count" id="slideToyCount">— ລາຍການ</span>
@@ -174,7 +174,7 @@
       <a href="shop.html#pet" class="store-row-card store-pet">
         <div class="store-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
         <div class="store-card-body">
-          <div class="store-card-name">Ruby Pet Shop</div>
+          <div class="store-card-name" data-store-name="pet">Ruby Pet Shop</div>
           <div class="store-card-desc" data-i18n="store_pet_desc">ອາຫານ ຂອງຫຼິ້ນ ສຳລັບໝາ ແລະ ແມວ</div>
           <div class="store-card-meta">
             <span class="store-card-count" id="storePetCount">— ລາຍການ</span>
@@ -185,7 +185,7 @@
       <a href="shop.html#computer" class="store-row-card store-comp">
         <div class="store-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
         <div class="store-card-body">
-          <div class="store-card-name">Ruby Computer</div>
+          <div class="store-card-name" data-store-name="computer">Ruby Computer</div>
           <div class="store-card-desc" data-i18n="store_comp_desc">ອຸປະກອນຄອມພິວເຕີ ໄອທີ</div>
           <div class="store-card-meta">
             <span class="store-card-count" id="storeComputerCount">— ລາຍການ</span>
@@ -196,7 +196,7 @@
       <a href="shop.html#toy" class="store-row-card store-toy">
         <div class="store-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
         <div class="store-card-body">
-          <div class="store-card-name">Ruby Toy Shop</div>
+          <div class="store-card-name" data-store-name="toy">Ruby Toy Shop</div>
           <div class="store-card-desc" data-i18n="store_toy_desc">ຂອງຫຼິ້ນເດັກ ຂອງສະສົມ</div>
           <div class="store-card-meta">
             <span class="store-card-count" id="storeToyCount">— ລາຍການ</span>
@@ -332,9 +332,9 @@
       </div>
       <div class="footer-links-col">
         <h4>ສິນຄ້າ</h4>
-        <a href="shop.html#pet">Ruby Pet Shop</a>
-        <a href="shop.html#computer">Ruby Computer</a>
-        <a href="shop.html#toy">Ruby Toy Shop</a>
+        <a href="shop.html#pet" data-store-name="pet">Ruby Pet Shop</a>
+        <a href="shop.html#computer" data-store-name="computer">Ruby Computer</a>
+        <a href="shop.html#toy" data-store-name="toy">Ruby Toy Shop</a>
         <a href="shop.html">ເບິ່ງທັງໝົດ</a>
       </div>
       <div class="footer-links-col">
@@ -474,6 +474,18 @@
     });
   }
 
+  // ===== STORE NAMES FROM LOCALSTORAGE =====
+  var STORE_DEFAULT_NAMES_IDX = { pet: 'Ruby Pet Shop', computer: 'Ruby Computer', toy: 'Ruby Toy Shop' };
+  function applyStoreNames() {
+    ['pet', 'computer', 'toy'].forEach(function(id) {
+      var saved = localStorage.getItem('ruby_store_name_' + id);
+      if (!saved) return;
+      document.querySelectorAll('[data-store-name="' + id + '"]').forEach(function(el) {
+        el.textContent = saved;
+      });
+    });
+  }
+
   // ===== STORE LOGO IN SLIDER =====
   function applyStoreLogosToSlider() {
     var stores = [
@@ -495,6 +507,7 @@
     renderHomeProducts('all');
     renderBestsellerCarousel();
     applyStoreLogosToSlider();
+    applyStoreNames();
 
     // Update hero & store counts from real PRODUCTS
     var prods   = window.PRODUCTS || [];

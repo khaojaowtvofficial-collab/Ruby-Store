@@ -68,9 +68,9 @@
     <div class="store-tabs-wrap">
     <div class="store-switcher" id="storeSwitcher">
       <a href="shop.html#all" class="store-tab" data-store="all"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></span> ທັງໝົດ</a>
-      <a href="shop.html#pet" class="store-tab" data-store="pet"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></span> Ruby Pet Shop</a>
-      <a href="shop.html#computer" class="store-tab" data-store="computer"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span> Ruby Computer</a>
-      <a href="shop.html#toy" class="store-tab" data-store="toy"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></span> Ruby Toy Shop</a>
+      <a href="shop.html#pet" class="store-tab" data-store="pet"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></span> <span data-store-name="pet">Ruby Pet Shop</span></a>
+      <a href="shop.html#computer" class="store-tab" data-store="computer"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span> <span data-store-name="computer">Ruby Computer</span></a>
+      <a href="shop.html#toy" class="store-tab" data-store="toy"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></span> <span data-store-name="toy">Ruby Toy Shop</span></a>
     </div>
     </div><!-- end store-tabs-wrap -->
 
@@ -124,13 +124,13 @@
         <div class="filter-section">
           <div class="filter-section-title" data-i18n="shop_sidebar_store">ຮ້ານຄ້າ</div>
           <label class="filter-check">
-            <input type="checkbox" checked> Ruby Pet Shop
+            <input type="checkbox" checked> <span data-store-name="pet">Ruby Pet Shop</span>
           </label>
           <label class="filter-check">
-            <input type="checkbox" checked> Ruby Computer
+            <input type="checkbox" checked> <span data-store-name="computer">Ruby Computer</span>
           </label>
           <label class="filter-check">
-            <input type="checkbox" checked> Ruby Toy Shop
+            <input type="checkbox" checked> <span data-store-name="toy">Ruby Toy Shop</span>
           </label>
         </div>
       </aside>
@@ -186,9 +186,9 @@
       </div>
       <div class="footer-links-col">
         <h4>ຮ້ານຄ້າ</h4>
-        <a href="shop.html#pet">Ruby Pet Shop</a>
-        <a href="shop.html#computer">Ruby Computer</a>
-        <a href="shop.html#toy">Ruby Toy Shop</a>
+        <a href="shop.html#pet" data-store-name="pet">Ruby Pet Shop</a>
+        <a href="shop.html#computer" data-store-name="computer">Ruby Computer</a>
+        <a href="shop.html#toy" data-store-name="toy">Ruby Toy Shop</a>
       </div>
     </div>
     <div class="footer-bottom">© 2026 Ruby Store</div>
@@ -244,7 +244,23 @@
 
 <script src="app.js"></script>
 <script>
-  const STORE_NAMES = { all: 'ຮ້ານຄ້າທັງໝົດ', pet: 'Ruby Pet Shop', computer: 'Ruby Computer', toy: 'Ruby Toy Shop' };
+  // Store names — read from localStorage (set by Admin), fallback to defaults
+  const STORE_NAMES = {
+    all: 'ຮ້ານຄ້າທັງໝົດ',
+    pet:      localStorage.getItem('ruby_store_name_pet')      || 'Ruby Pet Shop',
+    computer: localStorage.getItem('ruby_store_name_computer') || 'Ruby Computer',
+    toy:      localStorage.getItem('ruby_store_name_toy')      || 'Ruby Toy Shop'
+  };
+
+  // Apply store names to all [data-store-name] elements
+  function applyStoreNames() {
+    ['pet', 'computer', 'toy'].forEach(function(id) {
+      var name = STORE_NAMES[id];
+      document.querySelectorAll('[data-store-name="' + id + '"]').forEach(function(el) {
+        el.textContent = name;
+      });
+    });
+  }
 
   // Read store from hash (#pet / #computer / #toy / empty = all)
   function getStoreFromHash() {
@@ -274,6 +290,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
+    applyStoreNames();
     applyStore(getStoreFromHash());
 
     // React to tab clicks without page reload
