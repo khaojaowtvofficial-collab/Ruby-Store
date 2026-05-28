@@ -43,9 +43,15 @@ create table if not exists products (
   emoji       text default '📦',
   img_url     text,
   description text,
+  stock       integer default 0,
+  variants    jsonb   default '[]'::jsonb,
   created_at  timestamptz default now(),
   updated_at  timestamptz default now()
 );
+
+-- Migration: add stock + variants to existing tables (safe to run multiple times)
+alter table products add column if not exists stock    integer default 0;
+alter table products add column if not exists variants jsonb   default '[]'::jsonb;
 
 alter table products enable row level security;
 create policy "anon_all_products" on products

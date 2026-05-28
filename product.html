@@ -268,17 +268,22 @@
         <div class="product-detail-price">₭${p.price.toLocaleString()}
           ${p.oldPrice ? `<span style="font-size:1rem;font-weight:400;text-decoration:line-through;color:var(--muted);">₭${p.oldPrice.toLocaleString()}</span>` : ''}
         </div>
-        <div class="stock-badge">ມີສິນຄ້າ</div>
+        ${p.stock === -1
+          ? `<div class="stock-badge out-of-stock" style="background:#FEE2E2;color:#DC2626;border-color:#FECACA;">● ໝົດສິນຄ້າ</div>`
+          : p.stock > 0
+            ? `<div class="stock-badge">● ມີສິນຄ້າ <span style="font-weight:400;opacity:.7;">(ເຫຼືອ ${p.stock})</span></div>`
+            : `<div class="stock-badge">● ມີສິນຄ້າ</div>`}
 
-        <!-- Variants (if applicable) -->
-        ${p.store === 'pet' && p.cat === 'food' ? `
+        <!-- Dynamic Variants -->
+        ${p.variants && p.variants.length > 0 ? `
         <div class="variant-section">
-          <div class="variant-label">ຂະໜາດ</div>
+          <div class="variant-label">ຕົວເລືອກ</div>
           <div class="variant-pills">
-            <button class="variant-pill active" onclick="selectVariant(this,'1kg')">1 kg</button>
-            <button class="variant-pill" onclick="selectVariant(this,'3kg')">3 kg</button>
-            <button class="variant-pill" onclick="selectVariant(this,'8kg')">8 kg</button>
-            <button class="variant-pill" onclick="selectVariant(this,'15kg')">15 kg</button>
+            ${p.variants.map((v,i) => `<button class="variant-pill${i===0?' active':''}"
+              onclick="selectVariant(this,'${v.label}',${v.price||p.price})"
+              data-price="${v.price||p.price}">
+              ${v.label}${v.price&&v.price!==p.price?' — ₭'+v.price.toLocaleString():''}
+            </button>`).join('')}
           </div>
         </div>` : ''}
 
@@ -332,10 +337,23 @@
     }
   }
 
-  function selectVariant(btn, val) {
+  function selectVariant(btn, val, price) {
     btn.closest('.variant-pills').querySelectorAll('.variant-pill').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     window._selectedVariant = val;
+    if (price) {
+      window._selectedVariantPrice = price;
+      // Update price display
+      const priceEl = document.querySelector('.product-detail-price');
+      if (priceEl) {
+        const oldSpan = priceEl.querySelector('span');
+        priceEl.innerHTML = '₭' + Number(price).toLocaleString() +
+          (oldSpan ? ' ' + oldSpan.outerHTML : '');
+      }
+      // Update sticky bar price too
+      const stickyPrice = document.getElementById('stickyProductPrice');
+      if (stickyPrice) stickyPrice.textContent = '₭' + Number(price).toLocaleString();
+    }
   }
 
   function handleAddToCart() {

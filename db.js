@@ -92,6 +92,8 @@ function _rowToProduct(row) {
     emoji:    row.emoji || '📦',
     imgUrl:   row.img_url || undefined,
     desc:     row.description || undefined,
+    stock:    typeof row.stock === 'number' ? row.stock : 0,
+    variants: Array.isArray(row.variants) ? row.variants : [],
   };
 }
 
@@ -108,6 +110,8 @@ function _productToRow(p) {
     emoji:       p.emoji || '📦',
     img_url:     p.imgUrl || null,
     description: p.desc || null,
+    stock:       p.stock || 0,
+    variants:    p.variants || [],
     updated_at:  new Date().toISOString(),
   };
 }
@@ -236,7 +240,14 @@ async function saveProduct(product) {
 
   const sb = await _getSB();
   if (sb) {
-    const { error } = await sb.from('products').upsert(_productToRow(product), { onConflict: 'id' });
+    const row = _productToRow(product);
+    let { error } = await sb.from('products').upsert(row, { onConflict: 'id' });
+    if (error && error.code === '42703') {
+      // Column doesn't exist yet (stock/variants) — retry without new fields
+      const { stock, variants, ...rowFallback } = row;
+      ({ error } = await sb.from('products').upsert(rowFallback, { onConflict: 'id' }));
+      if (!error) console.log('[RubyDB] Product saved (without stock/variants — run schema migration) ✓', product.id);
+    }
     if (error) console.warn('[RubyDB] saveProduct error:', error.message);
     else       console.log('[RubyDB] Product saved ✓', product.id);
   }

@@ -66,6 +66,12 @@
     .admin-form-input:focus { border-color:var(--red); background:#fff; }
     select.admin-form-input { cursor:pointer; }
     textarea.admin-form-input { resize:vertical; min-height:70px; }
+    /* Variants builder */
+    .variant-row { display:flex; gap:6px; align-items:center; }
+    .variant-row .vr-label { flex:1.6; }
+    .variant-row .vr-price { flex:1; }
+    .variant-row .vr-del { flex:none; width:30px; height:36px; padding:0; background:none; border:1.5px solid var(--border); border-radius:8px; cursor:pointer; color:var(--muted); font-size:1rem; display:flex; align-items:center; justify-content:center; transition:.15s; }
+    .variant-row .vr-del:hover { color:var(--red); border-color:var(--red); }
     /* Emoji picker */
     .emoji-picker-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
     .emoji-opt {
@@ -737,6 +743,21 @@
           <label class="admin-form-label">ລາຍລະອຽດ (optional)</label>
           <textarea class="admin-form-input" id="pDesc" rows="2" placeholder="ລາຍລະອຽດສິນຄ້າ"></textarea>
         </div>
+        <!-- Stock -->
+        <div class="admin-form-group">
+          <label class="admin-form-label">ຈຳນວນສິນຄ້າ (Stock)</label>
+          <input type="number" class="admin-form-input" id="pStock" placeholder="0 = ບໍ່ຈຳກັດ" min="0" value="0">
+          <span style="font-size:.72rem;color:var(--muted);">0 = ມີສິນຄ້າ, -1 = ໝົດ</span>
+        </div>
+        <!-- Variants -->
+        <div class="admin-form-group full">
+          <label class="admin-form-label" style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <span>ຕົວເລືອກ (ຂະໜາດ / ສີ / ນ້ຳໜັກ)</span>
+            <button type="button" class="btn btn-outline btn-xs" onclick="addVariantRow()">+ ເພີ່ມຕົວເລືອກ</button>
+          </label>
+          <div id="variantsList" style="display:flex;flex-direction:column;gap:6px;margin-top:4px;"></div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:4px;">ຖ້າລາຄາຫວ່າງ ຈະໃຊ້ລາຄາຫຼັກ</div>
+        </div>
       </div>
       <!-- Delete confirm -->
       <div class="confirm-inline" id="deleteConfirm">
@@ -1285,8 +1306,11 @@ function openProductModal(productId, prefilledStore) {
     document.getElementById('pBg').value = p.bg || '#FFF5F5';
     document.getElementById('pDesc').value = p.desc || '';
     document.getElementById('pImgUrl').value = p.imgUrl || '';
+    document.getElementById('pStock').value = p.stock ?? 0;
     document.getElementById('imgPreviewEmoji').textContent = p.emoji || '📦';
     _setImgPreview(p.imgUrl || '');
+    clearVariantsList();
+    (p.variants || []).forEach(v => addVariantRow(v.label, v.price || ''));
     document.getElementById('deleteProductBtn').style.display = 'inline-flex';
   } else {
     // Add mode
@@ -1301,9 +1325,11 @@ function openProductModal(productId, prefilledStore) {
     document.getElementById('pBg').value = '#FFF5F5';
     document.getElementById('pDesc').value = '';
     document.getElementById('pImgUrl').value = '';
+    document.getElementById('pStock').value = 0;
     document.getElementById('imgPreviewEmoji').textContent = '📦';
     document.getElementById('pImgFile').value = '';
     _setImgPreview('');
+    clearVariantsList();
     document.getElementById('deleteProductBtn').style.display = 'none';
   }
 
@@ -1352,6 +1378,33 @@ function handleImgUpload(input) {
   reader.readAsDataURL(file);
 }
 
+/* ─── Variant builder helpers ─── */
+function addVariantRow(label='', price='') {
+  const list = document.getElementById('variantsList');
+  const row = document.createElement('div');
+  row.className = 'variant-row';
+  row.innerHTML = `
+    <input class="admin-form-input vr-label" placeholder="ຊື່ (1kg / M / ສີຂາວ)" value="${label}">
+    <input class="admin-form-input vr-price" type="number" placeholder="ລາຄາ ₭" value="${price}" min="0">
+    <button type="button" class="vr-del" onclick="this.closest('.variant-row').remove()" title="ລຶບ">✕</button>`;
+  list.appendChild(row);
+  row.querySelector('.vr-label').focus();
+}
+
+function clearVariantsList() {
+  document.getElementById('variantsList').innerHTML = '';
+}
+
+function getVariantsFromModal() {
+  const variants = [];
+  document.querySelectorAll('#variantsList .variant-row').forEach(row => {
+    const label = row.querySelector('.vr-label').value.trim();
+    const price = parseInt(row.querySelector('.vr-price').value) || 0;
+    if (label) variants.push({ label, price });
+  });
+  return variants;
+}
+
 function saveProduct() {
   const name = document.getElementById('pName').value.trim();
   const price = parseInt(document.getElementById('pPrice').value) || 0;
@@ -1374,6 +1427,8 @@ function saveProduct() {
     badge:    document.getElementById('pBadge').value || undefined,
     bg:       document.getElementById('pBg').value || '#FFF5F5',
     desc:     document.getElementById('pDesc').value.trim() || undefined,
+    stock:    parseInt(document.getElementById('pStock').value) || 0,
+    variants: getVariantsFromModal(),
   };
 
   let savedProdId;
