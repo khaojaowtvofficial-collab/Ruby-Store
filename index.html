@@ -486,19 +486,29 @@
     });
   }
 
-  // ===== STORE LOGO IN SLIDER =====
+  // ===== STORE LOGOS (Slider + Store Grid) =====
+  var STORE_LOGO_MAP = [
+    { id: 'pet',      sliderCls: '.sbc-pet',  gridCls: '.store-pet'  },
+    { id: 'computer', sliderCls: '.sbc-comp', gridCls: '.store-comp' },
+    { id: 'toy',      sliderCls: '.sbc-toy',  gridCls: '.store-toy'  }
+  ];
+
   function applyStoreLogosToSlider() {
-    var stores = [
-      { id: 'pet',      cls: '.sbc-pet' },
-      { id: 'computer', cls: '.sbc-comp' },
-      { id: 'toy',      cls: '.sbc-toy' }
-    ];
-    stores.forEach(function(s) {
+    STORE_LOGO_MAP.forEach(function(s) {
       var logo = localStorage.getItem('ruby_store_logo_' + s.id);
-      if (!logo) return;
-      var boxes = document.querySelectorAll(s.cls + ' .sbc-icon-box');
-      boxes.forEach(function(box) {
-        box.innerHTML = '<img src="' + logo + '" style="width:56px;height:56px;object-fit:contain;border-radius:14px;">';
+
+      // ── Promo Slider ──
+      document.querySelectorAll(s.sliderCls + ' .sbc-icon-box').forEach(function(box) {
+        if (logo) {
+          box.innerHTML = '<img src="' + logo + '" style="width:56px;height:56px;object-fit:contain;border-radius:14px;">';
+        }
+      });
+
+      // ── Store Grid card icon ──
+      document.querySelectorAll(s.gridCls + ' .store-card-icon').forEach(function(icon) {
+        if (logo) {
+          icon.innerHTML = '<img src="' + logo + '" style="width:36px;height:36px;object-fit:contain;border-radius:8px;">';
+        }
       });
     });
   }
