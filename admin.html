@@ -110,6 +110,17 @@
       display:flex; align-items:center; gap:10px; flex-wrap:wrap;
     }
     .store-section-hd h3 { font-size:.95rem; font-weight:800; margin:0; flex:1; }
+    /* Store name edit */
+    .sca-edit-name-btn {
+      background:none; border:none; cursor:pointer; color:var(--muted);
+      padding:2px; line-height:0; border-radius:5px; transition:color .15s;
+    }
+    .sca-edit-name-btn:hover { color:var(--red); }
+    .sca-name-input {
+      flex:1; padding:5px 10px; border:1.5px solid var(--red);
+      border-radius:8px; font-size:0.9rem; font-weight:700;
+      font-family:inherit; outline:none; color:var(--text);
+    }
     /* Danger */
     .btn-danger { color:#DC2626 !important; border-color:#FECACA !important; }
     .btn-danger:hover { background:#DC2626 !important; color:#fff !important; }
@@ -437,7 +448,12 @@
               <button class="btn btn-ghost btn-xs" onclick="clearStoreLogo('pet')" id="petLogoClearBtn" style="display:none;">ລຶບ</button>
             </div>
           </div>
-          <div class="sca-name">Ruby Pet Shop</div>
+          <div id="petStoreNameWrap" style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <div class="sca-name" id="petStoreName">Ruby Pet Shop</div>
+            <button onclick="editStoreName('pet')" title="ແກ້ໄຂຊື່ຮ້ານ" class="sca-edit-name-btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+          </div>
           <div class="sca-count" id="petCount">— ລາຍການ</div>
           <div class="sca-actions">
             <button class="btn btn-outline btn-sm" onclick="showStoreProducts('pet')">ເບິ່ງສິນຄ້າ</button>
@@ -455,7 +471,12 @@
               <button class="btn btn-ghost btn-xs" onclick="clearStoreLogo('computer')" id="computerLogoClearBtn" style="display:none;">ລຶບ</button>
             </div>
           </div>
-          <div class="sca-name">Ruby Computer</div>
+          <div id="computerStoreNameWrap" style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <div class="sca-name" id="computerStoreName">Ruby Computer</div>
+            <button onclick="editStoreName('computer')" title="ແກ້ໄຂຊື່ຮ້ານ" class="sca-edit-name-btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+          </div>
           <div class="sca-count" id="computerCount">— ລາຍການ</div>
           <div class="sca-actions">
             <button class="btn btn-outline btn-sm" onclick="showStoreProducts('computer')">ເບິ່ງສິນຄ້າ</button>
@@ -473,7 +494,12 @@
               <button class="btn btn-ghost btn-xs" onclick="clearStoreLogo('toy')" id="toyLogoClearBtn" style="display:none;">ລຶບ</button>
             </div>
           </div>
-          <div class="sca-name">Ruby Toy Shop</div>
+          <div id="toyStoreNameWrap" style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <div class="sca-name" id="toyStoreName">Ruby Toy Shop</div>
+            <button onclick="editStoreName('toy')" title="ແກ້ໄຂຊື່ຮ້ານ" class="sca-edit-name-btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+          </div>
           <div class="sca-count" id="toyCount">— ລາຍການ</div>
           <div class="sca-actions">
             <button class="btn btn-outline btn-sm" onclick="showStoreProducts('toy')">ເບິ່ງສິນຄ້າ</button>
@@ -1391,6 +1417,86 @@ function clearStoreLogo(id) {
   showToast('ລຶບ Logo ແລ້ວ');
 }
 
+/* ═══════════════════════════════════════════
+   STORE NAME MANAGEMENT
+═══════════════════════════════════════════ */
+const STORE_DEFAULT_NAMES = { pet:'Ruby Pet Shop', computer:'Ruby Computer', toy:'Ruby Toy Shop' };
+const STORE_NAME_KEY = id => `ruby_store_name_${id}`;
+
+function initStoreNames() {
+  ['pet','computer','toy'].forEach(id => {
+    const saved = localStorage.getItem(STORE_NAME_KEY(id));
+    if (saved) STORE_NAMES[id] = saved;
+    const el = document.getElementById(id + 'StoreName');
+    if (el) el.textContent = STORE_NAMES[id];
+  });
+}
+
+function editStoreName(id) {
+  const wrap = document.getElementById(id + 'StoreNameWrap');
+  if (!wrap) return;
+  const current = STORE_NAMES[id] || STORE_DEFAULT_NAMES[id];
+  wrap.innerHTML = `
+    <div style="display:flex;align-items:center;gap:6px;flex:1;">
+      <input id="${id}StoreNameInput" class="sca-name-input" value="${current}"
+        onkeydown="if(event.key==='Enter')saveStoreName('${id}');if(event.key==='Escape')cancelEditStoreName('${id}')">
+      <button class="btn btn-primary btn-xs" onclick="saveStoreName('${id}')">ບັນທຶກ</button>
+      <button class="btn btn-outline btn-xs" onclick="cancelEditStoreName('${id}')">ຍົກເລີກ</button>
+    </div>`;
+  const input = document.getElementById(id + 'StoreNameInput');
+  if (input) { input.focus(); input.select(); }
+}
+
+function saveStoreName(id) {
+  const input = document.getElementById(id + 'StoreNameInput');
+  if (!input) return;
+  const name = input.value.trim();
+  if (!name) { showToast('ກະລຸນາໃສ່ຊື່ຮ້ານ', 'error'); return; }
+  localStorage.setItem(STORE_NAME_KEY(id), name);
+  STORE_NAMES[id] = name;
+  cancelEditStoreName(id);
+  showToast(`✅ ປ່ຽນຊື່ຮ້ານເປັນ "${name}" ແລ້ວ`);
+  // update product store filter dropdown
+  _refreshStoreDropdowns();
+}
+
+function cancelEditStoreName(id) {
+  const wrap = document.getElementById(id + 'StoreNameWrap');
+  if (!wrap) return;
+  wrap.innerHTML = `
+    <div class="sca-name" id="${id}StoreName">${STORE_NAMES[id]}</div>
+    <button onclick="editStoreName('${id}')" title="ແກ້ໄຂຊື່ຮ້ານ" class="sca-edit-name-btn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    </button>`;
+  // also update wrap to flex row
+  wrap.style.display = 'flex';
+  wrap.style.alignItems = 'center';
+  wrap.style.gap = '6px';
+  wrap.style.marginBottom = '4px';
+}
+
+function _refreshStoreDropdowns() {
+  // Update product form store select
+  const pStore = document.getElementById('pStore');
+  if (pStore) {
+    pStore.innerHTML = `
+      <option value="pet">🐾 ${STORE_NAMES.pet}</option>
+      <option value="computer">💻 ${STORE_NAMES.computer}</option>
+      <option value="toy">🧸 ${STORE_NAMES.toy}</option>`;
+  }
+  // Update products panel filter
+  const pFilter = document.getElementById('productStoreFilter');
+  if (pFilter) {
+    const cur = pFilter.value;
+    pFilter.innerHTML = `
+      <option value="">ທຸກຮ້ານຄ້າ</option>
+      <option value="pet">${STORE_NAMES.pet}</option>
+      <option value="computer">${STORE_NAMES.computer}</option>
+      <option value="toy">${STORE_NAMES.toy}</option>`;
+    pFilter.value = cur;
+  }
+}
+
 function showPanel(name, linkEl) {
   document.querySelectorAll('.admin-panel').forEach(p=>{
     p.style.display = 'none'; p.classList.remove('active');
@@ -1408,7 +1514,7 @@ function showPanel(name, linkEl) {
 
   if (name==='dashboard') renderDashboard();
   if (name==='orders')    renderAllOrders();
-  if (name==='stores')    { renderStores(); }
+  if (name==='stores')    { renderStores(); initStoreNames(); }
   if (name==='products')  renderProducts();
   if (name==='customers') renderCustomers();
 }
@@ -1567,6 +1673,8 @@ document.addEventListener('DOMContentLoaded', () => {
     now.toLocaleDateString('lo-LA', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
   renderDashboard();
   initStoreLogos();
+  initStoreNames();
+  _refreshStoreDropdowns();
 });
 </script>
 </body>
