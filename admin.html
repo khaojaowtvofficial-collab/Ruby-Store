@@ -1358,63 +1358,47 @@ function saveProduct() {
   if (!name) { showToast('ກະລຸນາໃສ່ຊື່ສິນຄ້າ','error'); return; }
   if (!price) { showToast('ກະລຸນາໃສ່ລາຄາ','error'); return; }
 
+  // getAdminProducts() returns _adminCache.products by reference — do NOT push twice
   const prods = getAdminProducts();
+  if (!_adminCache.products) _adminCache.products = prods; // ensure cache is set
   const oldPrice = parseInt(document.getElementById('pOldPrice').value) || null;
 
+  const fields = {
+    emoji:    document.getElementById('pEmoji').value || '📦',
+    imgUrl:   document.getElementById('pImgUrl').value.trim() || undefined,
+    name,
+    price,
+    oldPrice: oldPrice || undefined,
+    store:    document.getElementById('pStore').value,
+    cat:      document.getElementById('pCat').value,
+    badge:    document.getElementById('pBadge').value || undefined,
+    bg:       document.getElementById('pBg').value || '#FFF5F5',
+    desc:     document.getElementById('pDesc').value.trim() || undefined,
+  };
+
+  let savedProdId;
+
   if (_editProductId) {
-    // Update existing
-    const idx = prods.findIndex(p=>p.id===_editProductId);
-    if (idx>=0) {
-      prods[idx] = { ...prods[idx],
-        emoji: document.getElementById('pEmoji').value,
-        imgUrl: document.getElementById('pImgUrl').value.trim() || undefined,
-        name,
-        price,
-        oldPrice: oldPrice || undefined,
-        store: document.getElementById('pStore').value,
-        cat: document.getElementById('pCat').value,
-        badge: document.getElementById('pBadge').value || undefined,
-        bg: document.getElementById('pBg').value,
-        desc: document.getElementById('pDesc').value.trim() || undefined,
-      };
-    }
+    // ── Update existing ──
+    savedProdId = _editProductId;
+    const idx = prods.findIndex(p => p.id === _editProductId);
+    if (idx >= 0) prods[idx] = { ...prods[idx], ...fields };
     showToast(`✅ ອັບເດດ "${name}" ແລ້ວ`);
   } else {
-    // Add new
+    // ── Add new ──
     const newId = 'P' + String(Date.now()).slice(-4).padStart(3,'0');
-    prods.push({
-      id: newId,
-      emoji: document.getElementById('pEmoji').value || '📦',
-      imgUrl: document.getElementById('pImgUrl').value.trim() || undefined,
-      name,
-      price,
-      oldPrice: oldPrice || undefined,
-      store: document.getElementById('pStore').value,
-      cat: document.getElementById('pCat').value,
-      badge: document.getElementById('pBadge').value || undefined,
-      bg: document.getElementById('pBg').value || '#FFF5F5',
-      desc: document.getElementById('pDesc').value.trim() || undefined,
-    });
+    savedProdId = newId;
+    prods.push({ id: newId, ...fields });
+    // prods IS _adminCache.products (same reference) — no second push needed
     showToast(`✅ ເພີ່ມ "${name}" ແລ້ວ`);
   }
 
-  // Save to Supabase + cache
-  if (_editProductId) {
-    const idx = _adminCache.products ? _adminCache.products.findIndex(p=>p.id===prods.find(x=>x.id===_editProductId)?.id) : -1;
-    // Update cache
-    if (_adminCache.products) {
-      const ci = _adminCache.products.findIndex(p=>p.id===_editProductId);
-      if (ci>=0) _adminCache.products[ci] = prods.find(p=>p.id===_editProductId);
-    }
-  } else {
-    if (_adminCache.products) _adminCache.products.push(prods[prods.length-1]);
-    else _adminCache.products = prods;
-  }
   localStorage.setItem('ruby_products', JSON.stringify(prods));
   window.PRODUCTS = prods;
-  // Async save to Supabase
-  const savedProd = prods.find(p=> _editProductId ? p.id===_editProductId : true);
-  if (savedProd) RubyDB.saveProduct(savedProd).catch(e=>console.warn('[Admin] saveProduct error:',e));
+
+  // Async save to Supabase (use savedProdId — never null)
+  const savedProd = prods.find(p => p.id === savedProdId);
+  if (savedProd) RubyDB.saveProduct(savedProd).catch(e => console.warn('[Admin] saveProduct error:', e));
 
   closeProductModal();
   renderProducts();
