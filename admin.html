@@ -715,57 +715,80 @@
 <script src="app.js"></script>
 <script>
 /* ═══════════════════════════════════════════
-   DATA LAYER
+   DATA LAYER  (Cloud-first via RubyDB)
 ═══════════════════════════════════════════ */
 const STORE_NAMES = { pet:'Ruby Pet Shop', computer:'Ruby Computer', toy:'Ruby Toy Shop' };
 const STATUS_LABELS = { pending:'🕐 ລໍຖ້າຢືນຢັນ', confirmed:'✅ ຢືນຢັນແລ້ວ', completed:'📦 ສຳເລັດ', cancelled:'❌ ຍົກເລີກ' };
 const STATUS_RAW = { pending:'ລໍຖ້າຢືນຢັນ', confirmed:'ຢືນຢັນແລ້ວ', completed:'ສຳເລັດ', cancelled:'ຍົກເລີກ' };
 
-const MOCK_ORDERS = [];
+// ── In-memory cache (populated on init) ─────────────────
+let _adminCache = { orders: null, products: null, settings: {} };
+
+async function _initAdminData() {
+  try {
+    // Fetch all data in parallel from Supabase
+    const [orders, products, settings] = await Promise.all([
+      RubyDB.fetchAllOrders().catch(() => null),
+      RubyDB.fetchProducts().catch(() => null),
+      RubyDB.fetchSettings().catch(() => ({})),
+    ]);
+
+    if (orders)   _adminCache.orders   = orders;
+    if (products) _adminCache.products = products;
+    if (settings) {
+      _adminCache.settings = settings;
+      // Apply store names from cloud to STORE_NAMES object
+      ['pet','computer','toy'].forEach(id => {
+        if (settings['store_name_' + id]) STORE_NAMES[id] = settings['store_name_' + id];
+      });
+    }
+    console.log('[Admin] Cloud data loaded ✓');
+  } catch(e) {
+    console.warn('[Admin] Cloud load failed, using cache:', e.message);
+  }
+}
 
 function getAdminOrders() {
-  const local = JSON.parse(localStorage.getItem('ruby_orders') || '[]');
-  const source = local;
-  return source.map(o => ({
-    orderNo: o.orderNo || o.no || '',
-    name: o.name || 'ບໍ່ລະບຸ',
-    phone: o.phone || '',
-    address: o.address || '',
-    delivery: o.delivery || '',
-    items: Array.isArray(o.items) ? o.items : [],
-    itemsStr: Array.isArray(o.items) ? o.items.map(i=>`${i.name} x${i.qty}`).join(', ') : '-',
-    total: o.total || 0,
-    channel: o.channel || 'wa',
-    status: o.status || 'pending',
-    note: o.note || '',
+  if (_adminCache.orders) return _adminCache.orders;
+  // Fallback: localStorage
+  return JSON.parse(localStorage.getItem('ruby_orders') || '[]').map(o => ({
+    orderNo:   o.orderNo || o.no || '',
+    name:      o.name || 'ບໍ່ລະບຸ',
+    phone:     o.phone || '',
+    address:   o.address || '',
+    delivery:  o.delivery || '',
+    items:     Array.isArray(o.items) ? o.items : [],
+    itemsStr:  Array.isArray(o.items) ? o.items.map(i=>`${i.name} x${i.qty}`).join(', ') : '-',
+    total:     o.total || 0,
+    channel:   o.channel || 'wa',
+    status:    o.status || 'pending',
+    note:      o.note || '',
     createdAt: o.createdAt || null,
-    date: o.createdAt ? new Date(o.createdAt).toLocaleString('lo-LA',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '-',
+    date:      o.createdAt ? new Date(o.createdAt).toLocaleString('lo-LA',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '-',
   }));
 }
 
-function updateOrderStatusLocal(orderNo, newStatus) {
-  const orders = JSON.parse(localStorage.getItem('ruby_orders') || '[]');
-  const idx = orders.findIndex(o => o.orderNo === orderNo);
-  if (idx >= 0) {
-    orders[idx].status = newStatus;
-    localStorage.setItem('ruby_orders', JSON.stringify(orders));
-    return true;
+async function updateOrderStatusLocal(orderNo, newStatus) {
+  // Update cache
+  if (_adminCache.orders) {
+    const o = _adminCache.orders.find(x => x.orderNo === orderNo);
+    if (o) o.status = newStatus;
   }
-  // Mock orders — update in-memory
-  const m = MOCK_ORDERS.find(o => o.orderNo === orderNo);
-  if (m) { m.status = newStatus; return true; }
-  return false;
+  // Update cloud + localStorage via RubyDB
+  await RubyDB.updateOrderStatus(orderNo, newStatus);
 }
 
 function getAdminProducts() {
+  if (_adminCache.products) return _adminCache.products;
   const override = localStorage.getItem('ruby_products');
-  if (override) {
-    try { const p = JSON.parse(override); if (Array.isArray(p) && p.length) return p; } catch(e){}
-  }
+  if (override) { try { const p = JSON.parse(override); if (p.length) return p; } catch(e){} }
   return window.PRODUCTS || [];
 }
 
-function saveAdminProducts(products) {
+async function saveAdminProducts(products) {
+  // Only called for bulk operations (should not be used for individual save/delete now)
+  // Update cache + localStorage
+  _adminCache.products = products;
   localStorage.setItem('ruby_products', JSON.stringify(products));
   window.PRODUCTS = products;
 }
@@ -1173,12 +1196,11 @@ function selectOrderStatus(status, btn) {
   btn.classList.add('sel');
 }
 
-function saveOrderStatus() {
+async function saveOrderStatus() {
   if (!_currentOrderNo || !_currentOrderStatus) return;
-  updateOrderStatusLocal(_currentOrderNo, _currentOrderStatus);
+  await updateOrderStatusLocal(_currentOrderNo, _currentOrderStatus);
   closeOrderModal();
   showToast(`✅ ອັບເດດສະຖານະ ${_currentOrderNo} ເປັນ ${STATUS_RAW[_currentOrderStatus]}`);
-  // Re-render
   if (document.getElementById('panelOrders').style.display !== 'none') renderAllOrders();
   if (document.getElementById('panelDashboard').style.display !== 'none' || document.getElementById('panelDashboard').classList.contains('active')) renderDashboard();
 }
@@ -1331,9 +1353,25 @@ function saveProduct() {
     showToast(`✅ ເພີ່ມ "${name}" ແລ້ວ`);
   }
 
-  saveAdminProducts(prods);
+  // Save to Supabase + cache
+  if (_editProductId) {
+    const idx = _adminCache.products ? _adminCache.products.findIndex(p=>p.id===prods.find(x=>x.id===_editProductId)?.id) : -1;
+    // Update cache
+    if (_adminCache.products) {
+      const ci = _adminCache.products.findIndex(p=>p.id===_editProductId);
+      if (ci>=0) _adminCache.products[ci] = prods.find(p=>p.id===_editProductId);
+    }
+  } else {
+    if (_adminCache.products) _adminCache.products.push(prods[prods.length-1]);
+    else _adminCache.products = prods;
+  }
+  localStorage.setItem('ruby_products', JSON.stringify(prods));
+  window.PRODUCTS = prods;
+  // Async save to Supabase
+  const savedProd = prods.find(p=> _editProductId ? p.id===_editProductId : true);
+  if (savedProd) RubyDB.saveProduct(savedProd).catch(e=>console.warn('[Admin] saveProduct error:',e));
+
   closeProductModal();
-  // Re-render current panel
   renderProducts();
   renderStores();
   if (_currentStore) showStoreProducts(_currentStore);
@@ -1345,8 +1383,13 @@ function askDeleteProduct() {
 }
 
 function confirmDeleteProduct() {
-  const prods = getAdminProducts().filter(p=>p.id!==_editProductId);
-  saveAdminProducts(prods);
+  const id = _editProductId;
+  if (_adminCache.products) _adminCache.products = _adminCache.products.filter(p=>p.id!==id);
+  const prods = getAdminProducts().filter(p=>p.id!==id);
+  localStorage.setItem('ruby_products', JSON.stringify(prods));
+  window.PRODUCTS = prods;
+  // Async delete from Supabase
+  RubyDB.deleteProduct(id).catch(e=>console.warn('[Admin] deleteProduct error:',e));
   showToast('🗑 ລົບສິນຄ້າແລ້ວ');
   closeProductModal();
   renderProducts();
@@ -1402,9 +1445,14 @@ function uploadStoreLogo(id) {
     if (file.size > 2 * 1024 * 1024) { showToast('ຮູບໃຫຍ່ເກີນ 2MB', 'error'); return; }
     const reader = new FileReader();
     reader.onload = function(ev) {
-      localStorage.setItem(STORE_LOGO_KEY(id), ev.target.result);
+      const logoData = ev.target.result;
+      // Save locally immediately
+      localStorage.setItem(STORE_LOGO_KEY(id), logoData);
+      _adminCache.settings['store_logo_' + id] = logoData;
       renderStoreLogoPreview(id);
       showToast('ບັນທຶກ Logo ແລ້ວ ✓');
+      // Sync to cloud
+      RubyDB.saveSetting('store_logo_' + id, logoData).catch(e=>console.warn('[Admin] logo sync error:',e));
     };
     reader.readAsDataURL(file);
   };
@@ -1413,8 +1461,10 @@ function uploadStoreLogo(id) {
 
 function clearStoreLogo(id) {
   localStorage.removeItem(STORE_LOGO_KEY(id));
+  delete _adminCache.settings['store_logo_' + id];
   renderStoreLogoPreview(id);
   showToast('ລຶບ Logo ແລ້ວ');
+  RubyDB.saveSetting('store_logo_' + id, '').catch(()=>{});
 }
 
 /* ═══════════════════════════════════════════
@@ -1454,10 +1504,12 @@ function saveStoreName(id) {
   if (!name) { showToast('ກະລຸນາໃສ່ຊື່ຮ້ານ', 'error'); return; }
   localStorage.setItem(STORE_NAME_KEY(id), name);
   STORE_NAMES[id] = name;
+  _adminCache.settings['store_name_' + id] = name;
   cancelEditStoreName(id);
   showToast(`✅ ປ່ຽນຊື່ຮ້ານເປັນ "${name}" ແລ້ວ`);
-  // update product store filter dropdown
   _refreshStoreDropdowns();
+  // Sync to cloud
+  RubyDB.saveSetting('store_name_' + id, name).catch(e=>console.warn('[Admin] name sync error:',e));
 }
 
 function cancelEditStoreName(id) {
@@ -1661,20 +1713,39 @@ document.addEventListener('keydown', function(e) {
 /* ═══════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════ */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // PIN gate
   if (sessionStorage.getItem('rubyAdminAuthed') === '1') {
     document.getElementById('pinOverlay').style.display = 'none';
   }
-  // else: overlay stays visible
 
   const now = new Date();
   document.getElementById('topbarDate').textContent =
     now.toLocaleDateString('lo-LA', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+  // Render with cached data first (instant)
   renderDashboard();
   initStoreLogos();
   initStoreNames();
   _refreshStoreDropdowns();
+
+  // Then fetch fresh data from Supabase in background
+  await _initAdminData();
+
+  // Re-render with cloud data
+  renderDashboard();
+  initStoreLogos();
+  initStoreNames();
+  _refreshStoreDropdowns();
+  // If on orders/stores/products panel, re-render those too
+  const activePanel = document.querySelector('.admin-panel.active');
+  if (activePanel) {
+    const panelId = activePanel.id.replace('panel','').toLowerCase();
+    if (panelId === 'orders')   renderAllOrders();
+    if (panelId === 'stores')   { renderStores(); }
+    if (panelId === 'products') renderProducts();
+    if (panelId === 'customers') renderCustomers();
+  }
 });
 </script>
 </body>

@@ -293,6 +293,27 @@
     applyStoreNames();
     applyStore(getStoreFromHash());
 
+    // Fetch fresh settings from Supabase, then re-apply
+    if (typeof RubyDB !== 'undefined' && RubyDB.isCloudEnabled()) {
+      RubyDB.fetchSettings().then(settings => {
+        if (!settings) return;
+        ['pet','computer','toy'].forEach(id => {
+          const name = settings['store_name_' + id];
+          if (name) {
+            localStorage.setItem('ruby_store_name_' + id, name);
+            STORE_NAMES[id] = name;
+          }
+        });
+        applyStoreNames();
+        // Re-render breadcrumb if showing a specific store
+        const cur = getStoreFromHash();
+        if (cur !== 'all') {
+          const bc = document.getElementById('breadcrumbStore');
+          if (bc) bc.textContent = STORE_NAMES[cur] || STORE_NAMES[cur];
+        }
+      }).catch(() => { /* offline */ });
+    }
+
     // React to tab clicks without page reload
     window.addEventListener('hashchange', () => applyStore(getStoreFromHash()));
 

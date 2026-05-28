@@ -509,6 +509,25 @@
     applyStoreLogosToSlider();
     applyStoreNames();
 
+    // Fetch fresh settings from Supabase, then re-apply
+    if (typeof RubyDB !== 'undefined' && RubyDB.isCloudEnabled()) {
+      RubyDB.fetchSettings().then(function(settings) {
+        if (!settings) return;
+        // Apply store names from cloud
+        ['pet','computer','toy'].forEach(function(id) {
+          var name = settings['store_name_' + id];
+          if (name) localStorage.setItem('ruby_store_name_' + id, name);
+          var logo = settings['store_logo_' + id];
+          if (logo !== undefined) {
+            if (logo) localStorage.setItem('ruby_store_logo_' + id, logo);
+            else localStorage.removeItem('ruby_store_logo_' + id);
+          }
+        });
+        applyStoreNames();
+        applyStoreLogosToSlider();
+      }).catch(function() { /* offline — use cache */ });
+    }
+
     // Update hero & store counts from real PRODUCTS
     var prods   = window.PRODUCTS || [];
     var total   = prods.length;

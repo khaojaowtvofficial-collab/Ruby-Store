@@ -8,19 +8,31 @@
 /* ─── PRODUCT DATA ─────────────────────────────────────── */
 window.PRODUCTS = [];
 
-/* ─── MERGE ADMIN PRODUCT OVERRIDES ────────────────────── */
-/* Admin edits save to ruby_products in localStorage        */
-/* All pages load from localStorage instead of hardcoded    */
+/* ─── LOAD PRODUCTS: localStorage cache first, then Supabase ─── */
 (function () {
+  // 1. Load from localStorage cache immediately (fast, no network)
   try {
-    const override = localStorage.getItem('ruby_products');
-    if (override) {
-      const parsed = JSON.parse(override);
+    const cache = localStorage.getItem('ruby_products');
+    if (cache) {
+      const parsed = JSON.parse(cache);
       if (Array.isArray(parsed) && parsed.length > 0) {
         window.PRODUCTS = parsed;
       }
     }
-  } catch (e) { /* ignore parse errors */ }
+  } catch (e) { /* ignore */ }
+
+  // 2. Fetch from Supabase in background and refresh if available
+  window.addEventListener('load', async function () {
+    if (typeof RubyDB === 'undefined' || !RubyDB.isCloudEnabled()) return;
+    try {
+      const prods = await RubyDB.fetchProducts();
+      if (prods && prods.length > 0) {
+        window.PRODUCTS = prods;
+        // Notify pages that products have been updated from cloud
+        window.dispatchEvent(new CustomEvent('ruby:products-loaded', { detail: prods }));
+      }
+    } catch (e) { /* offline — use cached */ }
+  });
 })();
 
 /* ─── CART STATE ────────────────────────────────────────── */
