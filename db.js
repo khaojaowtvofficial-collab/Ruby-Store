@@ -80,6 +80,7 @@ function _rowToOrder(row) {
 }
 
 function _rowToProduct(row) {
+  const images = Array.isArray(row.images) ? row.images : (row.img_url ? [row.img_url] : []);
   return {
     id:       row.id,
     name:     row.name,
@@ -90,8 +91,11 @@ function _rowToProduct(row) {
     badge:    row.badge || undefined,
     bg:       row.bg || '#FFF5F5',
     emoji:    row.emoji || '📦',
-    imgUrl:   row.img_url || undefined,
+    imgUrl:   images[0] || row.img_url || undefined,
+    images,
     desc:     row.description || undefined,
+    brand:    row.brand || undefined,
+    specs:    row.specs || undefined,
     stock:    typeof row.stock === 'number' ? row.stock : 0,
     variants: Array.isArray(row.variants) ? row.variants : [],
   };
@@ -108,8 +112,11 @@ function _productToRow(p) {
     badge:       p.badge || null,
     bg:          p.bg || '#FFF5F5',
     emoji:       p.emoji || '📦',
-    img_url:     p.imgUrl || null,
+    img_url:     (p.images && p.images[0]) || p.imgUrl || null,
+    images:      p.images || [],
     description: p.desc || null,
+    brand:       p.brand || null,
+    specs:       p.specs || null,
     stock:       p.stock || 0,
     variants:    p.variants || [],
     updated_at:  new Date().toISOString(),
@@ -243,10 +250,10 @@ async function saveProduct(product) {
     const row = _productToRow(product);
     let { error } = await sb.from('products').upsert(row, { onConflict: 'id' });
     if (error && error.code === '42703') {
-      // Column doesn't exist yet (stock/variants) — retry without new fields
-      const { stock, variants, ...rowFallback } = row;
+      // Column doesn't exist yet — retry without newer fields
+      const { stock, variants, images, brand, specs, ...rowFallback } = row;
       ({ error } = await sb.from('products').upsert(rowFallback, { onConflict: 'id' }));
-      if (!error) console.log('[RubyDB] Product saved (without stock/variants — run schema migration) ✓', product.id);
+      if (!error) console.log('[RubyDB] Product saved (partial — run schema migration) ✓', product.id);
     }
     if (error) console.warn('[RubyDB] saveProduct error:', error.message);
     else       console.log('[RubyDB] Product saved ✓', product.id);

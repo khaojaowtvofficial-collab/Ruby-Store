@@ -653,29 +653,24 @@
     </div>
     <div class="admin-modal-body">
       <div class="admin-form-grid">
-        <!-- Image / Emoji -->
+        <!-- Gallery Images -->
         <div class="admin-form-group full">
-          <label class="admin-form-label">ຮູບສິນຄ້າ</label>
-          <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">
-            <!-- Preview -->
-            <div id="imgPreviewBox" style="width:80px;height:80px;border-radius:12px;background:#f5f5f5;border:2px dashed #ddd;display:flex;align-items:center;justify-content:center;font-size:2rem;overflow:hidden;flex-shrink:0;">
-              <span id="imgPreviewEmoji">📦</span>
-              <img id="imgPreviewImg" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:none;">
-            </div>
-            <div style="flex:1;min-width:200px;">
-              <!-- Upload file -->
-              <label style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:var(--red);color:#fff;border-radius:20px;font-size:0.8rem;font-weight:600;cursor:pointer;margin-bottom:8px;">
-                📁 ອັບໂຫລດຮູບ
-                <input type="file" id="pImgFile" accept="image/*" style="display:none;" onchange="handleImgUpload(this)">
-              </label>
-              <!-- URL input -->
-              <input class="admin-form-input" id="pImgUrl" placeholder="ຫຼືວາງ URL ຮູບພາບ" style="margin-bottom:8px;" oninput="previewImgUrl(this.value)">
-              <!-- Emoji fallback -->
-              <div style="display:flex;align-items:center;gap:8px;">
-                <span style="font-size:0.78rem;color:var(--muted);">Emoji (ຖ້າບໍ່ມີຮູບ):</span>
-                <input class="admin-form-input" id="pEmoji" value="📦" maxlength="4" style="width:60px;font-size:1.2rem;text-align:center;padding:4px;" oninput="previewEmoji(this.value)">
-              </div>
-            </div>
+          <label class="admin-form-label">ຮູບສິນຄ້າ <span style="font-weight:400;color:var(--muted);font-size:.75rem;">(ຮູບທຳອິດ = ຮູບຫຼັກ, ສູງສຸດ 5 ຮູບ)</span></label>
+          <!-- Thumbnail strip -->
+          <div class="gallery-strip" id="galleryStrip"></div>
+          <!-- Add controls -->
+          <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;">
+            <label style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:var(--red);color:#fff;border-radius:20px;font-size:0.8rem;font-weight:600;cursor:pointer;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>ອັບໂຫລດຮູບ
+              <input type="file" id="pImgFile" accept="image/*" multiple style="display:none;" onchange="handleGalleryUpload(this)">
+            </label>
+            <input class="admin-form-input" id="pImgUrl" placeholder="ຫຼືວາງ URL ຮູບ ແລ້ວກົດ Enter" style="flex:1;min-width:160px;" onkeydown="if(event.key==='Enter'){event.preventDefault();addGalleryUrl(this.value);this.value='';}">
+            <button type="button" class="btn btn-outline btn-xs" onclick="addGalleryUrl(document.getElementById('pImgUrl').value);document.getElementById('pImgUrl').value='';">+ ເພີ່ມ URL</button>
+          </div>
+          <!-- Emoji fallback -->
+          <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+            <span style="font-size:0.78rem;color:var(--muted);">Emoji (ຖ້າບໍ່ມີຮູບ):</span>
+            <input class="admin-form-input" id="pEmoji" value="📦" maxlength="4" style="width:60px;font-size:1.2rem;text-align:center;padding:4px;">
           </div>
           <div class="emoji-picker-row" id="emojiPicker"></div>
         </div>
@@ -742,6 +737,16 @@
         <div class="admin-form-group full">
           <label class="admin-form-label">ລາຍລະອຽດ (optional)</label>
           <textarea class="admin-form-input" id="pDesc" rows="2" placeholder="ລາຍລະອຽດສິນຄ້າ"></textarea>
+        </div>
+        <!-- Brand -->
+        <div class="admin-form-group">
+          <label class="admin-form-label">ຍີ່ຫໍ້ (Brand)</label>
+          <input class="admin-form-input" id="pBrand" placeholder="ເຊັ່ນ: Samsung, Royal Canin…">
+        </div>
+        <!-- Specs -->
+        <div class="admin-form-group full">
+          <label class="admin-form-label">ຂໍ້ມູນເພີ່ມເຕີມ / Specs</label>
+          <textarea class="admin-form-input" id="pSpecs" rows="3" placeholder="ຂໍ້ມູນ Spec ສິນຄ້າ (ໜ້າຈໍ: 6.7 ນິ້ວ, RAM: 8GB, …)"></textarea>
         </div>
         <!-- Stock -->
         <div class="admin-form-group">
@@ -1305,10 +1310,14 @@ function openProductModal(productId, prefilledStore) {
     document.getElementById('pBadge').value = p.badge || '';
     document.getElementById('pBg').value = p.bg || '#FFF5F5';
     document.getElementById('pDesc').value = p.desc || '';
-    document.getElementById('pImgUrl').value = p.imgUrl || '';
+    document.getElementById('pBrand').value = p.brand || '';
+    document.getElementById('pSpecs').value = p.specs || '';
     document.getElementById('pStock').value = p.stock ?? 0;
-    document.getElementById('imgPreviewEmoji').textContent = p.emoji || '📦';
-    _setImgPreview(p.imgUrl || '');
+    // Gallery: prefer p.images[], fallback to p.imgUrl
+    _galleryImages = Array.isArray(p.images) && p.images.length ? [...p.images]
+                     : (p.imgUrl ? [p.imgUrl] : []);
+    renderGalleryStrip();
+    document.getElementById('pImgUrl').value = '';
     clearVariantsList();
     (p.variants || []).forEach(v => addVariantRow(v.label, v.price || ''));
     document.getElementById('deleteProductBtn').style.display = 'inline-flex';
@@ -1324,11 +1333,13 @@ function openProductModal(productId, prefilledStore) {
     document.getElementById('pBadge').value = '';
     document.getElementById('pBg').value = '#FFF5F5';
     document.getElementById('pDesc').value = '';
-    document.getElementById('pImgUrl').value = '';
+    document.getElementById('pBrand').value = '';
+    document.getElementById('pSpecs').value = '';
     document.getElementById('pStock').value = 0;
-    document.getElementById('imgPreviewEmoji').textContent = '📦';
+    document.getElementById('pImgUrl').value = '';
     document.getElementById('pImgFile').value = '';
-    _setImgPreview('');
+    _galleryImages = [];
+    renderGalleryStrip();
     clearVariantsList();
     document.getElementById('deleteProductBtn').style.display = 'none';
   }
@@ -1341,42 +1352,71 @@ function selectEmoji(e) {
   document.querySelectorAll('#emojiPicker .emoji-opt').forEach(btn=>{
     btn.classList.toggle('sel', btn.textContent===e);
   });
-  previewEmoji(e);
 }
 
-function _setImgPreview(url) {
-  const img = document.getElementById('imgPreviewImg');
-  const emo = document.getElementById('imgPreviewEmoji');
-  if (url) {
-    img.src = url; img.style.display = 'block'; emo.style.display = 'none';
-  } else {
-    img.src = ''; img.style.display = 'none'; emo.style.display = 'block';
+/* ─── Gallery helpers ─── */
+let _galleryImages = []; // array of URL strings
+
+function renderGalleryStrip() {
+  const strip = document.getElementById('galleryStrip');
+  strip.innerHTML = '';
+  _galleryImages.forEach((url, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'gallery-thumb-wrap' + (i === 0 ? ' main-thumb' : '');
+    wrap.innerHTML = `
+      <img src="${url}" alt="ຮູບ${i+1}" title="${i===0?'ຮູບຫຼັກ':'ຄລິກເພື່ອຕັ້ງເປັນຫຼັກ'}" onclick="setGalleryMain(${i})">
+      <button class="gallery-thumb-remove" onclick="removeGalleryImg(${i})" title="ລຶບຮູບ">✕</button>
+      ${i===0?'<div class="gallery-main-badge">ຫຼັກ</div>':''}
+    `;
+    strip.appendChild(wrap);
+  });
+  // "Add" placeholder if < 5 images
+  if (_galleryImages.length < 5) {
+    const add = document.createElement('div');
+    add.className = 'gallery-add-btn';
+    add.title = 'ອັບໂຫລດຮູບເພີ່ມ';
+    add.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>ຮູບ</span>`;
+    add.onclick = () => document.getElementById('pImgFile').click();
+    strip.appendChild(add);
   }
 }
 
-function previewEmoji(val) {
-  document.getElementById('imgPreviewEmoji').textContent = val || '📦';
-  if (!document.getElementById('pImgUrl').value && !document.getElementById('imgPreviewImg').src.startsWith('data')) {
-    _setImgPreview('');
-  }
+function setGalleryMain(idx) {
+  if (idx === 0) return;
+  const url = _galleryImages.splice(idx, 1)[0];
+  _galleryImages.unshift(url);
+  renderGalleryStrip();
 }
 
-function previewImgUrl(url) {
-  if (url) { _setImgPreview(url); }
-  else { _setImgPreview(''); }
+function removeGalleryImg(idx) {
+  _galleryImages.splice(idx, 1);
+  renderGalleryStrip();
 }
 
-function handleImgUpload(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    const dataUrl = e.target.result;
-    document.getElementById('pImgUrl').value = dataUrl;
-    _setImgPreview(dataUrl);
-  };
-  reader.readAsDataURL(file);
+function addGalleryUrl(url) {
+  url = (url || '').trim();
+  if (!url) return;
+  if (_galleryImages.length >= 5) { showToast('ຮູບສູງສຸດ 5 ຮູບ', 'error'); return; }
+  if (_galleryImages.includes(url)) return;
+  _galleryImages.push(url);
+  renderGalleryStrip();
 }
+
+function handleGalleryUpload(input) {
+  const files = Array.from(input.files || []);
+  if (!files.length) return;
+  const remaining = 5 - _galleryImages.length;
+  files.slice(0, remaining).forEach(file => {
+    _compressImage(file, 1000, 0.82, dataUrl => {
+      _galleryImages.push(dataUrl);
+      renderGalleryStrip();
+    });
+  });
+  input.value = '';
+  if (files.length > remaining) showToast(`ຮູບສູງສຸດ 5 ຮູບ (ໃສ່ໄດ້ ${remaining} ຮູບເທົ່ານັ້ນ)`, 'error');
+}
+
+function getGalleryImages() { return [..._galleryImages]; }
 
 /* ─── Variant builder helpers ─── */
 function addVariantRow(label='', price='') {
@@ -1416,9 +1456,11 @@ function saveProduct() {
   if (!_adminCache.products) _adminCache.products = prods; // ensure cache is set
   const oldPrice = parseInt(document.getElementById('pOldPrice').value) || null;
 
+  const imgs = getGalleryImages();
   const fields = {
     emoji:    document.getElementById('pEmoji').value || '📦',
-    imgUrl:   document.getElementById('pImgUrl').value.trim() || undefined,
+    images:   imgs,
+    imgUrl:   imgs[0] || undefined,
     name,
     price,
     oldPrice: oldPrice || undefined,
@@ -1427,6 +1469,8 @@ function saveProduct() {
     badge:    document.getElementById('pBadge').value || undefined,
     bg:       document.getElementById('pBg').value || '#FFF5F5',
     desc:     document.getElementById('pDesc').value.trim() || undefined,
+    brand:    document.getElementById('pBrand').value.trim() || undefined,
+    specs:    document.getElementById('pSpecs').value.trim() || undefined,
     stock:    parseInt(document.getElementById('pStock').value) || 0,
     variants: getVariantsFromModal(),
   };

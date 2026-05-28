@@ -242,16 +242,23 @@
     grid.innerHTML = `
       <!-- Left: images -->
       <div>
-        <div class="product-main-img" style="background:${p.bg}">
-          ${p.imgUrl
-            ? `<img src="${p.imgUrl}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
+        <div class="product-main-img" id="prodMainImg" style="background:${p.bg}">
+          ${(p.images && p.images.length > 0) || p.imgUrl
+            ? `<img id="prodMainImgEl" src="${(p.images && p.images[0]) || p.imgUrl}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
             : `<span style="font-size:6rem;">${p.emoji}</span>`}
         </div>
+        ${(p.images && p.images.length > 1) ? `
+        <div class="product-thumbs">
+          ${p.images.map((url, i) => `
+          <div class="product-thumb${i===0?' active':''}" style="background:${p.bg}" onclick="setProductGalleryImg(this,'${url}')">
+            <img src="${url}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">
+          </div>`).join('')}
+        </div>` : (p.imgUrl ? `
         <div class="product-thumbs">
           <div class="product-thumb active" style="background:${p.bg}">
-            ${p.imgUrl ? `<img src="${p.imgUrl}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">` : p.emoji}
+            <img src="${p.imgUrl}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">
           </div>
-        </div>
+        </div>` : '')}
       </div>
 
       <!-- Right: info -->
@@ -311,8 +318,17 @@
       </div>`;
 
     // Tabs content
-    document.getElementById('tabDescText').textContent = p.desc;
-    document.getElementById('tabSpecsText').textContent = p.details;
+    document.getElementById('tabDescText').textContent = p.desc || '';
+    // Specs tab: show brand + specs
+    const specsEl = document.getElementById('tabSpecsText');
+    if (p.brand || p.specs) {
+      let specsHtml = '';
+      if (p.brand) specsHtml += `<div style="margin-bottom:10px;"><span style="font-weight:700;color:var(--text);">ຍີ່ຫໍ້:</span> <span>${p.brand}</span></div>`;
+      if (p.specs) specsHtml += `<div style="white-space:pre-wrap;line-height:1.7;">${p.specs}</div>`;
+      specsEl.innerHTML = specsHtml;
+    } else {
+      specsEl.textContent = '';
+    }
 
     // Reviews
     const reviewsEl = document.getElementById('tabReviews');
@@ -335,6 +351,13 @@
           <p style="font-size:0.875rem;color:var(--text-m);margin:0;">${r.text}</p>
         </div>`).join('');
     }
+  }
+
+  function setProductGalleryImg(thumbEl, url) {
+    const mainImg = document.getElementById('prodMainImgEl');
+    if (mainImg) mainImg.src = url;
+    document.querySelectorAll('.product-thumbs .product-thumb').forEach(t => t.classList.remove('active'));
+    if (thumbEl) thumbEl.classList.add('active');
   }
 
   function selectVariant(btn, val, price) {
