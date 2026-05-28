@@ -474,9 +474,27 @@
     });
   }
 
+  // ===== STORE LOGO IN SLIDER =====
+  function applyStoreLogosToSlider() {
+    var stores = [
+      { id: 'pet',      cls: '.sbc-pet' },
+      { id: 'computer', cls: '.sbc-comp' },
+      { id: 'toy',      cls: '.sbc-toy' }
+    ];
+    stores.forEach(function(s) {
+      var logo = localStorage.getItem('ruby_store_logo_' + s.id);
+      if (!logo) return;
+      var boxes = document.querySelectorAll(s.cls + ' .sbc-icon-box');
+      boxes.forEach(function(box) {
+        box.innerHTML = '<img src="' + logo + '" style="width:56px;height:56px;object-fit:contain;border-radius:14px;">';
+      });
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
     renderHomeProducts('all');
     renderBestsellerCarousel();
+    applyStoreLogosToSlider();
 
     // Update hero & store counts from real PRODUCTS
     var prods   = window.PRODUCTS || [];
