@@ -145,7 +145,7 @@ function renderCartItems() {
           <button class="qty-btn" onclick="updateQty('${item.key}', -1)">−</button>
           <span class="qty-display">${item.qty}</span>
           <button class="qty-btn" onclick="updateQty('${item.key}', 1)">+</button>
-          <button class="cart-item-remove" onclick="removeFromCart('${item.key}')">🗑</button>
+          <button class="cart-item-remove" onclick="removeFromCart('${item.key}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></button>
         </div>
       </div>`;
     el.appendChild(div);
@@ -283,23 +283,25 @@ function openWAModal(channel, form) {
   const openBtn = document.getElementById('waOpenBtn');
   const channelName = document.getElementById('waChannelName');
 
+  const _msgSvg = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>`;
+  const _btnSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px;"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>`;
   if (channel === 'wa') {
-    if (header) { header.className = 'wa-modal-header'; header.querySelector('.wa-modal-header-icon').textContent = '💬'; }
+    if (header) { header.className = 'wa-modal-header'; header.querySelector('.wa-modal-header-icon').innerHTML = _msgSvg; }
     if (channelName) channelName.textContent = 'WhatsApp';
     if (openBtn) {
       openBtn.className = 'btn btn-wa wa-open-btn';
-      openBtn.textContent = '📱 ເປີດ WhatsApp';
+      openBtn.innerHTML = _btnSvg + 'ເປີດ WhatsApp';
       openBtn.onclick = () => {
         const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
         window.open(url, '_blank');
       };
     }
   } else {
-    if (header) { header.className = 'wa-modal-header msg'; header.querySelector('.wa-modal-header-icon').textContent = '💬'; }
+    if (header) { header.className = 'wa-modal-header msg'; header.querySelector('.wa-modal-header-icon').innerHTML = _msgSvg; }
     if (channelName) channelName.textContent = 'Messenger';
     if (openBtn) {
       openBtn.className = 'btn btn-msg wa-open-btn msg';
-      openBtn.textContent = '💬 ເປີດ Messenger';
+      openBtn.innerHTML = _btnSvg + 'ເປີດ Messenger';
       openBtn.onclick = () => window.open(MSG_LINK, '_blank');
     }
   }
