@@ -386,7 +386,7 @@ input, textarea, select {
    HERO SECTION
    ===================================================== */
 .hero {
-  margin-top: 60px;
+  margin-top: 0;
   background: linear-gradient(135deg, var(--red-l) 0%, #fff 55%);
   padding: 22px 0 18px;
   position: relative;
@@ -3224,6 +3224,13 @@ input, textarea, select {
 /* =====================================================
    STORE BANNER SLIDER
    ===================================================== */
+/* Promo banner wrap — top of page, right under navbar */
+.promo-banner-wrap {
+  margin-top: 60px;
+  padding: 10px 16px 0;
+  background: var(--bg);
+}
+
 .store-slider-outer {
   position: relative;
   overflow: hidden;
