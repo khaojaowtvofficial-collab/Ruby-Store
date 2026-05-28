@@ -358,14 +358,13 @@
 
   function handleAddToCart() {
     if (!currentProduct) return;
-    addToCart(currentProduct.id, currentQty, window._selectedVariant || null);
+    addToCart(currentProduct.id, currentQty, window._selectedVariant || null, window._selectedVariantPrice || null);
     openCart();
   }
 
   function handleBuyWA() {
     if (!currentProduct) return;
-    // Add current product to cart, then open WA modal
-    addToCart(currentProduct.id, currentQty, window._selectedVariant || null);
+    addToCart(currentProduct.id, currentQty, window._selectedVariant || null, window._selectedVariantPrice || null);
     openWAModal('wa', {});
   }
 
@@ -381,6 +380,7 @@
     const p = (window.PRODUCTS || []).find(x => x.id === id);
     currentQty = 1;
     window._selectedVariant = null;
+    window._selectedVariantPrice = null;
     if (p) {
       renderProduct(p);
       renderRelated(p.id, p.store);

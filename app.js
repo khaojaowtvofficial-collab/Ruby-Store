@@ -50,20 +50,25 @@ function getCartTotal() {
   return cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 }
 
-function addToCart(productId, qty = 1, variant = null) {
+function addToCart(productId, qty = 1, variant = null, variantPrice = null) {
   const product = PRODUCTS.find(p => p.id === productId);
   if (!product) return;
+
+  // Use variant price if provided and valid, else base price
+  const price = (variantPrice && variantPrice > 0) ? variantPrice : product.price;
 
   const key = variant ? `${productId}|${variant}` : productId;
   const existing = cart.find(i => i.key === key);
   if (existing) {
     existing.qty += qty;
+    existing.price = price; // keep price in sync with variant selection
   } else {
     cart.push({
       key,
       id: productId,
       name: product.name,
-      price: product.price,
+      price,
+      imgUrl: product.imgUrl || null,
       emoji: product.emoji,
       bg: product.bg,
       store: product.store,
@@ -135,8 +140,11 @@ function renderCartItems() {
     const div = document.createElement('div');
     div.className = 'cart-item';
     div.dataset.key = item.key;
+    const _imgContent = item.imgUrl
+      ? `<img src="${item.imgUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">`
+      : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:52%;height:52%;opacity:.35;"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`;
     div.innerHTML = `
-      <div class="cart-item-img" style="background:${item.bg || '#F5F5F5'}">${item.emoji || '🛍️'}</div>
+      <div class="cart-item-img" style="background:${item.bg || '#F5F5F5'};display:flex;align-items:center;justify-content:center;">${_imgContent}</div>
       <div class="cart-item-body">
         <div class="cart-item-name">${item.name}</div>
         ${(item.variant && item.variant !== 'undefined') ? `<div class="cart-item-variant">${item.variant}</div>` : ''}
