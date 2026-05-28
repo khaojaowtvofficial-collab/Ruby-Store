@@ -97,50 +97,90 @@
   </div>
 </section>
 
-<!-- ===================== STORES ===================== -->
-<section class="section" id="stores">
+<!-- ===================== STORES SLIDER ===================== -->
+<section class="section" id="stores" style="padding-bottom: 8px;">
   <div class="container">
     <h2 class="section-title"><span class="sec-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span data-i18n="sec_stores">ເລືອກຮ້ານຄ້າ</span></h2>
-    <div class="stores-grid">
-      <a href="shop.html#pet" class="store-row-card">
-        <div class="store-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
-        <div class="store-card-body">
-          <div class="store-card-name">Ruby Pet Shop</div>
-          <div class="store-card-desc" data-i18n="store_pet_desc">ອາຫານ ຂອງຫຼິ້ນ ສຳລັບໝາ ແລະ ແມວ</div>
-          <div class="store-card-meta">
-            <span class="store-card-count" id="storePetCount">— ລາຍການ</span>
-          </div>
+    <div class="store-slider-outer" id="storeSliderOuter">
+      <div class="store-slider-track" id="storeSliderTrack">
+
+        <!-- Slide 1: Pet Shop -->
+        <div class="store-slide">
+          <a href="shop.html#pet" class="sbc sbc-pet">
+            <div class="sbc-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            </div>
+            <div class="sbc-body">
+              <div class="sbc-store-label">ຮ້ານຄ້າ</div>
+              <div class="sbc-name">Ruby Pet Shop</div>
+              <div class="sbc-desc" data-i18n="store_pet_desc">ອາຫານ ຂອງຫຼິ້ນ ສຳລັບໝາ ແລະ ແມວ</div>
+              <div class="sbc-footer">
+                <span class="sbc-count" id="slidePetCount">— ລາຍການ</span>
+                <span class="sbc-btn">ເລືອກຊື້</span>
+              </div>
+            </div>
+          </a>
         </div>
-        <svg class="store-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="9 18 15 12 9 6"/>
-        </svg>
-      </a>
-      <a href="shop.html#computer" class="store-row-card">
-        <div class="store-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
-        <div class="store-card-body">
-          <div class="store-card-name">Ruby Computer</div>
-          <div class="store-card-desc" data-i18n="store_comp_desc">ອຸປະກອນຄອມພິວເຕີ ໄອທີ</div>
-          <div class="store-card-meta">
-            <span class="store-card-count" id="storeComputerCount">— ລາຍການ</span>
-          </div>
+
+        <!-- Slide 2: Computer -->
+        <div class="store-slide">
+          <a href="shop.html#computer" class="sbc sbc-comp">
+            <div class="sbc-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <div class="sbc-body">
+              <div class="sbc-store-label">ຮ້ານຄ້າ</div>
+              <div class="sbc-name">Ruby Computer</div>
+              <div class="sbc-desc" data-i18n="store_comp_desc">ອຸປະກອນຄອມພິວເຕີ ໄອທີ</div>
+              <div class="sbc-footer">
+                <span class="sbc-count" id="slideCompCount">— ລາຍການ</span>
+                <span class="sbc-btn" style="background:#2563EB;">ເລືອກຊື້</span>
+              </div>
+            </div>
+          </a>
         </div>
-        <svg class="store-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="9 18 15 12 9 6"/>
-        </svg>
-      </a>
-      <a href="shop.html#toy" class="store-row-card">
-        <div class="store-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
-        <div class="store-card-body">
-          <div class="store-card-name">Ruby Toy Shop</div>
-          <div class="store-card-desc" data-i18n="store_toy_desc">ຂອງຫຼິ້ນເດັກ ຂອງສະສົມ</div>
-          <div class="store-card-meta">
-            <span class="store-card-count" id="storeToyCount">— ລາຍການ</span>
-          </div>
+
+        <!-- Slide 3: Toy Shop -->
+        <div class="store-slide">
+          <a href="shop.html#toy" class="sbc sbc-toy">
+            <div class="sbc-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            </div>
+            <div class="sbc-body">
+              <div class="sbc-store-label">ຮ້ານຄ້າ</div>
+              <div class="sbc-name">Ruby Toy Shop</div>
+              <div class="sbc-desc" data-i18n="store_toy_desc">ຂອງຫຼິ້ນເດັກ ຂອງສະສົມ</div>
+              <div class="sbc-footer">
+                <span class="sbc-count" id="slideToyCount">— ລາຍການ</span>
+                <span class="sbc-btn" style="background:#D97706;">ເລືອກຊື້</span>
+              </div>
+            </div>
+          </a>
         </div>
-        <svg class="store-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="9 18 15 12 9 6"/>
-        </svg>
-      </a>
+
+      </div>
+      <!-- Dots -->
+      <div class="store-slider-dots" id="storeSliderDots">
+        <button class="ssd active" data-idx="0"></button>
+        <button class="ssd" data-idx="1"></button>
+        <button class="ssd" data-idx="2"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== BESTSELLER CAROUSEL ===================== -->
+<section class="prod-carousel-section section" id="bestsellerCarousel" style="padding-top: 0;">
+  <div class="container">
+    <div class="prod-carousel-header">
+      <h2 class="section-title" style="margin-bottom:0;">
+        <span class="sec-icon"><svg viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
+        <span data-i18n="sec_bestseller">ສິນຄ້າຂາຍດີ</span>
+      </h2>
+      <a href="shop.html" style="font-size:0.85rem; color:var(--red); font-weight:600;" data-i18n="sec_view_all">ເບິ່ງທັງໝົດ →</a>
+    </div>
+    <div class="prod-carousel-scroll" id="bestsellerScroll">
+      <!-- Populated by JS -->
     </div>
   </div>
 </section>
@@ -331,29 +371,88 @@
     bindAddToCart();
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
+  // ===== STORE BANNER SLIDER =====
+  (function() {
+    const track = document.getElementById('storeSliderTrack');
+    const outer = document.getElementById('storeSliderOuter');
+    if (!track || !outer) return;
+    const dots = outer.querySelectorAll('.ssd');
+    let cur = 0, total = 3, timer, startX;
+
+    function goTo(idx) {
+      cur = ((idx % total) + total) % total;
+      track.style.transform = 'translateX(-' + (cur * 100) + '%)';
+      dots.forEach((d, i) => d.classList.toggle('active', i === cur));
+    }
+    function startAuto() { timer = setInterval(function(){ goTo(cur + 1); }, 4000); }
+    function stopAuto()  { clearInterval(timer); }
+
+    dots.forEach(function(d) {
+      d.addEventListener('click', function() { stopAuto(); goTo(+d.dataset.idx); startAuto(); });
+    });
+
+    // Touch swipe support
+    outer.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; stopAuto(); }, { passive: true });
+    outer.addEventListener('touchend',   function(e) {
+      var dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 40) goTo(dx < 0 ? cur + 1 : cur - 1);
+      startAuto();
+    }, { passive: true });
+
+    startAuto();
+  })();
+
+  // ===== BESTSELLER CAROUSEL =====
+  function renderBestsellerCarousel() {
+    var scroll = document.getElementById('bestsellerScroll');
+    if (!scroll) return;
+    var products = (window.PRODUCTS || []).slice(0, 10);
+    if (!products.length) {
+      var sec = document.getElementById('bestsellerCarousel');
+      if (sec) sec.style.display = 'none';
+      return;
+    }
+    scroll.innerHTML = products.map(function(p) { return buildProductCard(p); }).join('');
+    bindAddToCart();
+
+    // Mouse drag-to-scroll
+    var isDown = false, sX = 0, sL = 0;
+    scroll.addEventListener('mousedown',  function(e) { isDown = true; sX = e.pageX - scroll.offsetLeft; sL = scroll.scrollLeft; });
+    scroll.addEventListener('mouseleave', function()  { isDown = false; });
+    scroll.addEventListener('mouseup',    function()  { isDown = false; });
+    scroll.addEventListener('mousemove',  function(e) {
+      if (!isDown) return;
+      e.preventDefault();
+      scroll.scrollLeft = sL - (e.pageX - scroll.offsetLeft - sX);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
     renderHomeProducts('all');
+    renderBestsellerCarousel();
 
     // Update hero & store counts from real PRODUCTS
-    const prods = window.PRODUCTS || [];
-    const total  = prods.length;
-    const petCnt  = prods.filter(p => p.store === 'pet').length;
-    const compCnt = prods.filter(p => p.store === 'computer').length;
-    const toyCnt  = prods.filter(p => p.store === 'toy').length;
+    var prods   = window.PRODUCTS || [];
+    var total   = prods.length;
+    var petCnt  = prods.filter(function(p){ return p.store === 'pet'; }).length;
+    var compCnt = prods.filter(function(p){ return p.store === 'computer'; }).length;
+    var toyCnt  = prods.filter(function(p){ return p.store === 'toy'; }).length;
 
-    const lbl = RubyI18n.t('stat_products'); // "ລາຍການ"
-    const heroCount = document.getElementById('heroProductCount');
+    var lbl = RubyI18n.t('stat_products');
+    var heroCount = document.getElementById('heroProductCount');
     if (heroCount) heroCount.textContent = total + ' ' + lbl;
-    const petEl  = document.getElementById('storePetCount');
-    if (petEl)  petEl.textContent  = petCnt  + ' ' + lbl;
-    const compEl = document.getElementById('storeComputerCount');
-    if (compEl) compEl.textContent = compCnt + ' ' + lbl;
-    const toyEl  = document.getElementById('storeToyCount');
-    if (toyEl)  toyEl.textContent  = toyCnt  + ' ' + lbl;
 
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    // Slider counts
+    var pEl = document.getElementById('slidePetCount');
+    if (pEl) pEl.textContent = petCnt + ' ' + lbl;
+    var cEl = document.getElementById('slideCompCount');
+    if (cEl) cEl.textContent = compCnt + ' ' + lbl;
+    var tEl = document.getElementById('slideToyCount');
+    if (tEl) tEl.textContent = toyCnt + ' ' + lbl;
+
+    document.querySelectorAll('.filter-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
         btn.classList.add('active');
         renderHomeProducts(btn.dataset.filter || 'all');
       });
