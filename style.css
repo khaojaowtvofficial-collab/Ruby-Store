@@ -2736,6 +2736,57 @@ input, textarea, select {
   border-color: var(--red);
 }
 
+/* ── Product gallery nav buttons ── */
+.gallery-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(4px);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0,0,0,.18);
+  z-index: 3;
+  transition: background .15s, transform .15s;
+}
+.gallery-nav-btn:hover {
+  background: #fff;
+  transform: translateY(-50%) scale(1.08);
+}
+.gallery-prev { left: 10px; }
+.gallery-next { right: 10px; }
+
+.gallery-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 3;
+}
+.gallery-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.55);
+  cursor: pointer;
+  transition: background .2s, transform .2s;
+  border: 1.5px solid rgba(0,0,0,.12);
+}
+.gallery-dot.active {
+  background: #fff;
+  transform: scale(1.25);
+  border-color: rgba(0,0,0,.2);
+}
+
 /* ── Admin: product gallery builder ── */
 .gallery-strip {
   display: flex;

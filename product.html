@@ -242,15 +242,25 @@
     grid.innerHTML = `
       <!-- Left: images -->
       <div>
-        <div class="product-main-img" id="prodMainImg" style="background:${p.bg}">
+        <div class="product-main-img" id="prodMainImg" style="background:${p.bg};position:relative;overflow:hidden;">
           ${(p.images && p.images.length > 0) || p.imgUrl
-            ? `<img id="prodMainImgEl" src="${(p.images && p.images[0]) || p.imgUrl}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
+            ? `<img id="prodMainImgEl" src="${(p.images && p.images[0]) || p.imgUrl}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;transition:opacity .2s;">`
             : `<span style="font-size:6rem;">${p.emoji}</span>`}
+          ${((p.images && p.images.length > 1)) ? `
+          <button class="gallery-nav-btn gallery-prev" onclick="slideGallery(-1)" aria-label="ກ່ອນໜ້າ">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="gallery-nav-btn gallery-next" onclick="slideGallery(1)" aria-label="ຕໍ່ໄປ">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <div class="gallery-dots" id="galleryDots">
+            ${p.images.map((_,i)=>`<span class="gallery-dot${i===0?' active':''}" onclick="slideGalleryTo(${i})"></span>`).join('')}
+          </div>` : ''}
         </div>
         ${(p.images && p.images.length > 1) ? `
-        <div class="product-thumbs">
+        <div class="product-thumbs" id="prodThumbs">
           ${p.images.map((url, i) => `
-          <div class="product-thumb${i===0?' active':''}" style="background:${p.bg}" onclick="setProductGalleryImg(this,'${url}')">
+          <div class="product-thumb${i===0?' active':''}" style="background:${p.bg}" onclick="slideGalleryTo(${i})">
             <img src="${url}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">
           </div>`).join('')}
         </div>` : (p.imgUrl ? `
@@ -317,6 +327,9 @@
         </div>
       </div>`;
 
+    // Init gallery nav
+    _initGallery();
+
     // Tabs content
     document.getElementById('tabDescText').textContent = p.desc || '';
     // Specs tab: show brand + specs
@@ -353,11 +366,45 @@
     }
   }
 
-  function setProductGalleryImg(thumbEl, url) {
+  // ── Gallery navigation ──────────────────────────────────
+  let _galIdx = 0;
+  let _galImages = [];
+  let _swipeStartX = 0;
+
+  function _initGallery() {
+    if (!currentProduct) return;
+    _galImages = (currentProduct.images && currentProduct.images.length > 0)
+      ? currentProduct.images
+      : (currentProduct.imgUrl ? [currentProduct.imgUrl] : []);
+    _galIdx = 0;
+    // Swipe support
+    const box = document.getElementById('prodMainImg');
+    if (box && _galImages.length > 1) {
+      box.addEventListener('touchstart', e => { _swipeStartX = e.touches[0].clientX; }, { passive: true });
+      box.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - _swipeStartX;
+        if (Math.abs(dx) > 40) slideGallery(dx < 0 ? 1 : -1);
+      }, { passive: true });
+    }
+  }
+
+  function slideGalleryTo(idx) {
+    if (!_galImages.length) return;
+    _galIdx = (idx + _galImages.length) % _galImages.length;
     const mainImg = document.getElementById('prodMainImgEl');
-    if (mainImg) mainImg.src = url;
-    document.querySelectorAll('.product-thumbs .product-thumb').forEach(t => t.classList.remove('active'));
-    if (thumbEl) thumbEl.classList.add('active');
+    if (mainImg) { mainImg.style.opacity = '0'; setTimeout(() => { mainImg.src = _galImages[_galIdx]; mainImg.style.opacity = '1'; }, 150); }
+    // Thumbs
+    document.querySelectorAll('#prodThumbs .product-thumb').forEach((t, i) => t.classList.toggle('active', i === _galIdx));
+    // Dots
+    document.querySelectorAll('#galleryDots .gallery-dot').forEach((d, i) => d.classList.toggle('active', i === _galIdx));
+  }
+
+  function slideGallery(dir) { slideGalleryTo(_galIdx + dir); }
+
+  // Legacy: called by old thumb clicks (single-image fallback)
+  function setProductGalleryImg(thumbEl, url) {
+    const idx = _galImages.indexOf(url);
+    if (idx >= 0) slideGalleryTo(idx);
   }
 
   function selectVariant(btn, val, price) {
