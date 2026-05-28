@@ -97,6 +97,18 @@
     .sca-logo-preview.has-logo { border-style:solid; border-color:var(--red); background:#000; }
     .sca-logo-preview img { width:100%; height:100%; object-fit:contain; border-radius:16px; }
     .sca-logo-btns { display:flex; gap:6px; justify-content:center; }
+    /* Bg image upload UI */
+    .sca-bg-wrap { margin-bottom:14px; }
+    .sca-bg-label { font-size:.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px; text-align:center; }
+    .sca-bg-preview {
+      width:100%; height:68px; border-radius:12px;
+      background:#111; display:flex; align-items:center; justify-content:center;
+      font-size:1.5rem; margin-bottom:8px; overflow:hidden;
+      border:2px dashed var(--border); transition:border-color .2s;
+      background-size:cover; background-position:center;
+    }
+    .sca-bg-preview.has-bg { border-style:solid; border-color:var(--red); }
+    .sca-bg-btns { display:flex; gap:6px; justify-content:center; }
     .btn-xs { padding:4px 10px; font-size:0.72rem; display:inline-flex; align-items:center; gap:4px; }
     .btn-ghost { background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.72rem; text-decoration:underline; }
     .btn-ghost:hover { color:var(--red); }
@@ -448,6 +460,17 @@
               <button class="btn btn-ghost btn-xs" onclick="clearStoreLogo('pet')" id="petLogoClearBtn" style="display:none;">ລຶບ</button>
             </div>
           </div>
+          <div class="sca-bg-wrap">
+            <div class="sca-bg-label">ພື້ນຫຼັງຮ້ານ</div>
+            <div class="sca-bg-preview" id="petBgPreview">🖼️</div>
+            <div class="sca-bg-btns">
+              <button class="btn btn-outline btn-xs" onclick="uploadStoreBg('pet')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                ອັບໂຫລດພື້ນຫຼັງ
+              </button>
+              <button class="btn btn-ghost btn-xs" onclick="clearStoreBg('pet')" id="petBgClearBtn" style="display:none;">ລຶບ</button>
+            </div>
+          </div>
           <div id="petStoreNameWrap" style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
             <div class="sca-name" id="petStoreName">Ruby Pet Shop</div>
             <button onclick="editStoreName('pet')" title="ແກ້ໄຂຊື່ຮ້ານ" class="sca-edit-name-btn">
@@ -471,6 +494,17 @@
               <button class="btn btn-ghost btn-xs" onclick="clearStoreLogo('computer')" id="computerLogoClearBtn" style="display:none;">ລຶບ</button>
             </div>
           </div>
+          <div class="sca-bg-wrap">
+            <div class="sca-bg-label">ພື້ນຫຼັງຮ້ານ</div>
+            <div class="sca-bg-preview" id="computerBgPreview">🖼️</div>
+            <div class="sca-bg-btns">
+              <button class="btn btn-outline btn-xs" onclick="uploadStoreBg('computer')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                ອັບໂຫລດພື້ນຫຼັງ
+              </button>
+              <button class="btn btn-ghost btn-xs" onclick="clearStoreBg('computer')" id="computerBgClearBtn" style="display:none;">ລຶບ</button>
+            </div>
+          </div>
           <div id="computerStoreNameWrap" style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
             <div class="sca-name" id="computerStoreName">Ruby Computer</div>
             <button onclick="editStoreName('computer')" title="ແກ້ໄຂຊື່ຮ້ານ" class="sca-edit-name-btn">
@@ -492,6 +526,17 @@
                 ອັບໂຫລດ Logo
               </button>
               <button class="btn btn-ghost btn-xs" onclick="clearStoreLogo('toy')" id="toyLogoClearBtn" style="display:none;">ລຶບ</button>
+            </div>
+          </div>
+          <div class="sca-bg-wrap">
+            <div class="sca-bg-label">ພື້ນຫຼັງຮ້ານ</div>
+            <div class="sca-bg-preview" id="toyBgPreview">🖼️</div>
+            <div class="sca-bg-btns">
+              <button class="btn btn-outline btn-xs" onclick="uploadStoreBg('toy')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                ອັບໂຫລດພື້ນຫຼັງ
+              </button>
+              <button class="btn btn-ghost btn-xs" onclick="clearStoreBg('toy')" id="toyBgClearBtn" style="display:none;">ລຶບ</button>
             </div>
           </div>
           <div id="toyStoreNameWrap" style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
@@ -1468,6 +1513,63 @@ function clearStoreLogo(id) {
 }
 
 /* ═══════════════════════════════════════════
+   STORE BACKGROUND MANAGEMENT
+═══════════════════════════════════════════ */
+const STORE_BG_KEY = id => `ruby_store_bg_${id}`;
+
+function initStoreBgs() {
+  ['pet', 'computer', 'toy'].forEach(id => renderStoreBgPreview(id));
+}
+
+function renderStoreBgPreview(id) {
+  const bg = localStorage.getItem(STORE_BG_KEY(id));
+  const preview = document.getElementById(id + 'BgPreview');
+  const clearBtn = document.getElementById(id + 'BgClearBtn');
+  if (!preview) return;
+  if (bg) {
+    preview.style.backgroundImage = `url(${bg})`;
+    preview.innerHTML = '';
+    preview.classList.add('has-bg');
+    if (clearBtn) clearBtn.style.display = 'inline-flex';
+  } else {
+    preview.style.backgroundImage = '';
+    preview.innerHTML = '🖼️';
+    preview.classList.remove('has-bg');
+    if (clearBtn) clearBtn.style.display = 'none';
+  }
+}
+
+function uploadStoreBg(id) {
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = 'image/png,image/jpeg,image/webp,image/gif';
+  inp.onchange = function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 3 * 1024 * 1024) { showToast('ຮູບໃຫຍ່ເກີນ 3MB', 'error'); return; }
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      const bgData = ev.target.result;
+      localStorage.setItem(STORE_BG_KEY(id), bgData);
+      _adminCache.settings['store_bg_' + id] = bgData;
+      renderStoreBgPreview(id);
+      showToast('ບັນທຶກພື້ນຫຼັງແລ້ວ ✓');
+      RubyDB.saveSetting('store_bg_' + id, bgData).catch(e => console.warn('[Admin] bg sync error:', e));
+    };
+    reader.readAsDataURL(file);
+  };
+  inp.click();
+}
+
+function clearStoreBg(id) {
+  localStorage.removeItem(STORE_BG_KEY(id));
+  delete _adminCache.settings['store_bg_' + id];
+  renderStoreBgPreview(id);
+  showToast('ລຶບພື້ນຫຼັງແລ້ວ');
+  RubyDB.saveSetting('store_bg_' + id, '').catch(() => {});
+}
+
+/* ═══════════════════════════════════════════
    STORE NAME MANAGEMENT
 ═══════════════════════════════════════════ */
 const STORE_DEFAULT_NAMES = { pet:'Ruby Pet Shop', computer:'Ruby Computer', toy:'Ruby Toy Shop' };
@@ -1566,7 +1668,7 @@ function showPanel(name, linkEl) {
 
   if (name==='dashboard') renderDashboard();
   if (name==='orders')    renderAllOrders();
-  if (name==='stores')    { renderStores(); initStoreNames(); }
+  if (name==='stores')    { renderStores(); initStoreLogos(); initStoreBgs(); initStoreNames(); }
   if (name==='products')  renderProducts();
   if (name==='customers') renderCustomers();
 }
@@ -1726,6 +1828,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Render with cached data first (instant)
   renderDashboard();
   initStoreLogos();
+  initStoreBgs();
   initStoreNames();
   _refreshStoreDropdowns();
 
@@ -1735,6 +1838,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Re-render with cloud data
   renderDashboard();
   initStoreLogos();
+  initStoreBgs();
   initStoreNames();
   _refreshStoreDropdowns();
   // If on orders/stores/products panel, re-render those too

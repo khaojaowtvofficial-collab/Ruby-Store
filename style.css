@@ -564,6 +564,33 @@ input, textarea, select {
 .store-row-card.store-comp:hover { background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%); }
 .store-row-card.store-toy:hover  { background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); }
 
+/* ── Background image overlay ── */
+.store-row-card.has-store-bg {
+  position: relative;
+  background-color: transparent !important;
+  border-left-color: transparent !important;
+}
+.store-row-card.has-store-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.48);
+  border-radius: inherit;
+  z-index: 0;
+  pointer-events: none;
+}
+.store-row-card.has-store-bg > * {
+  position: relative;
+  z-index: 1;
+}
+.store-row-card.has-store-bg .store-card-name,
+.store-row-card.has-store-bg .store-card-desc,
+.store-row-card.has-store-bg .store-card-count { color: #fff !important; text-shadow: 0 1px 4px rgba(0,0,0,.5); }
+.store-row-card.has-store-bg .store-card-icon { background: rgba(255,255,255,0.18) !important; border-color: rgba(255,255,255,0.28) !important; }
+.store-row-card.has-store-bg .store-card-icon svg { stroke: #fff !important; }
+.store-row-card.has-store-bg .store-card-chevron { stroke: rgba(255,255,255,.8) !important; }
+.store-row-card.has-store-bg:hover { background-color: transparent !important; filter: brightness(1.08); }
+
 .store-card-icon {
   width: 52px;
   height: 52px;

@@ -493,6 +493,36 @@
     { id: 'toy',      sliderCls: '.sbc-toy',  gridCls: '.store-toy'  }
   ];
 
+  function applyStoreBgs() {
+    STORE_LOGO_MAP.forEach(function(s) {
+      var bg = localStorage.getItem('ruby_store_bg_' + s.id);
+      // ── Store Grid card ──
+      document.querySelectorAll(s.gridCls).forEach(function(card) {
+        if (bg) {
+          card.style.backgroundImage = 'url(' + bg + ')';
+          card.style.backgroundSize = 'cover';
+          card.style.backgroundPosition = 'center';
+          card.classList.add('has-store-bg');
+        } else {
+          card.style.backgroundImage = '';
+          card.classList.remove('has-store-bg');
+        }
+      });
+      // ── Promo Slider slide ──
+      document.querySelectorAll(s.sliderCls).forEach(function(slide) {
+        if (bg) {
+          slide.style.backgroundImage = 'url(' + bg + ')';
+          slide.style.backgroundSize = 'cover';
+          slide.style.backgroundPosition = 'center';
+          slide.classList.add('has-store-bg');
+        } else {
+          slide.style.backgroundImage = '';
+          slide.classList.remove('has-store-bg');
+        }
+      });
+    });
+  }
+
   function applyStoreLogosToSlider() {
     STORE_LOGO_MAP.forEach(function(s) {
       var logo = localStorage.getItem('ruby_store_logo_' + s.id);
@@ -516,6 +546,7 @@
   document.addEventListener('DOMContentLoaded', function() {
     renderHomeProducts('all');
     renderBestsellerCarousel();
+    applyStoreBgs();
     applyStoreLogosToSlider();
     applyStoreNames();
 
@@ -532,9 +563,15 @@
             if (logo) localStorage.setItem('ruby_store_logo_' + id, logo);
             else localStorage.removeItem('ruby_store_logo_' + id);
           }
+          var bg = settings['store_bg_' + id];
+          if (bg !== undefined) {
+            if (bg) localStorage.setItem('ruby_store_bg_' + id, bg);
+            else localStorage.removeItem('ruby_store_bg_' + id);
+          }
         });
         applyStoreNames();
         applyStoreLogosToSlider();
+        applyStoreBgs();
       }).catch(function() { /* offline — use cache */ });
     }
 
