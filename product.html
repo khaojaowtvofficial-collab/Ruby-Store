@@ -497,8 +497,8 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     loadProductFromHash();
-    // Re-render when Supabase products arrive (covers cold-load with no cache)
     window.addEventListener('ruby:products-loaded', loadProductFromHash);
+    if (window._rubyProdsReady) loadProductFromHash();
   });
   window.addEventListener('hashchange', loadProductFromHash);
 </script>

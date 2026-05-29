@@ -7,10 +7,11 @@
 
 /* ─── PRODUCT DATA ─────────────────────────────────────── */
 window.PRODUCTS = [];
+window._rubyProdsReady = false; // flag: true once Supabase products loaded
 
 /* ─── LOAD PRODUCTS: localStorage cache first, then Supabase ─── */
 (function () {
-  // 1. Load from localStorage cache immediately (fast, no network)
+  // 1. Load from localStorage cache immediately (sync, no network)
   try {
     const cache = localStorage.getItem('ruby_products');
     if (cache) {
@@ -21,17 +22,29 @@ window.PRODUCTS = [];
     }
   } catch (e) { /* ignore */ }
 
-  // 2. Fetch from Supabase as soon as DOM is ready (don't wait for images/window.load)
-  document.addEventListener('DOMContentLoaded', async function () {
+  // 2. Fetch from Supabase after DOM ready
+  //    Use setTimeout(0) on dispatch so all DOMContentLoaded handlers finish
+  //    registering their event listeners BEFORE the event fires.
+  async function _fetchFromCloud() {
     if (typeof RubyDB === 'undefined' || !RubyDB.isCloudEnabled()) return;
     try {
       const prods = await RubyDB.fetchProducts();
       if (prods && prods.length > 0) {
         window.PRODUCTS = prods;
-        window.dispatchEvent(new CustomEvent('ruby:products-loaded', { detail: prods }));
+        window._rubyProdsReady = true;
+        setTimeout(function () {
+          window.dispatchEvent(new CustomEvent('ruby:products-loaded', { detail: prods }));
+        }, 0);
       }
     } catch (e) { /* offline — use cached */ }
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', _fetchFromCloud);
+  } else {
+    // DOMContentLoaded already fired (script injected late)
+    _fetchFromCloud();
+  }
 })();
 
 /* ─── CART STATE ────────────────────────────────────────── */

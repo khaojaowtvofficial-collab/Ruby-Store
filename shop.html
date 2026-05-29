@@ -298,9 +298,8 @@
     applyStore(getStoreFromHash());
 
     // Re-render when app.js finishes Supabase fetch
-    window.addEventListener('ruby:products-loaded', () => {
-      applyStore(getStoreFromHash());
-    });
+    window.addEventListener('ruby:products-loaded', () => applyStore(getStoreFromHash()));
+    if (window._rubyProdsReady) applyStore(getStoreFromHash());
 
     // Fetch settings only
     if (typeof RubyDB !== 'undefined' && RubyDB.isCloudEnabled()) {

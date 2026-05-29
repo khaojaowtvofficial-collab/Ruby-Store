@@ -600,14 +600,19 @@
     updateCounts(window.PRODUCTS || []);
 
     // 2. When app.js finishes fetching products from Supabase → re-render
-    window.addEventListener('ruby:products-loaded', function(e) {
-      var prods = (e && e.detail) ? e.detail : (window.PRODUCTS || []);
+    function _onProdsLoaded(prods) {
       renderHomeProducts('all');
       renderBestsellerCarousel();
-      updateCounts(prods);
-      // Re-apply store names (storeName field now correct)
+      updateCounts(prods || window.PRODUCTS || []);
       applyStoreNames();
+    }
+    window.addEventListener('ruby:products-loaded', function(e) {
+      _onProdsLoaded((e && e.detail) ? e.detail : null);
     });
+    // If fetch already completed before this listener was registered
+    if (window._rubyProdsReady) {
+      _onProdsLoaded(window.PRODUCTS);
+    }
 
     // 3. Fetch SETTINGS only (products handled by app.js)
     if (typeof RubyDB !== 'undefined' && RubyDB.isCloudEnabled()) {
