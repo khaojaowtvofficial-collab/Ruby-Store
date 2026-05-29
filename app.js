@@ -237,7 +237,7 @@ function buildProductCard(p) {
       <a href="product.html#${p.id}" class="product-img" style="background:${p.bg};text-decoration:none;">
         ${badgeHtml}
         ${p.imgUrl
-          ? `<img src="${p.imgUrl}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
+          ? `<img src="${p.imgUrl}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
           : `<span style="font-size:3rem;">${p.emoji}</span>`}
       </a>
       <div class="product-body">

@@ -241,6 +241,12 @@ async function fetchProducts() {
   return window.PRODUCTS || [];
 }
 
+// Fetch products + settings in parallel (faster first load)
+async function fetchAll() {
+  const [prods, settings] = await Promise.all([fetchProducts(), fetchSettings()]);
+  return { prods, settings };
+}
+
 async function saveProduct(product) {
   // Update local cache immediately
   _upsertLocalProduct(product);
@@ -353,4 +359,5 @@ window.RubyDB = {
   // Settings
   saveSetting,
   fetchSettings,
+  fetchAll,
 };

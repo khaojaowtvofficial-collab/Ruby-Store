@@ -6,9 +6,12 @@
   <title>Ruby Store — ສັ່ງຊື້ງ່າຍ ຜ່ານ WhatsApp & Messenger</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://wqxzobxqkwyrffvibdxg.supabase.co">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" as="script">
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <script src="i18n.js"></script>
+  <script src="i18n.js" defer></script>
 </head>
 <body>
 
@@ -556,11 +559,19 @@
     applyStoreNames();
     applyHeroSettings();
 
-    // Fetch fresh settings from Supabase, then re-apply
+    // Fetch products + settings in PARALLEL (faster)
     if (typeof RubyDB !== 'undefined' && RubyDB.isCloudEnabled()) {
-      RubyDB.fetchSettings().then(function(settings) {
+      RubyDB.fetchAll().then(function(result) {
+        var settings = result.settings;
+        var freshProds = result.prods;
+        // Apply fresh products
+        if (freshProds && freshProds.length) {
+          window.PRODUCTS = freshProds;
+          renderHomeProducts('all');
+          renderBestsellerCarousel();
+          updateCounts(freshProds);
+        }
         if (!settings) return;
-        // Apply store names from cloud
         ['pet','computer','toy'].forEach(function(id) {
           var name = settings['store_name_' + id];
           if (name) localStorage.setItem('ruby_store_name_' + id, name);
@@ -582,33 +593,23 @@
       }).catch(function() { /* offline — use cache */ });
     }
 
-    // Update hero & store counts from real PRODUCTS
-    var prods   = window.PRODUCTS || [];
-    var total   = prods.length;
-    var petCnt  = prods.filter(function(p){ return p.store === 'pet'; }).length;
-    var compCnt = prods.filter(function(p){ return p.store === 'computer'; }).length;
-    var toyCnt  = prods.filter(function(p){ return p.store === 'toy'; }).length;
-
-    var lbl = RubyI18n.t('stat_products');
-    var heroCount = document.getElementById('heroProductCount');
-    if (heroCount) heroCount.textContent = total;
-    var allCount = document.getElementById('stigAllCount');
-    if (allCount) allCount.textContent = total || '—';
-
-    // Hero slider counts
-    var hsPet = document.getElementById('hsPetCount');
-    if (hsPet && petCnt) hsPet.textContent = petCnt + ' ' + lbl;
-    var hsComp = document.getElementById('hsCompCount');
-    if (hsComp && compCnt) hsComp.textContent = compCnt + ' ' + lbl;
-    var hsToy = document.getElementById('hsToyCount');
-    if (hsToy && toyCnt) hsToy.textContent = toyCnt + ' ' + lbl;
-    // Grid store counts
-    var gPet = document.getElementById('storePetCount');
-    if (gPet) gPet.textContent = petCnt + ' ' + lbl;
-    var gComp = document.getElementById('storeComputerCount');
-    if (gComp) gComp.textContent = compCnt + ' ' + lbl;
-    var gToy = document.getElementById('storeToyCount');
-    if (gToy) gToy.textContent = toyCnt + ' ' + lbl;
+    function updateCounts(p) {
+      var lbl = (typeof RubyI18n !== 'undefined') ? RubyI18n.t('stat_products') : 'ລາຍການ';
+      var total   = p.length;
+      var petCnt  = p.filter(function(x){ return x.store === 'pet'; }).length;
+      var compCnt = p.filter(function(x){ return x.store === 'computer'; }).length;
+      var toyCnt  = p.filter(function(x){ return x.store === 'toy'; }).length;
+      var set = function(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; };
+      set('heroProductCount', total);
+      set('stigAllCount', total || '—');
+      set('storePetCount',      petCnt  + ' ' + lbl);
+      set('storeComputerCount', compCnt + ' ' + lbl);
+      set('storeToyCount',      toyCnt  + ' ' + lbl);
+      if (petCnt)  set('hsPetCount',  petCnt  + ' ' + lbl);
+      if (compCnt) set('hsCompCount', compCnt + ' ' + lbl);
+      if (toyCnt)  set('hsToyCount',  toyCnt  + ' ' + lbl);
+    }
+    updateCounts(window.PRODUCTS || []);
 
     document.querySelectorAll('.filter-btn').forEach(function(btn) {
       btn.addEventListener('click', function() {
