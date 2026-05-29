@@ -505,11 +505,7 @@
   function applyStoreLogosToSlider() {
     STORE_LOGO_MAP.forEach(function(s) {
       var logo = localStorage.getItem('ruby_store_logo_' + s.id);
-      // Hero slide logo
-      document.querySelectorAll(s.slideCls + ' .hs-icon-wrap').forEach(function(wrap) {
-        if (logo) wrap.innerHTML = '<img src="' + logo + '" style="width:100%;height:100%;object-fit:contain;border-radius:20px;">';
-      });
-      // Store icon tile
+      // Store icon tile (4-column grid — logo only goes here, NOT into hero slide)
       var stigIconId = { pet:'stigPetIcon', computer:'stigCompIcon', toy:'stigToyIcon' }[s.id];
       var stigEl = stigIconId ? document.getElementById(stigIconId) : null;
       if (stigEl && logo) stigEl.innerHTML = '<img src="' + logo + '" style="width:100%;height:100%;object-fit:contain;border-radius:14px;">';
