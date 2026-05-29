@@ -21,14 +21,13 @@ window.PRODUCTS = [];
     }
   } catch (e) { /* ignore */ }
 
-  // 2. Fetch from Supabase in background and refresh if available
-  window.addEventListener('load', async function () {
+  // 2. Fetch from Supabase as soon as DOM is ready (don't wait for images/window.load)
+  document.addEventListener('DOMContentLoaded', async function () {
     if (typeof RubyDB === 'undefined' || !RubyDB.isCloudEnabled()) return;
     try {
       const prods = await RubyDB.fetchProducts();
       if (prods && prods.length > 0) {
         window.PRODUCTS = prods;
-        // Notify pages that products have been updated from cloud
         window.dispatchEvent(new CustomEvent('ruby:products-loaded', { detail: prods }));
       }
     } catch (e) { /* offline — use cached */ }
