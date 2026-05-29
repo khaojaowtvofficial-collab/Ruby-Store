@@ -568,37 +568,22 @@
 })();
 </script>
 <script>
-/* Cart badge + footer — intercepts localStorage.setItem (works with any app.js version) */
 (function(){
-  function _upd(cartJson){
-    try{
-      var c=JSON.parse(cartJson||'[]');
-      var n=c.reduce(function(s,i){return s+(i.qty||1);},0);
-      var t=c.reduce(function(s,i){return s+(i.price||0)*(i.qty||1);},0);
-      var fmt='₭'+t.toLocaleString();
-      /* Use style.display directly — bypasses all CSS class issues */
-      var b=document.getElementById('cartBadge');
-      if(b){b.textContent=n||'';b.style.display=n>0?'flex':'none';}
-      var d=document.getElementById('mobileCartDot');
-      if(d){d.textContent=n||'';d.style.display=n>0?'flex':'none';}
-      var f=document.getElementById('cartFooter');
-      if(f)f.style.display=n>0?'block':'none';
-      var sv=document.getElementById('cartSubtotalVal');if(sv)sv.textContent=fmt;
-      var tv=document.getElementById('cartTotalVal');if(tv)tv.textContent=fmt;
-    }catch(e){}
+  function syncCart(){var n=0,t=0;try{var c=JSON.parse(localStorage.getItem('ruby_cart')||'[]');n=c.reduce(function(s,i){return s+(i.qty||1);},0);t=c.reduce(function(s,i){return s+(i.price||0)*(i.qty||1);},0);}catch(e){}
+    var fmt='₭'+t.toLocaleString();
+    ['cartBadge','mobileCartDot'].forEach(function(id){var el=document.getElementById(id);if(!el)return;el.textContent=n>0?String(n):'';el.style.cssText=n>0?'display:flex!important;background:#C0392B;color:#fff;min-width:18px;height:18px;border-radius:9px;font-size:11px;font-weight:800;align-items:center;justify-content:center;padding:0 4px;position:absolute;top:-2px;right:-2px;z-index:999':'display:none!important';});
+    var lbl=document.getElementById('cartNavLabel');if(lbl)lbl.textContent=n>0?'cart('+n+')':'cart';
+    var f=document.getElementById('cartFooter');if(f)f.style.cssText=n>0?'display:block!important':'display:none!important';
+    var sv=document.getElementById('cartSubtotalVal');if(sv)sv.textContent=fmt;
+    var tv=document.getElementById('cartTotalVal');if(tv)tv.textContent=fmt;
   }
-  /* 1. Run on page load */
-  document.addEventListener('DOMContentLoaded',function(){_upd(localStorage.getItem('ruby_cart'));});
-  /* pageshow fires even on bfcache restore (Messenger browser) */
-  window.addEventListener('pageshow',function(e){_upd(localStorage.getItem('ruby_cart'));});
-  /* Disable bfcache so page always reloads fresh */
-  window.addEventListener('unload',function(){});
-  /* 2. Intercept every localStorage.setItem — catches addToCart/removeFromCart/updateQty */
-  var _si=localStorage.setItem.bind(localStorage);
-  localStorage.setItem=function(k,v){
-    _si(k,v);
-    if(k==='ruby_cart')_upd(v);
-  };
+  document.addEventListener('DOMContentLoaded',syncCart);
+  window.addEventListener('pageshow',syncCart);
+  setInterval(syncCart,500);
+  var _o=localStorage.setItem.bind(localStorage);
+  localStorage.setItem=function(k,v){_o(k,v);if(k==='ruby_cart')syncCart();};
+  window._cartSync=syncCart;
 })();
 </script>
-
+</body>
+</html>
