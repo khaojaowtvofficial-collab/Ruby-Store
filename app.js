@@ -107,6 +107,7 @@ function addToCart(productId, qty = 1, variant = null, variantPrice = null) {
   }
   saveCart();
   updateCartUI();
+  if (typeof window._refreshCartBar === 'function') window._refreshCartBar();
   showToast(`ເພີ່ມ "${product.name}" ໃສ່ກະຕ່າແລ້ວ`, 'success');
 }
 
