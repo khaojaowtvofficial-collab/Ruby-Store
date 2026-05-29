@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Icon Mockup — Ruby Store</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F8F8F8; color: #1a1a1a; padding: 24px 16px; }
+  h1 { font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; color: #C0392B; }
+  .subtitle { font-size: 0.85rem; color: #666; margin-bottom: 28px; }
+
+  .section { margin-bottom: 36px; }
+  .section-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #999; margin-bottom: 12px; }
+
+  /* ── COMPARE ROW ── */
+  .compare { display: flex; gap: 12px; flex-wrap: wrap; }
+  .card { background: #fff; border-radius: 14px; padding: 16px; flex: 1; min-width: 140px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  .card-label { font-size: 0.68rem; font-weight: 600; color: #aaa; margin-bottom: 10px; text-transform: uppercase; letter-spacing: .06em; }
+
+  /* ── ICON GRID ── */
+  .icon-grid { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-end; }
+  .icon-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .icon-item span { font-size: 0.65rem; color: #888; text-align: center; }
+
+  /* Emoji baseline */
+  .emoji-icon { font-size: 2rem; line-height: 1; }
+
+  /* SVG icon wrapper */
+  .svg-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+  .svg-icon svg { width: 100%; height: 100%; }
+
+  /* Icon in circle bg */
+  .icon-circle { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
+  .icon-circle svg { width: 24px; height: 24px; }
+  .ic-red    { background: #FFF1F1; }
+  .ic-blue   { background: #EFF6FF; }
+  .ic-green  { background: #F0FDF4; }
+  .ic-amber  { background: #FFFBEB; }
+  .ic-purple { background: #F5F3FF; }
+  .ic-gray   { background: #F3F4F6; }
+
+  /* ── BOTTOM NAV MOCK ── */
+  .mock-nav { background: #fff; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,.12); padding: 12px 8px 8px; display: flex; justify-content: space-around; max-width: 360px; }
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 0 12px; }
+  .nav-item span { font-size: 0.6rem; color: #888; }
+  .nav-item.active span { color: #C0392B; font-weight: 700; }
+  .nav-icon-wrap { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
+  .nav-icon-wrap svg { width: 24px; height: 24px; }
+
+  /* ── HERO STAT MOCK ── */
+  .mock-stats { display: flex; gap: 10px; max-width: 360px; }
+  .stat-card { background: rgba(255,255,255,0.6); backdrop-filter: blur(8px); border-radius: 14px; padding: 14px 12px; flex: 1; display: flex; align-items: center; gap: 10px; border: 1px solid rgba(255,255,255,0.8); }
+  .stat-icon { width: 36px; height: 36px; border-radius: 10px; background: #FFF1F1; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .stat-icon svg { width: 20px; height: 20px; }
+  .stat-text strong { display: block; font-size: 0.95rem; font-weight: 700; color: #1a1a1a; }
+  .stat-text small { font-size: 0.65rem; color: #666; }
+
+  /* ── CATEGORY CHIP MOCK ── */
+  .mock-chips { display: flex; gap: 8px; flex-wrap: wrap; max-width: 360px; }
+  .chip { background: #fff; border: 1.5px solid #eee; border-radius: 20px; padding: 6px 14px 6px 10px; display: flex; align-items: center; gap: 6px; font-size: 0.78rem; font-weight: 600; color: #444; }
+  .chip.active { background: #C0392B; border-color: #C0392B; color: #fff; }
+  .chip svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* ── STORE CARD MOCK ── */
+  .mock-stores { display: flex; flex-direction: column; gap: 10px; max-width: 360px; }
+  .store-card { background: #fff; border-radius: 16px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+  .store-logo { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .store-logo svg { width: 28px; height: 28px; }
+  .store-info strong { font-size: 0.9rem; font-weight: 700; display: block; }
+  .store-info small { font-size: 0.72rem; color: #888; }
+  .store-arr { margin-left: auto; color: #ccc; }
+
+  /* ── TRUST BADGE MOCK ── */
+  .mock-trust { display: flex; gap: 8px; flex-wrap: wrap; }
+  .trust { background: #fff; border-radius: 10px; padding: 8px 12px; display: flex; align-items: center; gap: 7px; font-size: 0.75rem; font-weight: 600; color: #444; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .trust svg { width: 16px; height: 16px; }
+  .trust.green svg { color: #16a34a; }
+  .trust.blue svg { color: #2563eb; }
+  .trust.red svg { color: #C0392B; }
+
+  hr { border: none; border-top: 1px solid #eee; margin: 8px 0 20px; }
+  .tag { display: inline-block; background: #FFF1F1; color: #C0392B; font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<h1>🎨 Icon Mockup — Ruby Store</h1>
+<p class="subtitle">ຕົວຢ່າງ Custom SVG Icon ແທນ Sticker Emoji</p>
+
+<!-- ────────────────────────────────────── -->
+<div class="section">
+  <div class="section-label">1 · Bottom Navigation Icons</div>
+  <div class="compare">
+    <div class="card">
+      <div class="card-label">Before — Emoji</div>
+      <div class="icon-grid">
+        <div class="icon-item"><span class="emoji-icon">🏠</span><span>Home</span></div>
+        <div class="icon-item"><span class="emoji-icon">🛍️</span><span>Shop</span></div>
+        <div class="icon-item"><span class="emoji-icon">🛒</span><span>Cart</span></div>
+        <div class="icon-item"><span class="emoji-icon">👤</span><span>Account</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">After — SVG Line Icons</div>
+      <div class="icon-grid">
+        <div class="icon-item">
+          <div class="svg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></div>
+          <span>Home</span>
+        </div>
+        <div class="icon-item">
+          <div class="svg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></div>
+          <span>Shop</span>
+        </div>
+        <div class="icon-item">
+          <div class="svg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg></div>
+          <span>Cart</span>
+        </div>
+        <div class="icon-item">
+          <div class="svg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <span>Account</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ────────────────────────────────────── -->
+<div class="section">
+  <div class="section-label">2 · Bottom Nav — Live Preview</div>
+  <div class="tag">NEW</div>
+  <div class="mock-nav">
+    <div class="nav-item active">
+      <div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></div>
+      <span style="color:#C0392B;font-weight:700;">ໜ້າຫຼັກ</span>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></div>
+      <span>ຮ້ານຄ້າ</span>
+    </div>
+    <div class="nav-item" style="position:relative;">
+      <div class="nav-icon-wrap" style="position:relative;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg>
+        <span style="position:absolute;top:-4px;right:-6px;background:#C0392B;color:#fff;font-size:.6rem;font-weight:700;padding:1px 5px;border-radius:20px;min-width:16px;text-align:center;">2</span>
+      </div>
+      <span>ກະຕ່າ</span>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <span>ບັນຊີ</span>
+    </div>
+  </div>
+</div>
+
+<!-- ────────────────────────────────────── -->
+<div class="section">
+  <div class="section-label">3 · Hero Stats Icons</div>
+  <div class="tag">NEW</div>
+  <div class="mock-stats">
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#FFF1F1;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      </div>
+      <div class="stat-text"><strong>9</strong><small>ລາຍການສິນຄ້າ</small></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#EFF6FF;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div class="stat-text"><strong>3</strong><small>ຮ້ານຄ້າ</small></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#FFFBEB;">
+        <svg viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <div class="stat-text"><strong>4.9★</strong><small>ຄະແນນສະເລ່ຍ</small></div>
+    </div>
+  </div>
+</div>
+
+<!-- ────────────────────────────────────── -->
+<div class="section">
+  <div class="section-label">4 · Store Cards Icons</div>
+  <div class="tag">NEW</div>
+  <div class="mock-stores">
+    <div class="store-card">
+      <div class="store-logo ic-red">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+      </div>
+      <div class="store-info"><strong>Ruby Pet Shop</strong><small>ອາຫານ ຂອງຫຼິ້ນ ສຳລັບໝາ ແລະ ແມວ · 5 ລາຍການ</small></div>
+      <div class="store-arr">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+    <div class="store-card">
+      <div class="store-logo ic-blue">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <div class="store-info"><strong>Ruby Computer</strong><small>ອຸປະກອນຄອມພິວເຕີ ໄອທີ · 2 ລາຍການ</small></div>
+      <div class="store-arr">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+    <div class="store-card">
+      <div class="store-logo ic-amber">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+      </div>
+      <div class="store-info"><strong>Ruby Toy Shop</strong><small>ຂອງຫຼິ້ນເດັກ ຂອງສະສົມ · 2 ລາຍການ</small></div>
+      <div class="store-arr">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ────────────────────────────────────── -->
+<div class="section">
+  <div class="section-label">5 · Category Filter Chips</div>
+  <div class="tag">NEW</div>
+  <div class="mock-chips">
+    <div class="chip active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      ທັງໝົດ
+    </div>
+    <div class="chip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+      ອາຫານ
+    </div>
+    <div class="chip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+      ຂອງຫຼິ້ນ
+    </div>
+    <div class="chip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+      ສັດລ້ຽງ
+    </div>
+    <div class="chip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      ຄອມ
+    </div>
+    <div class="chip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      ອຸປະກອນ
+    </div>
+  </div>
+</div>
+
+<!-- ────────────────────────────────────── -->
+<div class="section">
+  <div class="section-label">6 · Profile Quick-links &amp; Trust Badges</div>
+  <div class="tag">NEW</div>
+  <div class="icon-grid" style="margin-bottom:18px;">
+    <div class="icon-item">
+      <div class="icon-circle ic-red"><svg viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></div>
+      <span>Shop</span>
+    </div>
+    <div class="icon-item">
+      <div class="icon-circle ic-red"><svg viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+      <span>Pet</span>
+    </div>
+    <div class="icon-item">
+      <div class="icon-circle ic-blue"><svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+      <span>Computer</span>
+    </div>
+    <div class="icon-item">
+      <div class="icon-circle ic-amber"><svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+      <span>Toy</span>
+    </div>
+    <div class="icon-item">
+      <div class="icon-circle ic-green"><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+      <span>Chat</span>
+    </div>
+    <div class="icon-item">
+      <div class="icon-circle ic-red"><svg viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg></div>
+      <span>Cart</span>
+    </div>
+  </div>
+  <div class="mock-trust">
+    <div class="trust red">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      ປອດໄພ
+    </div>
+    <div class="trust green">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      ບໍ່ຕັດເງິນອອນລາຍ
+    </div>
+    <div class="trust blue">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      ຮ້ານຢືນຢັນອໍເດີ
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
