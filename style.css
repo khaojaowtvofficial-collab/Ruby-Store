@@ -3258,8 +3258,16 @@ input, textarea, select {
 .related-row::-webkit-scrollbar { display: none; }
 
 .related-row .product-card {
-  min-width: 160px;
-  flex-shrink: 0;
+  flex: 0 0 150px;
+  width: 150px;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .related-row .product-card {
+    flex: 0 0 170px;
+    width: 170px;
+  }
 }
 
 /* =====================================================
