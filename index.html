@@ -722,38 +722,5 @@
   localStorage.setItem=function(k,v){_si(k,v);if(k==='ruby_cart')upd();};
   window._cartUpd=upd;
 
-  /* Override addToCart — works even if PRODUCTS is empty (old cached app.js) */
-  var _origAddToCart = window.addToCart;
-  window.addToCart = function(productId, qty, variant, variantPrice){
-    qty = qty || 1;dbg0.textContent='CALLING addToCart: id='+productId+' PRODUCTS='+((window.PRODUCTS||[]).length);}
-    /* Try original first */
-    var cartBefore = JSON.parse(localStorage.getItem('ruby_cart')||'[]');
-    var lenBefore = cartBefore.length;
-    if(typeof _origAddToCart === 'function') _origAddToCart(productId, qty, variant, variantPrice);
-    var cartAfter = JSON.parse(localStorage.getItem('ruby_cart')||'[]');
-    /* If original succeeded, done */
-    if(cartAfter.length > lenBefore || cartAfter.some(function(i){return i.id===productId && i.qty>0;})) {
-      upd(); return;
-    }
-    /* Original failed (PRODUCTS empty) — do it ourselves */
-    var prods = window.PRODUCTS || JSON.parse(localStorage.getItem('ruby_products')||'[]');
-    var p = prods.find ? prods.find(function(x){return x.id===productId;}) : null;
-    if(!p){ /* minimal product object if not found */
-      p = {id:productId, name:productId, price:variantPrice||0, emoji:'📦', bg:'#FFF5F5', store:'', storeName:''};
-    }
-    var price = (variantPrice && variantPrice>0) ? variantPrice : (p.price||0);
-    var key = variant ? productId+'|'+variant : productId;
-    var cart = JSON.parse(localStorage.getItem('ruby_cart')||'[]');
-    var existing = cart.find(function(i){return i.key===key;});
-    if(existing){ existing.qty += qty; existing.price = price; }
-    else{ cart.push({key:key,id:productId,name:p.name||productId,price:price,imgUrl:p.imgUrl||null,emoji:p.emoji||'📦',bg:p.bg||'#FFF5F5',store:p.store||'',storeName:p.storeName||'',variant:variant||null,qty:qty}); }
-    localStorage.setItem('ruby_cart', JSON.stringify(cart));
-    upd();
-    if(typeof showToast==='function') showToast('ເພີ່ມ "'+p.name+'" ໃສ່ｇｗｈｉ', 'success');
-    if(typeof openCart==='function') openCart();
-    if(typeof renderCartItems==='function') renderCartItems();dbg.textContent='✅ ADDED override: id='+productId+' | '+JSON.parse(localStorage.getItem('ruby_cart')||'[]').length+' items';}
-  };
 })();
 </script>
-</body>
-</html>
