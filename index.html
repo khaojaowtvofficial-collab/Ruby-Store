@@ -525,24 +525,33 @@
   };
   function applyHeroSettings() {
     var map = [
-      { titleId:'hsIntroTitle', subId:'hsIntroSub', slideId:'hsSlideIntro', tk:'hero_intro_title', sk:'hero_intro_sub', bgk:'hero_intro_bg' },
-      { titleId:'hsPetTitle',   subId:'hsPetSub',   slideId:'hsSlidePet',   tk:'hero_pet_title',   sk:'hero_pet_sub',   bgk:'store_bg_pet' },
-      { titleId:'hsCompTitle',  subId:'hsCompSub',  slideId:'hsSlideComp',  tk:'hero_comp_title',  sk:'hero_comp_sub',  bgk:'store_bg_computer' },
-      { titleId:'hsToyTitle',   subId:'hsTоySub',   slideId:'hsSlideToy',   tk:'hero_toy_title',   sk:'hero_toy_sub',   bgk:'store_bg_toy' },
+      { titleId:'hsIntroTitle', subId:'hsIntroSub', slideId:'hsSlideIntro', tk:'hero_intro_title', sk:'hero_intro_sub', bgk:'hero_intro_bg',    imgk:'hero_intro_img' },
+      { titleId:'hsPetTitle',   subId:'hsPetSub',   slideId:'hsSlidePet',   tk:'hero_pet_title',   sk:'hero_pet_sub',   bgk:'store_bg_pet',     imgk:'hero_pet_img' },
+      { titleId:'hsCompTitle',  subId:'hsCompSub',  slideId:'hsSlideComp',  tk:'hero_comp_title',  sk:'hero_comp_sub',  bgk:'store_bg_computer',imgk:'hero_comp_img' },
+      { titleId:'hsToyTitle',   subId:'hsTоySub',   slideId:'hsSlideToy',   tk:'hero_toy_title',   sk:'hero_toy_sub',   bgk:'store_bg_toy',     imgk:'hero_toy_img' },
     ];
     map.forEach(function(m) {
       var titleEl = document.getElementById(m.titleId);
       var subEl   = document.getElementById(m.subId);
       var slide   = document.getElementById(m.slideId);
-      var t = localStorage.getItem('ruby_' + m.tk);
-      var s = localStorage.getItem('ruby_' + m.sk);
+      var t  = localStorage.getItem('ruby_' + m.tk);
+      var s  = localStorage.getItem('ruby_' + m.sk);
       var bg = localStorage.getItem('ruby_' + m.bgk);
+      var img = localStorage.getItem('ruby_' + m.imgk);
       if (titleEl && t) titleEl.textContent = t;
       if (subEl   && s) subEl.textContent   = s;
       if (slide && bg) {
         slide.style.backgroundImage    = 'url(' + bg + ')';
         slide.style.backgroundSize     = 'cover';
         slide.style.backgroundPosition = 'center';
+      }
+      // Apply slide image to hs-icon-wrap
+      if (slide && img) {
+        var wrap = slide.querySelector('.hs-icon-wrap');
+        if (wrap) {
+          wrap.innerHTML = '<img src="' + img + '" style="width:100%;height:100%;object-fit:contain;border-radius:16px;" loading="lazy">';
+          wrap.style.opacity = '1';
+        }
       }
     });
   }

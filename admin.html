@@ -495,6 +495,12 @@
               <textarea class="admin-form-input hsr-input" id="hsrIntroSub" rows="2" placeholder="ຂໍ້ຄວາມ Subtitle" style="margin-bottom:8px;"></textarea>
               <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
                 <label class="hsr-upload-btn">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  ຮູບ Slide
+                  <input type="file" accept="image/*" style="display:none;" onchange="uploadHsrImg('intro',this)">
+                </label>
+                <button class="btn btn-ghost btn-xs" id="hsrIntroClearImg" onclick="clearHsrImg('intro')" style="display:none;">ລຶບຮູບ</button>
+                <label class="hsr-upload-btn" style="background:rgba(192,57,43,.08);">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                   ພື້ນຫຼັງ
                   <input type="file" accept="image/*" style="display:none;" onchange="uploadHsrBg('intro',this)">
@@ -515,7 +521,15 @@
               <div style="font-size:.72rem;font-weight:700;color:var(--muted);margin-bottom:5px;">Ruby Pet Shop — <span style="font-weight:400;">ພື້ນຫຼັງໃຊ້ຮູບຮ້ານ (ແກ້ດ້ານລຸ່ມ)</span></div>
               <input class="admin-form-input hsr-input" id="hsrPetTitle" placeholder="ຫົວຂໍ້ Slide" style="margin-bottom:6px;">
               <textarea class="admin-form-input hsr-input" id="hsrPetSub" rows="2" placeholder="ຂໍ້ຄວາມ Subtitle" style="margin-bottom:8px;"></textarea>
-              <button class="btn btn-primary btn-xs" onclick="saveHsrSlide('pet')">💾 ບັນທຶກ</button>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                <label class="hsr-upload-btn">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  ຮູບ Slide
+                  <input type="file" accept="image/*" style="display:none;" onchange="uploadHsrImg('pet',this)">
+                </label>
+                <button class="btn btn-ghost btn-xs" id="hsrPetClearImg" onclick="clearHsrImg('pet')" style="display:none;">ລຶບຮູບ</button>
+                <button class="btn btn-primary btn-xs" onclick="saveHsrSlide('pet')">💾 ບັນທຶກ</button>
+              </div>
             </div>
           </div>
 
@@ -529,7 +543,15 @@
               <div style="font-size:.72rem;font-weight:700;color:var(--muted);margin-bottom:5px;">Ruby Computer — <span style="font-weight:400;">ພື້ນຫຼັງໃຊ້ຮູບຮ້ານ (ແກ້ດ້ານລຸ່ມ)</span></div>
               <input class="admin-form-input hsr-input" id="hsrCompTitle" placeholder="ຫົວຂໍ້ Slide" style="margin-bottom:6px;">
               <textarea class="admin-form-input hsr-input" id="hsrCompSub" rows="2" placeholder="ຂໍ້ຄວາມ Subtitle" style="margin-bottom:8px;"></textarea>
-              <button class="btn btn-primary btn-xs" onclick="saveHsrSlide('comp')">💾 ບັນທຶກ</button>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                <label class="hsr-upload-btn">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  ຮູບ Slide
+                  <input type="file" accept="image/*" style="display:none;" onchange="uploadHsrImg('comp',this)">
+                </label>
+                <button class="btn btn-ghost btn-xs" id="hsrCompClearImg" onclick="clearHsrImg('comp')" style="display:none;">ລຶບຮູບ</button>
+                <button class="btn btn-primary btn-xs" onclick="saveHsrSlide('comp')">💾 ບັນທຶກ</button>
+              </div>
             </div>
           </div>
 
@@ -543,7 +565,15 @@
               <div style="font-size:.72rem;font-weight:700;color:var(--muted);margin-bottom:5px;">Ruby Toy Shop — <span style="font-weight:400;">ພື້ນຫຼັງໃຊ້ຮູບຮ້ານ (ແກ້ດ້ານລຸ່ມ)</span></div>
               <input class="admin-form-input hsr-input" id="hsrToyTitle" placeholder="ຫົວຂໍ້ Slide" style="margin-bottom:6px;">
               <textarea class="admin-form-input hsr-input" id="hsrToySub" rows="2" placeholder="ຂໍ້ຄວາມ Subtitle" style="margin-bottom:8px;"></textarea>
-              <button class="btn btn-primary btn-xs" onclick="saveHsrSlide('toy')">💾 ບັນທຶກ</button>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                <label class="hsr-upload-btn">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  ຮູບ Slide
+                  <input type="file" accept="image/*" style="display:none;" onchange="uploadHsrImg('toy',this)">
+                </label>
+                <button class="btn btn-ghost btn-xs" id="hsrToyClearImg" onclick="clearHsrImg('toy')" style="display:none;">ລຶບຮູບ</button>
+                <button class="btn btn-primary btn-xs" onclick="saveHsrSlide('toy')">💾 ບັນທຶກ</button>
+              </div>
             </div>
           </div>
 
@@ -1633,10 +1663,10 @@ function closeProductModal() {
    HERO SLIDER SETTINGS
 ═══════════════════════════════════════════ */
 var _HSR_MAP = {
-  intro: { tk:'hero_intro_title', sk:'hero_intro_sub', bgk:'hero_intro_bg',       titleId:'hsrIntroTitle', subId:'hsrIntroSub', prevId:'hsrIntroPreview', clearBtnId:'hsrIntroClearBg' },
-  pet:   { tk:'hero_pet_title',   sk:'hero_pet_sub',   bgk:null,                  titleId:'hsrPetTitle',   subId:'hsrPetSub',   prevId:'hsrPetPreview',   clearBtnId:null },
-  comp:  { tk:'hero_comp_title',  sk:'hero_comp_sub',  bgk:null,                  titleId:'hsrCompTitle',  subId:'hsrCompSub',  prevId:'hsrCompPreview',  clearBtnId:null },
-  toy:   { tk:'hero_toy_title',   sk:'hero_toy_sub',   bgk:null,                  titleId:'hsrToyTitle',   subId:'hsrToySub',   prevId:'hsrToyPreview',   clearBtnId:null },
+  intro: { tk:'hero_intro_title', sk:'hero_intro_sub', bgk:'hero_intro_bg', imgk:'hero_intro_img', titleId:'hsrIntroTitle', subId:'hsrIntroSub', prevId:'hsrIntroPreview', clearBtnId:'hsrIntroClearBg', clearImgId:'hsrIntroClearImg' },
+  pet:   { tk:'hero_pet_title',   sk:'hero_pet_sub',   bgk:null,            imgk:'hero_pet_img',   titleId:'hsrPetTitle',   subId:'hsrPetSub',   prevId:'hsrPetPreview',   clearBtnId:null,               clearImgId:'hsrPetClearImg' },
+  comp:  { tk:'hero_comp_title',  sk:'hero_comp_sub',  bgk:null,            imgk:'hero_comp_img',  titleId:'hsrCompTitle',  subId:'hsrCompSub',  prevId:'hsrCompPreview',  clearBtnId:null,               clearImgId:'hsrCompClearImg' },
+  toy:   { tk:'hero_toy_title',   sk:'hero_toy_sub',   bgk:null,            imgk:'hero_toy_img',   titleId:'hsrToyTitle',   subId:'hsrToySub',   prevId:'hsrToyPreview',   clearBtnId:null,               clearImgId:'hsrToyClearImg' },
 };
 var _HSR_DEFAULTS = {
   hero_intro_title: 'ຮ້ານຄ້າ Online Ruby Store',
@@ -1658,17 +1688,55 @@ function initHsrPanel() {
     var s = localStorage.getItem('ruby_' + m.sk) || _HSR_DEFAULTS[m.sk] || '';
     if (titleEl) titleEl.value = t;
     if (subEl)   subEl.value   = s;
-    // Show bg preview for intro
+    // Bg preview (intro only)
     if (m.bgk) {
       var bg = localStorage.getItem('ruby_' + m.bgk);
-      if (prevEl && bg) {
-        prevEl.style.backgroundImage = 'url(' + bg + ')';
+      if (prevEl && bg) { prevEl.style.backgroundImage = 'url(' + bg + ')'; prevEl.classList.add('has-bg'); }
+      var clearBgBtn = m.clearBtnId ? document.getElementById(m.clearBtnId) : null;
+      if (clearBgBtn) clearBgBtn.style.display = bg ? 'inline-flex' : 'none';
+    }
+    // Img preview (all slides)
+    if (m.imgk) {
+      var img = localStorage.getItem('ruby_' + m.imgk);
+      if (prevEl && img && !localStorage.getItem('ruby_' + m.bgk)) {
+        prevEl.style.backgroundImage = 'url(' + img + ')';
         prevEl.classList.add('has-bg');
       }
-      var clearBtn = m.clearBtnId ? document.getElementById(m.clearBtnId) : null;
-      if (clearBtn) clearBtn.style.display = bg ? 'inline-flex' : 'none';
+      var clearImgBtn = m.clearImgId ? document.getElementById(m.clearImgId) : null;
+      if (clearImgBtn) clearImgBtn.style.display = img ? 'inline-flex' : 'none';
     }
   });
+}
+
+function uploadHsrImg(key, input) {
+  var m = _HSR_MAP[key];
+  if (!m || !m.imgk) return;
+  var file = input.files[0];
+  if (!file) return;
+  _compressImage(file, 1000, 0.85, function(dataUrl) {
+    localStorage.setItem('ruby_' + m.imgk, dataUrl);
+    RubyDB.saveSetting(m.imgk, dataUrl);
+    var prevEl = document.getElementById(m.prevId);
+    if (prevEl) { prevEl.style.backgroundImage = 'url(' + dataUrl + ')'; prevEl.classList.add('has-bg'); }
+    var clearBtn = m.clearImgId ? document.getElementById(m.clearImgId) : null;
+    if (clearBtn) clearBtn.style.display = 'inline-flex';
+    showToast('✅ ອັບໂຫລດຮູບ Slide ແລ້ວ');
+  });
+  input.value = '';
+}
+
+function clearHsrImg(key) {
+  var m = _HSR_MAP[key];
+  if (!m || !m.imgk) return;
+  localStorage.removeItem('ruby_' + m.imgk);
+  RubyDB.saveSetting(m.imgk, '');
+  var prevEl = document.getElementById(m.prevId);
+  if (prevEl && !localStorage.getItem('ruby_' + (m.bgk || ''))) {
+    prevEl.style.backgroundImage = ''; prevEl.classList.remove('has-bg');
+  }
+  var clearBtn = m.clearImgId ? document.getElementById(m.clearImgId) : null;
+  if (clearBtn) clearBtn.style.display = 'none';
+  showToast('ລຶບຮູບ Slide ແລ້ວ');
 }
 
 function saveHsrSlide(key) {
