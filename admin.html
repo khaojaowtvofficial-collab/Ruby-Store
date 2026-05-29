@@ -117,6 +117,26 @@
     .sca-bg-btns { display:flex; gap:6px; justify-content:center; }
     .btn-xs { padding:4px 10px; font-size:0.72rem; display:inline-flex; align-items:center; gap:4px; }
     .btn-ghost { background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.72rem; text-decoration:underline; }
+    /* Hero Slider Settings */
+    .hsr-row { display:flex; gap:10px; align-items:flex-start; padding:12px; background:var(--bg); border-radius:12px; border:1px solid var(--border); }
+    .hsr-badge { font-size:.65rem; font-weight:800; padding:2px 8px; border-radius:20px; white-space:nowrap; margin-top:2px; flex-shrink:0; }
+    .hsr-preview {
+      width:64px; height:64px; border-radius:10px; flex-shrink:0;
+      border:2px dashed var(--border); display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(135deg,#FFF5F5,#FFE4E4);
+      background-size:cover; background-position:center; overflow:hidden;
+    }
+    .hsr-pet  { background:linear-gradient(135deg,#FFF0F0,#FFD6D6); }
+    .hsr-comp { background:linear-gradient(135deg,#EFF6FF,#BFDBFE); }
+    .hsr-toy  { background:linear-gradient(135deg,#FFFBEB,#FDE68A); }
+    .hsr-preview.has-bg { border-style:solid; border-color:var(--red); }
+    .hsr-fields { flex:1; min-width:0; }
+    .hsr-input { font-size:.8rem; padding:7px 10px; }
+    .hsr-upload-btn {
+      display:inline-flex; align-items:center; gap:5px;
+      padding:4px 10px; border-radius:20px; font-size:.72rem; font-weight:600;
+      background:var(--red-l); color:var(--red); cursor:pointer; border:1.5px solid rgba(192,57,43,.2);
+    }
     .btn-ghost:hover { color:var(--red); }
     /* Store products section */
     .store-section {
@@ -453,6 +473,83 @@
         <h2 style="font-size:1.05rem;font-weight:800;margin:0;flex:1;">ຈັດການຮ້ານຄ້າ</h2>
         <button class="btn btn-primary btn-sm" onclick="openProductModal(null,null)">+ ເພີ່ມສິນຄ້າໃໝ່</button>
       </div>
+
+      <!-- ── Hero Slider Settings ── -->
+      <div style="background:var(--card);border-radius:var(--radius-card);border:1px solid var(--border);padding:20px;margin-bottom:24px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span style="font-size:.95rem;font-weight:800;">ຕັ້ງຄ່າ Hero Slider</span>
+          <span style="font-size:.72rem;color:var(--muted);margin-left:4px;">ແກ້ໄຂຂໍ້ຄວາມ & ພື້ນຫຼັງ ທຸກ Slide</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+
+          <!-- Slide 1: Intro -->
+          <div class="hsr-row" id="hsrRowIntro">
+            <div class="hsr-badge" style="background:#FEE2E2;color:#B91C1C;">Slide 1</div>
+            <div class="hsr-preview" id="hsrIntroPreview">
+              <div style="font-size:.6rem;font-weight:700;opacity:.5;text-align:center;">ແນະນຳ</div>
+            </div>
+            <div class="hsr-fields">
+              <div style="font-size:.72rem;font-weight:700;color:var(--muted);margin-bottom:5px;">ໜ້າຕ້ອນຮັບ — Ruby Store</div>
+              <input class="admin-form-input hsr-input" id="hsrIntroTitle" placeholder="ຫົວຂໍ້ Slide" style="margin-bottom:6px;">
+              <textarea class="admin-form-input hsr-input" id="hsrIntroSub" rows="2" placeholder="ຂໍ້ຄວາມ Subtitle" style="margin-bottom:8px;"></textarea>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                <label class="hsr-upload-btn">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  ພື້ນຫຼັງ
+                  <input type="file" accept="image/*" style="display:none;" onchange="uploadHsrBg('intro',this)">
+                </label>
+                <button class="btn btn-ghost btn-xs" id="hsrIntroClearBg" onclick="clearHsrBg('intro')" style="display:none;">ລຶບພື້ນຫຼັງ</button>
+                <button class="btn btn-primary btn-xs" onclick="saveHsrSlide('intro')">💾 ບັນທຶກ</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 2: Pet -->
+          <div class="hsr-row" id="hsrRowPet">
+            <div class="hsr-badge" style="background:#FEE2E2;color:#B91C1C;">Slide 2</div>
+            <div class="hsr-preview hsr-pet" id="hsrPetPreview">
+              <div style="font-size:.6rem;font-weight:700;opacity:.5;text-align:center;">Pet</div>
+            </div>
+            <div class="hsr-fields">
+              <div style="font-size:.72rem;font-weight:700;color:var(--muted);margin-bottom:5px;">Ruby Pet Shop — <span style="font-weight:400;">ພື້ນຫຼັງໃຊ້ຮູບຮ້ານ (ແກ້ດ້ານລຸ່ມ)</span></div>
+              <input class="admin-form-input hsr-input" id="hsrPetTitle" placeholder="ຫົວຂໍ້ Slide" style="margin-bottom:6px;">
+              <textarea class="admin-form-input hsr-input" id="hsrPetSub" rows="2" placeholder="ຂໍ້ຄວາມ Subtitle" style="margin-bottom:8px;"></textarea>
+              <button class="btn btn-primary btn-xs" onclick="saveHsrSlide('pet')">💾 ບັນທຶກ</button>
+            </div>
+          </div>
+
+          <!-- Slide 3: Computer -->
+          <div class="hsr-row" id="hsrRowComp">
+            <div class="hsr-badge" style="background:#DBEAFE;color:#1D4ED8;">Slide 3</div>
+            <div class="hsr-preview hsr-comp" id="hsrCompPreview">
+              <div style="font-size:.6rem;font-weight:700;opacity:.5;text-align:center;">IT</div>
+            </div>
+            <div class="hsr-fields">
+              <div style="font-size:.72rem;font-weight:700;color:var(--muted);margin-bottom:5px;">Ruby Computer — <span style="font-weight:400;">ພື້ນຫຼັງໃຊ້ຮູບຮ້ານ (ແກ້ດ້ານລຸ່ມ)</span></div>
+              <input class="admin-form-input hsr-input" id="hsrCompTitle" placeholder="ຫົວຂໍ້ Slide" style="margin-bottom:6px;">
+              <textarea class="admin-form-input hsr-input" id="hsrCompSub" rows="2" placeholder="ຂໍ້ຄວາມ Subtitle" style="margin-bottom:8px;"></textarea>
+              <button class="btn btn-primary btn-xs" onclick="saveHsrSlide('comp')">💾 ບັນທຶກ</button>
+            </div>
+          </div>
+
+          <!-- Slide 4: Toy -->
+          <div class="hsr-row" id="hsrRowToy">
+            <div class="hsr-badge" style="background:#FEF3C7;color:#92400E;">Slide 4</div>
+            <div class="hsr-preview hsr-toy" id="hsrToyPreview">
+              <div style="font-size:.6rem;font-weight:700;opacity:.5;text-align:center;">Toy</div>
+            </div>
+            <div class="hsr-fields">
+              <div style="font-size:.72rem;font-weight:700;color:var(--muted);margin-bottom:5px;">Ruby Toy Shop — <span style="font-weight:400;">ພື້ນຫຼັງໃຊ້ຮູບຮ້ານ (ແກ້ດ້ານລຸ່ມ)</span></div>
+              <input class="admin-form-input hsr-input" id="hsrToyTitle" placeholder="ຫົວຂໍ້ Slide" style="margin-bottom:6px;">
+              <textarea class="admin-form-input hsr-input" id="hsrToySub" rows="2" placeholder="ຂໍ້ຄວາມ Subtitle" style="margin-bottom:8px;"></textarea>
+              <button class="btn btn-primary btn-xs" onclick="saveHsrSlide('toy')">💾 ບັນທຶກ</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <!-- Store Cards -->
       <div class="store-cards-grid">
         <div class="store-card-admin">
@@ -1533,6 +1630,87 @@ function closeProductModal() {
 }
 
 /* ═══════════════════════════════════════════
+   HERO SLIDER SETTINGS
+═══════════════════════════════════════════ */
+var _HSR_MAP = {
+  intro: { tk:'hero_intro_title', sk:'hero_intro_sub', bgk:'hero_intro_bg',       titleId:'hsrIntroTitle', subId:'hsrIntroSub', prevId:'hsrIntroPreview', clearBtnId:'hsrIntroClearBg' },
+  pet:   { tk:'hero_pet_title',   sk:'hero_pet_sub',   bgk:null,                  titleId:'hsrPetTitle',   subId:'hsrPetSub',   prevId:'hsrPetPreview',   clearBtnId:null },
+  comp:  { tk:'hero_comp_title',  sk:'hero_comp_sub',  bgk:null,                  titleId:'hsrCompTitle',  subId:'hsrCompSub',  prevId:'hsrCompPreview',  clearBtnId:null },
+  toy:   { tk:'hero_toy_title',   sk:'hero_toy_sub',   bgk:null,                  titleId:'hsrToyTitle',   subId:'hsrToySub',   prevId:'hsrToyPreview',   clearBtnId:null },
+};
+var _HSR_DEFAULTS = {
+  hero_intro_title: 'ຮ້ານຄ້າ Online Ruby Store',
+  hero_intro_sub:   'ສັ່ງງ່າຍ ຈ່າຍສະດວກ ຜ່ານ WhatsApp & Messenger — ບໍ່ຕ້ອງສະໝັກ ບໍ່ຕ້ອງໃຊ້ລະຫັດ',
+  hero_pet_title:   'ສິນຄ້າສັດລ້ຽງ ຄຸນນະພາບສູງ',
+  hero_pet_sub:     'ອາຫານ ຂອງຫຼິ້ນ ອຸປະກອນ ສຳລັບໝາ & ແມວ',
+  hero_comp_title:  'ອຸປະກອນໄອທີ ທັນສະໄໝ',
+  hero_comp_sub:    'ຄອມພິວເຕີ ອຸປະກອນຕໍ່ພ່ວງ ສິນຄ້ານຳເຂົ້າ',
+  hero_toy_title:   'ຂອງຫຼິ້ນ & ຂອງສະສົມ ຫຼາກຫຼາຍ',
+  hero_toy_sub:     'ຂອງຫຼິ້ນເດັກ ຂອງສະສົມ Action Figure ໂມເດລ',
+};
+
+function initHsrPanel() {
+  Object.entries(_HSR_MAP).forEach(function([key, m]) {
+    var titleEl = document.getElementById(m.titleId);
+    var subEl   = document.getElementById(m.subId);
+    var prevEl  = document.getElementById(m.prevId);
+    var t = localStorage.getItem('ruby_' + m.tk) || _HSR_DEFAULTS[m.tk] || '';
+    var s = localStorage.getItem('ruby_' + m.sk) || _HSR_DEFAULTS[m.sk] || '';
+    if (titleEl) titleEl.value = t;
+    if (subEl)   subEl.value   = s;
+    // Show bg preview for intro
+    if (m.bgk) {
+      var bg = localStorage.getItem('ruby_' + m.bgk);
+      if (prevEl && bg) {
+        prevEl.style.backgroundImage = 'url(' + bg + ')';
+        prevEl.classList.add('has-bg');
+      }
+      var clearBtn = m.clearBtnId ? document.getElementById(m.clearBtnId) : null;
+      if (clearBtn) clearBtn.style.display = bg ? 'inline-flex' : 'none';
+    }
+  });
+}
+
+function saveHsrSlide(key) {
+  var m = _HSR_MAP[key];
+  if (!m) return;
+  var title = document.getElementById(m.titleId).value.trim();
+  var sub   = document.getElementById(m.subId).value.trim();
+  if (title) { localStorage.setItem('ruby_' + m.tk, title); RubyDB.saveSetting(m.tk, title); }
+  if (sub)   { localStorage.setItem('ruby_' + m.sk, sub);   RubyDB.saveSetting(m.sk, sub);   }
+  showToast('✅ ບັນທຶກ Slide ແລ້ວ');
+}
+
+function uploadHsrBg(key, input) {
+  var m = _HSR_MAP[key];
+  if (!m || !m.bgk) return;
+  var file = input.files[0];
+  if (!file) return;
+  _compressImage(file, 1200, 0.82, function(dataUrl) {
+    localStorage.setItem('ruby_' + m.bgk, dataUrl);
+    RubyDB.saveSetting(m.bgk, dataUrl);
+    var prevEl = document.getElementById(m.prevId);
+    if (prevEl) { prevEl.style.backgroundImage = 'url(' + dataUrl + ')'; prevEl.classList.add('has-bg'); }
+    var clearBtn = m.clearBtnId ? document.getElementById(m.clearBtnId) : null;
+    if (clearBtn) clearBtn.style.display = 'inline-flex';
+    showToast('✅ ອັບໂຫລດພື້ນຫຼັງ Slide ແລ້ວ');
+  });
+  input.value = '';
+}
+
+function clearHsrBg(key) {
+  var m = _HSR_MAP[key];
+  if (!m || !m.bgk) return;
+  localStorage.removeItem('ruby_' + m.bgk);
+  RubyDB.saveSetting(m.bgk, '');
+  var prevEl = document.getElementById(m.prevId);
+  if (prevEl) { prevEl.style.backgroundImage = ''; prevEl.classList.remove('has-bg'); }
+  var clearBtn = m.clearBtnId ? document.getElementById(m.clearBtnId) : null;
+  if (clearBtn) clearBtn.style.display = 'none';
+  showToast('ລຶບພື້ນຫຼັງ Slide ແລ້ວ');
+}
+
+/* ═══════════════════════════════════════════
    PANEL NAVIGATION
 ═══════════════════════════════════════════ */
 const PANEL_TITLES = { dashboard:'Dashboard', orders:'ອໍເດີ', stores:'ຮ້ານຄ້າ', products:'ສິນຄ້າ', customers:'ລູກຄ້າ' };
@@ -1773,7 +1951,7 @@ function showPanel(name, linkEl) {
 
   if (name==='dashboard') renderDashboard();
   if (name==='orders')    renderAllOrders();
-  if (name==='stores')    { renderStores(); initStoreLogos(); initStoreBgs(); initStoreNames(); }
+  if (name==='stores')    { renderStores(); initStoreLogos(); initStoreBgs(); initStoreNames(); initHsrPanel(); }
   if (name==='products')  renderProducts();
   if (name==='customers') renderCustomers();
 }

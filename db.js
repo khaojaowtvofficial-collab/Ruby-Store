@@ -319,7 +319,11 @@ async function fetchSettings() {
   const settings = {};
   ['store_name_pet','store_name_computer','store_name_toy',
    'store_logo_pet','store_logo_computer','store_logo_toy',
-   'store_bg_pet','store_bg_computer','store_bg_toy'].forEach(key => {
+   'store_bg_pet','store_bg_computer','store_bg_toy',
+   'hero_intro_bg','hero_intro_title','hero_intro_sub',
+   'hero_pet_title','hero_pet_sub',
+   'hero_comp_title','hero_comp_sub',
+   'hero_toy_title','hero_toy_sub'].forEach(key => {
     const v = localStorage.getItem('ruby_' + key);
     if (v) settings[key] = v;
   });
