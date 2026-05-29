@@ -79,14 +79,17 @@ function _rowToOrder(row) {
   };
 }
 
+const _STORE_NAMES = { pet: 'Ruby Pet Shop', computer: 'Ruby Computer', toy: 'Ruby Toy Shop' };
+
 function _rowToProduct(row) {
   const images = Array.isArray(row.images) ? row.images : (row.img_url ? [row.img_url] : []);
   return {
-    id:       row.id,
-    name:     row.name,
-    price:    row.price,
-    oldPrice: row.old_price || undefined,
-    store:    row.store,
+    id:        row.id,
+    name:      row.name,
+    price:     row.price,
+    oldPrice:  row.old_price || undefined,
+    store:     row.store,
+    storeName: localStorage.getItem('ruby_store_name_' + row.store) || _STORE_NAMES[row.store] || row.store,
     cat:      row.cat,
     badge:    row.badge || undefined,
     bg:       row.bg || '#FFF5F5',

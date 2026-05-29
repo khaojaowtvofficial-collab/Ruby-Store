@@ -241,7 +241,7 @@ function buildProductCard(p) {
           : `<span style="font-size:3rem;">${p.emoji}</span>`}
       </a>
       <div class="product-body">
-        <div class="product-store">${p.storeName}</div>
+        <div class="product-store">${p.storeName || localStorage.getItem('ruby_store_name_' + p.store) || {pet:'Ruby Pet Shop',computer:'Ruby Computer',toy:'Ruby Toy Shop'}[p.store] || ''}</div>
         <a href="product.html#${p.id}" class="product-name" style="text-decoration:none;color:inherit;">${p.name}</a>
         <div class="product-price">
           ₭${p.price.toLocaleString()} ${oldPriceHtml}
