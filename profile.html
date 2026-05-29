@@ -524,44 +524,4 @@
   };
 })();
 </script>
-<script>
-/* Cart UI — runs on load + every 1s to sync with any app.js version */
-(function(){
-  function upd(){
-    try{
-      var c=JSON.parse(localStorage.getItem('ruby_cart')||'[]');
-      var n=c.reduce(function(s,i){return s+(i.qty||1);},0);
-      var t=c.reduce(function(s,i){return s+(i.price||0)*(i.qty||1);},0);
-      /* Navbar badge */
-      var dbg=document.getElementById('_cartDebug');
-      var b=document.getElementById('cartBadge');
-      var d2=document.getElementById('mobileCartDot');
-      var f2=document.getElementById('cartFooter');
-      if(dbg){dbg.style.display='block';dbg.textContent='🛒 cart:'+n+' badge:'+(b?'✓':'✗')+' dot:'+(d2?'✓':'✗')+' footer:'+(f2?'✓':'✗')+' (tap to hide)';dbg.onclick=function(){dbg.style.display='none';};}
-      if(b){b.textContent=n>0?n:'';b.setAttribute('style',n>0?'display:flex!important;background:#C0392B;color:#fff;min-width:18px;height:18px;border-radius:9px;font-size:11px;font-weight:800;align-items:center;justify-content:center;padding:0 4px;position:absolute;top:0;right:0;z-index:99':'display:none!important');}
-      /* Bottom nav label — write count into text (most reliable) */
-      var lbl=document.getElementById('cartNavLabel');
-      if(lbl)lbl.textContent=n?'ກະຕ່າ ('+n+')':'ກະຕ່າ';
-      /* Bottom nav badge */
-      var d=document.getElementById('mobileCartDot');
-      if(d){d.textContent=n>0?n:'';d.setAttribute('style',n>0?'display:flex!important;background:#C0392B;color:#fff;min-width:18px;height:18px;border-radius:9px;font-size:11px;font-weight:800;align-items:center;justify-content:center;padding:0 4px;position:absolute;top:-4px;right:-4px;z-index:99':'display:none!important');}
-      /* Cart footer */
-      var f=document.getElementById('cartFooter');
-      if(f)f.style.display=n?'block':'none';
-      /* Totals */
-      var fmt='₭'+t.toLocaleString();
-      var sv=document.getElementById('cartSubtotalVal');if(sv)sv.textContent=fmt;
-      var tv=document.getElementById('cartTotalVal');if(tv)tv.textContent=fmt;
-    }catch(e){}
-  }
-  /* Run on load, pageshow (bfcache), and every second */
-  document.addEventListener('DOMContentLoaded',upd);
-  window.addEventListener('pageshow',upd);
-  setInterval(upd,1000);
-  /* Also intercept localStorage saves */
-  var _si=localStorage.setItem.bind(localStorage);
-  localStorage.setItem=function(k,v){_si(k,v);if(k==='ruby_cart')upd();};
-  window._cartUpd=upd;
 
-})();
-</script>
