@@ -903,6 +903,8 @@ input, textarea, select {
   box-shadow: var(--shadow-sm);
   transition: all 0.2s;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .product-card:hover {
@@ -968,6 +970,9 @@ input, textarea, select {
 
 .product-body {
   padding: 12px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .product-store {
@@ -1011,6 +1016,7 @@ input, textarea, select {
   border-radius: var(--radius-pill);
   padding: 8px 12px;
   font-size: 0.8rem;
+  margin-top: auto;
   font-weight: 600;
   font-family: var(--font-th);
   cursor: pointer;
