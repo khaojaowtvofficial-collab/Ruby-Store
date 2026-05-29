@@ -232,14 +232,11 @@
           </label>
           <div class="co-error" id="errTerms"></div>
 
-          <!-- ── Human Verification Widget ── -->
-          <div id="humanVerifyBox" style="margin-top:16px;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;background:var(--card);cursor:pointer;user-select:none;" onclick="runHumanVerify()">
+          <!-- ── Human Verification Widget (hidden — auto-verified) ── -->
+          <div id="humanVerifyBox" style="display:none;">
             <div style="display:flex;align-items:center;gap:12px;">
-              <div id="hvSpinner" style="width:24px;height:24px;border-radius:50%;border:2.5px solid var(--border);border-top-color:var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                <div id="hvCheck" style="display:none;color:var(--red);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-                <div id="hvAnim" style="width:18px;height:18px;border-radius:50%;border:2px solid transparent;"></div>
-              </div>
-              <span id="hvLabel" style="font-size:0.875rem;font-weight:500;color:var(--text);" data-i18n="co_not_robot">ຂ້ອຍບໍ່ແມ່ນບອດ</span>
+              <div id="hvSpinner"><div id="hvCheck"></div><div id="hvAnim"></div></div>
+              <span id="hvLabel"></span>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
               <span style="font-size:0.65rem;color:var(--muted);">Protected by</span>
@@ -412,91 +409,15 @@
   /* ══ BOT PROTECTION ══════════════════════════════════════
      4 layers: honeypot + timing + activity + human widget
   ═══════════════════════════════════════════════════════ */
-  const _formOpenedAt = Date.now();
-  let _mouseMovedCount = 0;
-  let _keyPressCount = 0;
-  let _humanVerified = false;
-  let _hvRunning = false;
-  document.addEventListener('mousemove',  () => { if (_mouseMovedCount < 50) _mouseMovedCount++; }, { passive: true });
-  document.addEventListener('keydown',    () => { if (_keyPressCount   < 50) _keyPressCount++;   }, { passive: true });
-  // Mobile touch — count as "mouse movement" so bot check passes
-  document.addEventListener('touchstart', () => { if (_mouseMovedCount < 50) _mouseMovedCount += 3; }, { passive: true });
-  document.addEventListener('touchmove',  () => { if (_mouseMovedCount < 50) _mouseMovedCount++; }, { passive: true });
-
-  function runHumanVerify() {
-    if (_humanVerified || _hvRunning) return;
-    _hvRunning = true;
-    const box    = document.getElementById('humanVerifyBox');
-    const label  = document.getElementById('hvLabel');
-    const anim   = document.getElementById('hvAnim');
-    const check  = document.getElementById('hvCheck');
-    const spinner = document.getElementById('hvSpinner');
-
-    // Animate spinner
-    label.textContent = 'ກຳລັງກວດສອບ...';
-    label.style.color = 'var(--muted)';
-    anim.style.cssText = 'width:18px;height:18px;border-radius:50%;border:2px solid var(--border);border-top-color:var(--red);animation:hvSpin .6s linear infinite;';
-    box.style.borderColor = 'var(--red)';
-    box.style.cursor = 'default';
-
-    // Run checks in background
-    setTimeout(() => {
-      const hp1 = document.getElementById('_hp_website')?.value || '';
-      const hp2 = document.getElementById('_hp_email')?.value   || '';
-      const elapsed = (Date.now() - _formOpenedAt) / 1000;
-      const isMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
-      const hasActivity = _mouseMovedCount > 0 || _keyPressCount > 0 || isMobile;
-      const isBot = hp1 || hp2 || elapsed < 1.5 || !hasActivity || !navigator.cookieEnabled;
-
-      if (isBot) {
-        label.textContent = 'ບໍ່ຜ່ານການກວດສອບ ລອງໃໝ່';
-        label.style.color = '#E53935';
-        box.style.borderColor = '#E53935';
-        box.style.background = '#FFF1F1';
-        anim.style.cssText = '';
-        check.style.display = 'none';
-        spinner.innerHTML = '<span style="font-size:1rem;">❌</span>';
-        _hvRunning = false;
-        return;
-      }
-
-      // Pass ✅
-      _humanVerified = true;
-      anim.style.cssText = '';
-      check.style.display = 'block';
-      label.textContent  = 'ຢືນຢັນແລ້ວ — ທ່ານບໍ່ແມ່ນບອດ';
-      label.style.color  = '#16a34a';
-      box.style.borderColor = '#22C55E';
-      box.style.background  = '#F0FFF4';
-      document.getElementById('errVerify').textContent = '';
-      _hvRunning = false;
-    }, 900);
-  }
+  // Bot protection: honeypot only (simple & reliable on all devices)
+  let _humanVerified = true; // auto-verified — widget hidden
+  function runHumanVerify() {} // no-op
 
   function _checkBotProtection() {
-    // Layer 1: Honeypot — bot fills hidden field
+    // Honeypot — bot fills hidden field, real users never see it
     const hp1 = document.getElementById('_hp_website')?.value || '';
     const hp2 = document.getElementById('_hp_email')?.value   || '';
-    if (hp1 || hp2) {
-      console.warn('[Security] Honeypot triggered');
-      return { blocked: true, reason: 'honeypot' };
-    }
-
-    // Layer 2: Timing — form submitted too fast (< 2 seconds)
-    const elapsed = (Date.now() - _formOpenedAt) / 1000;
-    if (elapsed < 2) {
-      console.warn('[Security] Form submitted too fast:', elapsed.toFixed(1) + 's');
-      return { blocked: true, reason: 'too_fast' };
-    }
-
-    // Layer 3: Human activity — mobile uses touch, desktop uses mouse/keyboard
-    const isMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
-    const hasActivity = _mouseMovedCount > 0 || _keyPressCount > 0;
-    if (!hasActivity && !isMobile) {
-      console.warn('[Security] No human activity detected');
-      return { blocked: true, reason: 'no_activity' };
-    }
-
+    if (hp1 || hp2) return { blocked: true, reason: 'honeypot' };
     return { blocked: false };
   }
 
@@ -509,13 +430,7 @@
       return;
     }
 
-    // ── Human verification widget ──
-    if (!_humanVerified) {
-      document.getElementById('errVerify').textContent = 'ກະລຸນາກົດຢືນຢັນ "ຂ້ອຍບໍ່ແມ່ນບອດ" ກ່ອນ';
-      document.getElementById('humanVerifyBox').style.borderColor = '#E53935';
-      document.getElementById('humanVerifyBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
+    // Human verification — always passes (honeypot handles real bots)
 
     // ── Bot protection check (background layers) ──
     const botCheck = _checkBotProtection();
