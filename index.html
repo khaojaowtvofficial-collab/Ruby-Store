@@ -241,7 +241,6 @@
   </div>
 </section>
 
-
 <!-- ===================== PRODUCTS ===================== -->
 <section class="section" id="products" style="padding-top: 16px;">
   <div class="container">
@@ -383,21 +382,7 @@
 </nav>
 
 <!-- ===================== FLOATING CART BAR (mobile) ===================== -->
-<div id="floatingCartBar" style="display:none;position:fixed;bottom:72px;left:12px;right:12px;z-index:1500;
-background:var(--red);color:#fff;border-radius:16px;padding:12px 16px;
-display:none;align-items:center;justify-content:space-between;gap:12px;
-box-shadow:0 4px 20px rgba(192,57,43,.4);animation:floatIn .25s ease;">
-  <div style="display:flex;align-items:center;gap:10px;">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
-    <span id="floatingCartCount" style="font-weight:800;font-size:.95rem;"></span>
-  </div>
-  <a href="checkout.html" style="color:#fff;font-weight:700;font-size:.85rem;text-decoration:none;background:rgba(255,255,255,.22);padding:6px 14px;border-radius:20px;white-space:nowrap;">ສັ່ງຊື້ →</a>
-</div>
 
-<!-- ===================== TOAST ===================== -->
-<div class="toast-container" id="toastContainer"></div>
-
-<script src="db.js?v=20260530"></script>
 <script src="app.js?v=20260530"></script>
 <script>
   // ===== HOMEPAGE PRODUCT GRID =====
@@ -639,6 +624,39 @@ box-shadow:0 4px 20px rgba(192,57,43,.4);animation:floatIn .25s ease;">
       updateCounts(prods);
     });
   });
+</script>
+<div id="floatingCartBar" style="display:none;position:fixed;bottom:72px;left:12px;right:12px;z-index:9999;background:#C0392B;color:#fff;border-radius:16px;padding:14px 18px;box-shadow:0 4px 20px rgba(0,0,0,.25);flex-direction:row;align-items:center;justify-content:space-between;gap:12px;">
+  <div style="display:flex;align-items:center;gap:10px;font-weight:800;font-size:1rem;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg><span id="floatingCartCount" style="color:#fff;"></span></div>
+  <a href="checkout.html" style="color:#fff;font-weight:700;font-size:.88rem;background:rgba(255,255,255,.25);padding:8px 18px;border-radius:20px;text-decoration:none;">ສັ່ງຊື້ →</a>
+</div>
+<script>
+(function(){
+  function _cart(){try{return JSON.parse(localStorage.getItem("ruby_cart")||"[]");}catch(e){return[];}}
+  function _fmt(n){return "₭"+Number(n).toLocaleString();}
+  function refreshCartUI(){
+    var c=_cart();
+    var n=c.reduce(function(s,i){return s+(i.qty||1);},0);
+    var t=c.reduce(function(s,i){return s+(i.price||0)*(i.qty||1);},0);
+    var b=document.getElementById("cartBadge");
+    if(b){b.textContent=n;b.style.display=n>0?"flex":"none";}
+    var d=document.getElementById("mobileCartDot");
+    if(d){d.textContent=n;d.style.display=n>0?"flex":"none";}
+    var bar=document.getElementById("floatingCartBar");
+    var cnt=document.getElementById("floatingCartCount");
+    if(bar){bar.style.display=n>0?"flex":"none";if(cnt&&n>0)cnt.textContent=n+" ລາຍການ · "+_fmt(t);}
+    var footer=document.getElementById("cartFooter");
+    if(footer)footer.style.display=n>0?"block":"none";
+    var sv=document.getElementById("cartSubtotalVal");var tv=document.getElementById("cartTotalVal");
+    if(sv)sv.textContent=_fmt(t);if(tv)tv.textContent=_fmt(t);
+    var empty=document.getElementById("cartEmpty");
+    if(empty)empty.style.display=n===0?"flex":"none";
+  }
+  document.addEventListener("DOMContentLoaded",refreshCartUI);
+  window.addEventListener("storage",function(e){if(e.key==="ruby_cart")refreshCartUI();});
+  window._refreshCartBar=refreshCartUI;
+  var _prev="";
+  setInterval(function(){var v=localStorage.getItem("ruby_cart")||"";if(v!==_prev){_prev=v;refreshCartUI();}},500);
+})();
 </script>
 </body>
 </html>
