@@ -1,45 +1,34 @@
 /* =========================================================
-   Ruby Store — db.js  (Cloud-first with localStorage fallback)
+   Ruby Store — db.js  (Direct REST API — no SDK required)
 
-   Data layers:
-   ① Write-through cache: every write goes to localStorage immediately,
-     then async to Supabase
-   ② On page load: fetch from Supabase → update localStorage cache
-   ③ If Supabase is unreachable: read from localStorage
-
-   Tables in Supabase:
-   - orders   (customers place orders)
-   - products (admin manages catalog)
-   - settings (store names, logos, etc.)
+   ใช้ Supabase REST API ผ่าน fetch() โดยตรง
+   ไม่โหลด SDK จาก CDN → เร็วกว่า, เสถียรกว่า ใน mobile
    ========================================================= */
 
 'use strict';
 
-// ── SUPABASE CONFIG ──────────────────────────────────────
 const SUPABASE_URL      = 'https://wqxzobxqkwyrffvibdxg.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxeHpvYnhxa3d5cmZmdmliZHhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MzIzMjIsImV4cCI6MjA5NTIwODMyMn0.5KcfdZF9uZ1XsgmtRAIiVKAGin7L-mlPaQ958p2GqqU';
-// ─────────────────────────────────────────────────────────
 
-let _sb = null;
-let _sdkLoaded = false;
+const _H = {
+  'apikey':        SUPABASE_ANON_KEY,
+  'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+  'Content-Type':  'application/json',
+};
 
-async function _loadSDK() {
-  if (_sdkLoaded || window.supabase?.createClient) { _sdkLoaded = true; return; }
-  await new Promise((res, rej) => {
-    const s = document.createElement('script');
-    s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
-    s.onload = () => { _sdkLoaded = true; res(); };
-    s.onerror = rej;
-    document.head.appendChild(s);
+// ── CORE REST HELPER ─────────────────────────────────────
+async function _rest(method, path, body, extra) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    method:  method,
+    headers: Object.assign({}, _H, extra || {}),
+    body:    body ? JSON.stringify(body) : undefined,
   });
-}
-
-async function _getSB() {
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return null;
-  if (_sb) return _sb;
-  await _loadSDK();
-  _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  return _sb;
+  if (!res.ok) {
+    const txt = await res.text().catch(() => res.status);
+    throw new Error('[RubyDB] ' + method + ' ' + path + ' → ' + res.status + ' ' + txt);
+  }
+  if (res.status === 204) return null;
+  return res.json();
 }
 
 // ── ANONYMOUS USER ID ────────────────────────────────────
@@ -51,10 +40,7 @@ function getUID() {
   }
   return uid;
 }
-
-function getShortUID() {
-  return getUID().slice(-8).toUpperCase();
-}
+function getShortUID() { return getUID().slice(-8).toUpperCase(); }
 
 // ── ROW NORMALISERS ──────────────────────────────────────
 function _rowToOrder(row) {
@@ -90,17 +76,17 @@ function _rowToProduct(row) {
     oldPrice:  row.old_price || undefined,
     store:     row.store,
     storeName: localStorage.getItem('ruby_store_name_' + row.store) || _STORE_NAMES[row.store] || row.store,
-    cat:      row.cat,
-    badge:    row.badge || undefined,
-    bg:       row.bg || '#FFF5F5',
-    emoji:    row.emoji || '📦',
-    imgUrl:   images[0] || row.img_url || undefined,
+    cat:       row.cat,
+    badge:     row.badge || undefined,
+    bg:        row.bg || '#FFF5F5',
+    emoji:     row.emoji || '📦',
+    imgUrl:    images[0] || row.img_url || undefined,
     images,
-    desc:     row.description || undefined,
-    brand:    row.brand || undefined,
-    specs:    row.specs || undefined,
-    stock:    typeof row.stock === 'number' ? row.stock : 0,
-    variants: Array.isArray(row.variants) ? row.variants : [],
+    desc:      row.description || undefined,
+    brand:     row.brand || undefined,
+    specs:     row.specs || undefined,
+    stock:     typeof row.stock === 'number' ? row.stock : 0,
+    variants:  Array.isArray(row.variants) ? row.variants : [],
   };
 }
 
@@ -133,91 +119,57 @@ function _productToRow(p) {
 function _getLocalOrders() {
   return JSON.parse(localStorage.getItem('ruby_orders') || '[]');
 }
-
 function _pushLocalOrder(order) {
   const orders = _getLocalOrders();
   const idx = orders.findIndex(o => o.orderNo === order.orderNo);
-  if (idx >= 0) orders[idx] = order;
-  else orders.unshift(order);
+  if (idx >= 0) orders[idx] = order; else orders.unshift(order);
   localStorage.setItem('ruby_orders', JSON.stringify(orders.slice(0, 200)));
 }
 
 async function saveOrder(orderData) {
-  const order = {
-    ...orderData,
-    uid:       getUID(),
-    status:    'pending',
-    createdAt: new Date().toISOString(),
-  };
-
-  // Always save locally first
+  const order = { ...orderData, uid: getUID(), status: 'pending', createdAt: new Date().toISOString() };
   _pushLocalOrder(order);
   localStorage.setItem('ruby_last_order', JSON.stringify(order));
-
-  // Sync to Supabase
-  const sb = await _getSB();
-  if (sb) {
-    const { error } = await sb.from('orders').insert({
-      uid:      order.uid,
-      order_no: order.orderNo,
-      name:     order.name,
-      phone:    order.phone,
-      address:  order.address,
-      delivery: order.delivery,
-      channel:  order.channel,
-      note:     order.note || '',
-      items:    order.items,
-      total:    order.total,
-      status:   'pending',
+  try {
+    await _rest('POST', 'orders', {
+      uid: order.uid, order_no: order.orderNo, name: order.name,
+      phone: order.phone, address: order.address, delivery: order.delivery,
+      channel: order.channel, note: order.note || '', items: order.items,
+      total: order.total, status: 'pending',
     });
-    if (error) console.warn('[RubyDB] Order sync error:', error.message);
-    else       console.log('[RubyDB] Order synced ✓', order.orderNo);
-  }
-
+    console.log('[RubyDB] Order synced ✓', order.orderNo);
+  } catch(e) { console.warn('[RubyDB] saveOrder:', e.message); }
   return order;
 }
 
 async function fetchMyOrders() {
-  const sb = await _getSB();
-  if (sb) {
-    const { data, error } = await sb
-      .from('orders')
-      .select('*')
-      .eq('uid', getUID())
-      .order('created_at', { ascending: false });
-    if (!error && data?.length) return data.map(_rowToOrder);
-  }
+  try {
+    const data = await _rest('GET', `orders?uid=eq.${getUID()}&order=created_at.desc`);
+    if (data && data.length) return data.map(_rowToOrder);
+  } catch(e) { console.warn('[RubyDB] fetchMyOrders:', e.message); }
   return _getLocalOrders();
 }
 
 async function fetchAllOrders(limit = 300) {
-  const sb = await _getSB();
-  if (!sb) return null;
-  const { data, error } = await sb
-    .from('orders')
-    .select('*')
-    .order('created_at', { ascending: false })
-    .limit(limit);
-  if (error) { console.warn('[RubyDB] fetchAllOrders error:', error.message); return null; }
-  // Also update local cache
-  const orders = data.map(_rowToOrder);
-  localStorage.setItem('ruby_orders', JSON.stringify(orders));
-  return orders;
+  try {
+    const data = await _rest('GET', `orders?order=created_at.desc&limit=${limit}`);
+    if (data) {
+      const orders = data.map(_rowToOrder);
+      localStorage.setItem('ruby_orders', JSON.stringify(orders));
+      return orders;
+    }
+  } catch(e) { console.warn('[RubyDB] fetchAllOrders:', e.message); }
+  return null;
 }
 
-// Update by order_no (not UUID)
 async function updateOrderStatus(orderNo, status) {
-  // Update local immediately
   const local = _getLocalOrders();
   const idx = local.findIndex(o => o.orderNo === orderNo);
   if (idx >= 0) { local[idx].status = status; localStorage.setItem('ruby_orders', JSON.stringify(local)); }
-
-  // Update Supabase
-  const sb = await _getSB();
-  if (!sb) return false;
-  const { error } = await sb.from('orders').update({ status }).eq('order_no', orderNo);
-  if (error) { console.warn('[RubyDB] updateOrderStatus error:', error.message); return false; }
-  return true;
+  try {
+    await _rest('PATCH', `orders?order_no=eq.${encodeURIComponent(orderNo)}`, { status });
+    return true;
+  } catch(e) { console.warn('[RubyDB] updateOrderStatus:', e.message); return false; }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -225,142 +177,115 @@ async function updateOrderStatus(orderNo, status) {
 // ═══════════════════════════════════════════════════════
 
 async function fetchProducts() {
-  const sb = await _getSB();
-  if (sb) {
-    const { data, error } = await sb
-      .from('products')
-      .select('*')
-      .order('created_at', { ascending: true });
-    if (!error && data) {
+  try {
+    const data = await _rest('GET', 'products?select=*&order=created_at.asc');
+    if (data && data.length) {
       const prods = data.map(_rowToProduct);
       localStorage.setItem('ruby_products', JSON.stringify(prods));
       window.PRODUCTS = prods;
       return prods;
     }
-  }
-  // Fallback: localStorage or default
+  } catch(e) { console.warn('[RubyDB] fetchProducts:', e.message); }
+  // Fallback: localStorage → window.PRODUCTS
   const local = localStorage.getItem('ruby_products');
   if (local) try { const p = JSON.parse(local); if (p.length) return p; } catch(e) {}
   return window.PRODUCTS || [];
 }
 
-// Fetch products + settings in parallel (faster first load)
-async function fetchAll() {
-  const [prods, settings] = await Promise.all([fetchProducts(), fetchSettings()]);
-  return { prods, settings };
-}
-
 async function saveProduct(product) {
-  // Update local cache immediately
   _upsertLocalProduct(product);
-
-  const sb = await _getSB();
-  if (sb) {
-    const row = _productToRow(product);
-    let { error } = await sb.from('products').upsert(row, { onConflict: 'id' });
-    if (error && error.code === '42703') {
-      // Column doesn't exist yet — retry without newer fields
-      const { stock, variants, images, brand, specs, ...rowFallback } = row;
-      ({ error } = await sb.from('products').upsert(rowFallback, { onConflict: 'id' }));
-      if (!error) console.log('[RubyDB] Product saved (partial — run schema migration) ✓', product.id);
-    }
-    if (error) console.warn('[RubyDB] saveProduct error:', error.message);
-    else       console.log('[RubyDB] Product saved ✓', product.id);
+  const row = _productToRow(product);
+  try {
+    await _rest('POST', 'products', row, { 'Prefer': 'resolution=merge-duplicates,return=minimal' });
+    console.log('[RubyDB] Product saved ✓', product.id);
+  } catch(e) {
+    // Retry without new columns if schema mismatch
+    if (e.message.includes('42703') || e.message.includes('column')) {
+      const { stock, variants, images, brand, specs, ...fallback } = row;
+      try {
+        await _rest('POST', 'products', fallback, { 'Prefer': 'resolution=merge-duplicates,return=minimal' });
+        console.log('[RubyDB] Product saved (partial) ✓', product.id);
+      } catch(e2) { console.warn('[RubyDB] saveProduct fallback:', e2.message); }
+    } else { console.warn('[RubyDB] saveProduct:', e.message); }
   }
 }
 
 async function deleteProduct(id) {
-  // Remove from local cache immediately
   const prods = JSON.parse(localStorage.getItem('ruby_products') || '[]').filter(p => p.id !== id);
   localStorage.setItem('ruby_products', JSON.stringify(prods));
   window.PRODUCTS = prods;
-
-  const sb = await _getSB();
-  if (sb) {
-    const { error } = await sb.from('products').delete().eq('id', id);
-    if (error) console.warn('[RubyDB] deleteProduct error:', error.message);
-    else       console.log('[RubyDB] Product deleted ✓', id);
-  }
+  try {
+    await _rest('DELETE', `products?id=eq.${encodeURIComponent(id)}`);
+    console.log('[RubyDB] Product deleted ✓', id);
+  } catch(e) { console.warn('[RubyDB] deleteProduct:', e.message); }
 }
 
 function _upsertLocalProduct(product) {
   const prods = JSON.parse(localStorage.getItem('ruby_products') || '[]');
   const idx = prods.findIndex(p => p.id === product.id);
-  if (idx >= 0) prods[idx] = product;
-  else prods.push(product);
+  if (idx >= 0) prods[idx] = product; else prods.push(product);
   localStorage.setItem('ruby_products', JSON.stringify(prods));
   window.PRODUCTS = prods;
 }
 
 // ═══════════════════════════════════════════════════════
-//  SETTINGS  (store names, logos, etc.)
+//  SETTINGS
 // ═══════════════════════════════════════════════════════
 
-// key examples: 'store_name_pet', 'store_logo_pet'
 async function saveSetting(key, value) {
-  // Save to localStorage immediately (with ruby_ prefix for backward compat)
   localStorage.setItem('ruby_' + key, value);
-
-  const sb = await _getSB();
-  if (sb) {
-    const { error } = await sb.from('settings')
-      .upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-    if (error) console.warn('[RubyDB] saveSetting error:', error.message);
-    else       console.log('[RubyDB] Setting saved ✓', key);
-  }
+  try {
+    await _rest('POST', 'settings', { key, value, updated_at: new Date().toISOString() },
+      { 'Prefer': 'resolution=merge-duplicates,return=minimal' });
+    console.log('[RubyDB] Setting saved ✓', key);
+  } catch(e) { console.warn('[RubyDB] saveSetting:', e.message); }
 }
 
 async function fetchSettings() {
-  const sb = await _getSB();
-  if (sb) {
-    const { data, error } = await sb.from('settings').select('*');
-    if (!error && data) {
+  try {
+    const data = await _rest('GET', 'settings?select=*');
+    if (data) {
       const settings = {};
       data.forEach(row => {
         settings[row.key] = row.value;
-        // Sync to localStorage with ruby_ prefix
         localStorage.setItem('ruby_' + row.key, row.value);
       });
       return settings;
     }
-  }
-  // Fallback: read from localStorage
+  } catch(e) { console.warn('[RubyDB] fetchSettings:', e.message); }
+  // Fallback from localStorage
   const settings = {};
-  ['store_name_pet','store_name_computer','store_name_toy',
-   'store_logo_pet','store_logo_computer','store_logo_toy',
-   'store_bg_pet','store_bg_computer','store_bg_toy',
-   'hero_intro_bg','hero_intro_title','hero_intro_sub','hero_intro_img',
-   'hero_pet_title','hero_pet_sub','hero_pet_img',
-   'hero_comp_title','hero_comp_sub','hero_comp_img',
-   'hero_toy_title','hero_toy_sub','hero_toy_img'].forEach(key => {
+  [
+    'store_name_pet','store_name_computer','store_name_toy',
+    'store_logo_pet','store_logo_computer','store_logo_toy',
+    'store_bg_pet','store_bg_computer','store_bg_toy',
+    'hero_intro_bg','hero_intro_title','hero_intro_sub','hero_intro_img',
+    'hero_pet_title','hero_pet_sub','hero_pet_img',
+    'hero_comp_title','hero_comp_sub','hero_comp_img',
+    'hero_toy_title','hero_toy_sub','hero_toy_img',
+  ].forEach(key => {
     const v = localStorage.getItem('ruby_' + key);
     if (v) settings[key] = v;
   });
   return settings;
 }
 
-// ── IS CLOUD CONFIGURED? ─────────────────────────────────
+// Fetch products + settings in parallel
+async function fetchAll() {
+  const [prods, settings] = await Promise.all([fetchProducts(), fetchSettings()]);
+  return { prods, settings };
+}
+
+// ── CLOUD ENABLED CHECK ──────────────────────────────────
 function isCloudEnabled() {
   return !!(SUPABASE_URL && SUPABASE_ANON_KEY);
 }
 
 // ── EXPOSE GLOBALLY ──────────────────────────────────────
 window.RubyDB = {
-  getUID,
-  getShortUID,
-  isCloudEnabled,
-  // Orders
-  saveOrder,
-  fetchMyOrders,
-  fetchAllOrders,
-  updateOrderStatus,
+  getUID, getShortUID, isCloudEnabled,
+  saveOrder, fetchMyOrders, fetchAllOrders, updateOrderStatus,
   getLocalOrders: _getLocalOrders,
-  // Products
-  fetchProducts,
-  saveProduct,
-  deleteProduct,
-  // Settings
-  saveSetting,
-  fetchSettings,
-  fetchAll,
+  fetchProducts, saveProduct, deleteProduct,
+  saveSetting, fetchSettings, fetchAll,
 };
