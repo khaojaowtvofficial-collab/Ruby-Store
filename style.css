@@ -413,6 +413,7 @@ input, textarea, select {
 }
 
 /* Store colour themes */
+.hs-intro { background: linear-gradient(135deg,#FFF5F5 0%,#FFE4E4 40%,#FFF0E0 100%); }
 .hs-pet  { background: linear-gradient(135deg,#FFF0F0 0%,#FFD6D6 45%,#FFBABA 100%); }
 .hs-comp { background: linear-gradient(135deg,#EFF6FF 0%,#BFDBFE 45%,#93C5FD 100%); }
 .hs-toy  { background: linear-gradient(135deg,#FFFBEB 0%,#FDE68A 45%,#FCD34D 100%); }
@@ -426,6 +427,7 @@ input, textarea, select {
 .hs-deco-a { width: 200px; height: 200px; top: -80px; right: -60px; opacity: .18; }
 .hs-deco-b { width: 120px; height: 120px; bottom: -40px; left: -30px; opacity: .14; }
 .hs-deco-c { width: 70px;  height: 70px;  top: 20px;   left: 40%;   opacity: .1; }
+.hs-intro .hs-deco { background: #C0392B; }
 .hs-pet  .hs-deco { background: #C0392B; }
 .hs-comp .hs-deco { background: #1D4ED8; }
 .hs-toy  .hs-deco { background: #D97706; }
@@ -448,9 +450,52 @@ input, textarea, select {
   font-weight: 700;
   margin-bottom: 10px;
 }
+.hs-intro .hs-store-tag { background: rgba(192,57,43,.1); color: var(--red); }
 .hs-pet  .hs-store-tag { background: rgba(192,57,43,.12); color: #B91C1C; }
 .hs-comp .hs-store-tag { background: rgba(29,78,216,.12);  color: #1D4ED8; }
 .hs-toy  .hs-store-tag { background: rgba(180,83,9,.14);   color: #92400E; }
+
+/* Intro slide extras */
+.hs-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 14px;
+}
+.hs-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform .15s, opacity .15s;
+}
+.hs-chip:hover { transform: translateY(-2px); opacity: .9; }
+.hs-chip-pet  { background: #FEE2E2; color: #B91C1C; }
+.hs-chip-comp { background: #DBEAFE; color: #1D4ED8; }
+.hs-chip-toy  { background: #FEF3C7; color: #92400E; }
+
+.hs-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--red);
+  text-decoration: none;
+  border: 2px solid var(--red);
+  background: transparent;
+  transition: background .15s, color .15s;
+}
+.hs-btn-ghost:hover { background: var(--red); color: #fff; }
+
+.hs-intro .hs-btn { background: var(--red); }
+.hs-intro-icon { opacity: .14; }
 
 .hs-title {
   font-size: clamp(1.3rem, 5vw, 2.2rem);

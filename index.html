@@ -58,6 +58,38 @@
 <section class="hero-slider" id="heroSlider">
   <div class="hs-track" id="hsTrack">
 
+    <!-- Slide 0: Ruby Store Intro -->
+    <div class="hs-slide hs-intro">
+      <div class="hs-deco hs-deco-a"></div>
+      <div class="hs-deco hs-deco-b"></div>
+      <div class="hs-deco hs-deco-c"></div>
+      <div class="hs-content" style="max-width:420px;">
+        <div class="hs-store-tag">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          rubystore.store
+        </div>
+        <h2 class="hs-title">ຮ້ານຄ້າ Online<br><span style="color:var(--red);">Ruby Store</span></h2>
+        <p class="hs-sub">ສັ່ງງ່າຍ ຈ່າຍສະດວກ ຜ່ານ WhatsApp & Messenger — ບໍ່ຕ້ອງສະໝັກ ບໍ່ຕ້ອງໃຊ້ລະຫັດ</p>
+        <!-- Store chips -->
+        <div class="hs-chips">
+          <a href="shop.html#pet" class="hs-chip hs-chip-pet">🐾 Pet Shop</a>
+          <a href="shop.html#computer" class="hs-chip hs-chip-comp">💻 Computer</a>
+          <a href="shop.html#toy" class="hs-chip hs-chip-toy">🎮 Toy Shop</a>
+        </div>
+        <div class="hs-actions" style="margin-top:16px;">
+          <a href="shop.html" class="hs-btn">ເລືອກຊື້ເລີຍ <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          <a href="#stores" class="hs-btn-ghost">ເບິ່ງຮ້ານຄ້າ</a>
+        </div>
+      </div>
+      <div class="hs-icon-wrap hs-intro-icon">
+        <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="8" y="16" width="64" height="48" rx="6"/>
+          <path d="M8 26h64"/><circle cx="18" cy="21" r="2"/><circle cx="26" cy="21" r="2"/><circle cx="34" cy="21" r="2"/>
+          <path d="M22 44 l8-8 6 6 10-12 8 10"/><circle cx="56" cy="50" r="5"/><path d="M59 53 l6 6"/>
+        </svg>
+      </div>
+    </div>
+
     <!-- Slide 1: Ruby Pet Shop -->
     <div class="hs-slide hs-pet">
       <div class="hs-deco hs-deco-a"></div>
@@ -139,6 +171,7 @@
     <button class="hs-dot active" onclick="hsSlideTo(0)"></button>
     <button class="hs-dot" onclick="hsSlideTo(1)"></button>
     <button class="hs-dot" onclick="hsSlideTo(2)"></button>
+    <button class="hs-dot" onclick="hsSlideTo(3)"></button>
   </div>
 
   <!-- Bottom stats bar -->
@@ -416,7 +449,7 @@
   }
 
   // ===== HERO SLIDER =====
-  var _hsCur = 0, _hsTotal = 3, _hsTimer, _hsStartX;
+  var _hsCur = 0, _hsTotal = 4, _hsTimer, _hsStartX;
   function hsSlideTo(idx) {
     _hsCur = ((idx % _hsTotal) + _hsTotal) % _hsTotal;
     document.getElementById('hsTrack').style.transform = 'translateX(-' + (_hsCur * 100) + '%)';
