@@ -2777,30 +2777,35 @@ input, textarea, select {
   line-height: 1;
 }
 
-.mobile-bottom-nav .nav-item .cart-dot,
-.mobile-bottom-nav .nav-item .mobile-cart-badge {
+/* cart icon wrap — badge positions relative to icon */
+.cart-icon-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-cart-badge {
   position: absolute;
-  top: 4px;
-  right: calc(50% - 18px);
+  top: -6px;
+  right: -8px;
   min-width: 18px;
   height: 18px;
   border-radius: 9px;
   background: var(--red);
   color: #fff;
-  font-size: 0.62rem;
+  font-size: 0.65rem;
   font-weight: 800;
-  border: 1.5px solid var(--card);
+  border: 1.5px solid #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 4px;
   line-height: 1;
+  z-index: 2;
 }
 
-.mobile-bottom-nav .nav-item .cart-dot.visible { display: flex; }
-.mobile-bottom-nav .nav-item .cart-dot:not(.visible) { display: none; }
-.mobile-bottom-nav .nav-item .mobile-cart-badge.hidden { display: none; }
-.mobile-bottom-nav .nav-item .mobile-cart-badge:not(.hidden) { display: flex; }
+.mobile-cart-badge.hidden { display: none; }
 
 /* Page body padding for fixed navbar + bottom nav */
 .page-body {
