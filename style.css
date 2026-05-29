@@ -495,7 +495,6 @@ input, textarea, select {
 .hs-btn-ghost:hover { background: var(--red); color: #fff; }
 
 .hs-intro .hs-btn { background: var(--red); }
-.hs-intro-icon { opacity: .14; }
 
 .hs-title {
   font-size: clamp(1.3rem, 5vw, 2.2rem);
@@ -543,19 +542,7 @@ input, textarea, select {
   opacity: .8;
 }
 
-/* Decorative icon (right side) */
-.hs-icon-wrap {
-  position: absolute;
-  right: -10px;
-  bottom: 40px;
-  width: 130px;
-  height: 130px;
-  opacity: .18;
-  z-index: 1;
-  pointer-events: none;
-}
-.hs-icon-wrap img { opacity: 1; }
-.hs-icon-wrap svg { width: 100%; height: 100%; }
+/* hs-icon-wrap removed (icons deleted) */
 
 /* Arrow buttons */
 .hs-arrow {
@@ -641,11 +628,9 @@ input, textarea, select {
 
 @media (min-width: 640px) {
   .hs-slide { min-height: 340px; padding: 48px 40px 80px; }
-  .hs-icon-wrap { width: 190px; height: 190px; right: 20px; bottom: 60px; opacity: .22; }
 }
 @media (min-width: 1024px) {
   .hs-slide { min-height: 420px; padding: 64px 80px 80px; }
-  .hs-icon-wrap { width: 260px; height: 260px; right: 60px; bottom: 70px; }
   .hs-title { font-size: 2.6rem; }
 }
 
