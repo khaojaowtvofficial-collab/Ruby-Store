@@ -48,8 +48,6 @@
     </div>
   </div>
 </nav>
-<div id="_cartDebug" style="position:fixed;top:60px;left:0;right:0;background:#1e293b;color:#fff;font-size:12px;padding:6px 12px;z-index:99999;display:none;text-align:center;"></div>
-
 <!-- Mobile Menu -->
 <div class="mobile-menu" id="mobileMenu">
   <a href="index.html" class="active"><span class="menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></span>ໜ້າຫຼັກ</a>
@@ -727,9 +725,7 @@
   /* Override addToCart — works even if PRODUCTS is empty (old cached app.js) */
   var _origAddToCart = window.addToCart;
   window.addToCart = function(productId, qty, variant, variantPrice){
-    qty = qty || 1;
-    var dbg0=document.getElementById('_cartDebug');
-    if(dbg0){dbg0.style.display='block';dbg0.textContent='CALLING addToCart: id='+productId+' PRODUCTS='+((window.PRODUCTS||[]).length);}
+    qty = qty || 1;dbg0.textContent='CALLING addToCart: id='+productId+' PRODUCTS='+((window.PRODUCTS||[]).length);}
     /* Try original first */
     var cartBefore = JSON.parse(localStorage.getItem('ruby_cart')||'[]');
     var lenBefore = cartBefore.length;
@@ -755,9 +751,7 @@
     upd();
     if(typeof showToast==='function') showToast('ເພີ່ມ "'+p.name+'" ໃສ່ｇｗｈｉ', 'success');
     if(typeof openCart==='function') openCart();
-    if(typeof renderCartItems==='function') renderCartItems();
-    var dbg=document.getElementById('_cartDebug');
-    if(dbg){dbg.style.display='block';dbg.textContent='✅ ADDED override: id='+productId+' | '+JSON.parse(localStorage.getItem('ruby_cart')||'[]').length+' items';}
+    if(typeof renderCartItems==='function') renderCartItems();dbg.textContent='✅ ADDED override: id='+productId+' | '+JSON.parse(localStorage.getItem('ruby_cart')||'[]').length+' items';}
   };
 })();
 </script>
