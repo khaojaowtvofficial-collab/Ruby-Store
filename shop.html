@@ -481,13 +481,13 @@
       var d2=document.getElementById('mobileCartDot');
       var f2=document.getElementById('cartFooter');
       if(dbg){dbg.style.display='block';dbg.textContent='🛒 cart:'+n+' badge:'+(b?'✓':'✗')+' dot:'+(d2?'✓':'✗')+' footer:'+(f2?'✓':'✗')+' (tap to hide)';dbg.onclick=function(){dbg.style.display='none';};}
-      if(b){b.textContent=n||'';b.style.display=n?'flex':'none';}
+      if(b){b.textContent=n||'';b.style.cssText='display:'+(n?'flex':'none')+'!important';if(n>0)b.classList.remove('hidden');else b.classList.add('hidden');}
       /* Bottom nav label — write count into text (most reliable) */
       var lbl=document.getElementById('cartNavLabel');
       if(lbl)lbl.textContent=n?'ກະຕ່າ ('+n+')':'ກະຕ່າ';
       /* Bottom nav badge */
       var d=document.getElementById('mobileCartDot');
-      if(d){d.textContent=n||'';d.style.display=n?'flex':'none';}
+      if(d){d.textContent=n||'';d.style.cssText='display:'+(n?'flex':'none')+'!important';if(n>0)d.classList.remove('hidden');else d.classList.add('hidden');}
       /* Cart footer */
       var f=document.getElementById('cartFooter');
       if(f)f.style.display=n?'block':'none';
