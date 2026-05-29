@@ -567,6 +567,8 @@
   var _origAddToCart = window.addToCart;
   window.addToCart = function(productId, qty, variant, variantPrice){
     qty = qty || 1;
+    var dbg0=document.getElementById('_cartDebug');
+    if(dbg0){dbg0.style.display='block';dbg0.textContent='CALLING addToCart: id='+productId+' PRODUCTS='+((window.PRODUCTS||[]).length);}
     /* Try original first */
     var cartBefore = JSON.parse(localStorage.getItem('ruby_cart')||'[]');
     var lenBefore = cartBefore.length;
@@ -593,6 +595,8 @@
     if(typeof showToast==='function') showToast('ເພີ່ມ "'+p.name+'" ໃສ່ｇｗｈｉ', 'success');
     if(typeof openCart==='function') openCart();
     if(typeof renderCartItems==='function') renderCartItems();
+    var dbg=document.getElementById('_cartDebug');
+    if(dbg){dbg.style.display='block';dbg.textContent='✅ ADDED override: id='+productId+' | '+JSON.parse(localStorage.getItem('ruby_cart')||'[]').length+' items';}
   };
 })();
 </script>
