@@ -457,24 +457,43 @@
       renderRelated(p.id, p.store);
       initStickyBar(p);
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      // Fetch full product (with images[]) in background and re-render if needed
-      if (typeof RubyDB !== 'undefined' && RubyDB.fetchProductById) {
-        RubyDB.fetchProductById(id).then(function(full) {
-          if (full && full.images && full.images.length > 0) {
-            renderProduct(full);
-            initStickyBar(full);
+      // Load full images in background (doesn't block add-to-cart)
+      if (typeof RubyDB !== 'undefined' && RubyDB.fetchProductImages) {
+        RubyDB.fetchProductImages(id).then(function(imgs) {
+          if (imgs && (imgs.imgUrl || (imgs.images && imgs.images.length))) {
+            if (imgs.imgUrl) p.imgUrl = imgs.imgUrl;
+            if (imgs.images && imgs.images.length) p.images = imgs.images;
+            renderProduct(p);
+            initStickyBar(p);
           }
         }).catch(function(){});
       }
     } else {
-      // Not in cache — fetch directly
+      // Not in listing cache — fetch fast (no images, ~5KB) so user can add to cart immediately
       document.getElementById('productDetailGrid').innerHTML =
         `<div style="padding:60px;text-align:center;color:var(--muted);">ກຳລັງໂຫຼດ...</div>`;
       if (typeof RubyDB !== 'undefined' && RubyDB.fetchProductById) {
-        RubyDB.fetchProductById(id).then(function(full) {
-          if (full) { renderProduct(full); renderRelated(full.id, full.store); initStickyBar(full); }
-          else document.getElementById('productDetailGrid').innerHTML =
-            `<div style="padding:60px;text-align:center;color:var(--muted);">ບໍ່ພົບສິນຄ້າ</div>`;
+        RubyDB.fetchProductById(id).then(function(prod) {
+          if (!prod) {
+            document.getElementById('productDetailGrid').innerHTML =
+              `<div style="padding:60px;text-align:center;color:var(--muted);">ບໍ່ພົບສິນຄ້າ</div>`;
+            return;
+          }
+          // Render immediately — user can now add to cart
+          renderProduct(prod);
+          renderRelated(prod.id, prod.store);
+          initStickyBar(prod);
+          // Load full images in background (separate request)
+          if (RubyDB.fetchProductImages) {
+            RubyDB.fetchProductImages(id).then(function(imgs) {
+              if (imgs && (imgs.imgUrl || (imgs.images && imgs.images.length))) {
+                prod.imgUrl = imgs.imgUrl || prod.imgUrl;
+                prod.images = imgs.images && imgs.images.length ? imgs.images : prod.images;
+                renderProduct(prod);
+                initStickyBar(prod);
+              }
+            }).catch(function(){});
+          }
         }).catch(function(){});
       }
     }

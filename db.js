@@ -211,12 +211,34 @@ async function fetchProducts() {
   return window.PRODUCTS || [];
 }
 
-// Full product with all images (for product detail page)
+// Fetch single product — lightweight first (fast), then enrich with images
 async function fetchProductById(id) {
+  // Step 1: fast fetch (listing cols ~5KB) — so user can interact immediately
   try {
-    const data = await _rest('GET', `products?id=eq.${encodeURIComponent(id)}&select=*`);
-    if (data && data.length) return _rowToProduct(data[0]);
+    const data = await _rest('GET', `products?id=eq.${encodeURIComponent(id)}&select=${_PROD_LIST_COLS}`);
+    if (data && data.length) {
+      const p = _rowToProduct(data[0]);
+      // Restore cached images if available
+      try {
+        const cached = JSON.parse(localStorage.getItem('ruby_products') || '[]');
+        const c = cached.find(x => x.id === id);
+        if (c) {
+          if (c.imgUrl && !p.imgUrl) p.imgUrl = c.imgUrl;
+          if (c.images && c.images.length) p.images = c.images;
+        }
+      } catch(e) {}
+      return p;
+    }
   } catch(e) { console.warn('[RubyDB] fetchProductById:', e.message); }
+  return null;
+}
+
+// Fetch full product including images[] (call separately for gallery rendering)
+async function fetchProductImages(id) {
+  try {
+    const data = await _rest('GET', `products?id=eq.${encodeURIComponent(id)}&select=id,img_url,images`);
+    if (data && data.length) return { imgUrl: data[0].img_url, images: data[0].images || [] };
+  } catch(e) { console.warn('[RubyDB] fetchProductImages:', e.message); }
   return null;
 }
 
@@ -314,6 +336,6 @@ window.RubyDB = {
   getUID, getShortUID, isCloudEnabled,
   saveOrder, fetchMyOrders, fetchAllOrders, updateOrderStatus,
   getLocalOrders: _getLocalOrders,
-  fetchProducts, fetchProductById, saveProduct, deleteProduct,
+  fetchProducts, fetchProductById, fetchProductImages, saveProduct, deleteProduct,
   saveSetting, fetchSettings, fetchAll,
 };
