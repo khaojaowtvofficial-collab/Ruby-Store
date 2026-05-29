@@ -119,9 +119,12 @@ function updateCartUI() {
     badge.textContent = count;
     badge.classList.toggle('hidden', count === 0);
   }
-  // Mobile dot
+  // Mobile bottom nav badge (number)
   const dot = document.getElementById('mobileCartDot');
-  if (dot) dot.classList.toggle('visible', count > 0);
+  if (dot) {
+    dot.textContent = count;
+    dot.classList.toggle('hidden', count === 0);
+  }
   // Cart totals
   const sub = getCartTotal();
   const subEl = document.getElementById('cartSubtotalVal');
