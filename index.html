@@ -347,7 +347,7 @@
       <p><span data-i18n="cart_empty">ກະຕ່າວ່າງເປົ່າ</span><br><span data-i18n="cart_empty_sub">ເພີ່ມສິນຄ້າເພື່ອເລີ່ມຕົ້ນ</span></p>
     </div>
   </div>
-  <div class="cart-footer" id="cartFooter" style="display:none;">
+  <div class="cart-footer" id="cartFooter">
     <div class="cart-subtotal">
       <span class="label" data-i18n="cart_subtotal">ລາຄາສິນຄ້າ</span>
       <span class="value" id="cartSubtotalVal">₭0</span>
@@ -377,7 +377,7 @@
   <a href="#" class="nav-item" id="mobileCartBtn">
     <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg></span>
     <span class="cart-badge hidden" id="mobileCartDot">0</span>
-    <span data-i18n="nav_cart">ກະຕ່າ</span>
+    <span id="cartNavLabel">ກະຕ່າ</span>
   </a>
   <a href="profile.html" class="nav-item">
     <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
@@ -682,6 +682,42 @@
     _si(k,v);
     if(k==='ruby_cart')_upd(v);
   };
+})();
+</script>
+<script>
+/* Cart UI — runs on load + every 1s to sync with any app.js version */
+(function(){
+  function upd(){
+    try{
+      var c=JSON.parse(localStorage.getItem('ruby_cart')||'[]');
+      var n=c.reduce(function(s,i){return s+(i.qty||1);},0);
+      var t=c.reduce(function(s,i){return s+(i.price||0)*(i.qty||1);},0);
+      /* Navbar badge */
+      var b=document.getElementById('cartBadge');
+      if(b){b.textContent=n||'';b.style.display=n?'flex':'none';}
+      /* Bottom nav label — write count into text (most reliable) */
+      var lbl=document.getElementById('cartNavLabel');
+      if(lbl)lbl.textContent=n?'ກະຕ່າ ('+n+')':'ກະຕ່າ';
+      /* Bottom nav badge */
+      var d=document.getElementById('mobileCartDot');
+      if(d){d.textContent=n||'';d.style.display=n?'flex':'none';}
+      /* Cart footer */
+      var f=document.getElementById('cartFooter');
+      if(f)f.style.display=n?'block':'none';
+      /* Totals */
+      var fmt='₭'+t.toLocaleString();
+      var sv=document.getElementById('cartSubtotalVal');if(sv)sv.textContent=fmt;
+      var tv=document.getElementById('cartTotalVal');if(tv)tv.textContent=fmt;
+    }catch(e){}
+  }
+  /* Run on load, pageshow (bfcache), and every second */
+  document.addEventListener('DOMContentLoaded',upd);
+  window.addEventListener('pageshow',upd);
+  setInterval(upd,1000);
+  /* Also intercept localStorage saves */
+  var _si=localStorage.setItem.bind(localStorage);
+  localStorage.setItem=function(k,v){_si(k,v);if(k==='ruby_cart')upd();};
+  window._cartUpd=upd;
 })();
 </script>
 </body>
