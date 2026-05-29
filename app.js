@@ -63,8 +63,24 @@ function getCartTotal() {
 }
 
 function addToCart(productId, qty = 1, variant = null, variantPrice = null) {
-  const product = PRODUCTS.find(p => p.id === productId);
-  if (!product) return;
+  // 1. Try window.PRODUCTS first
+  let product = (window.PRODUCTS || []).find(p => p.id === productId);
+
+  // 2. Fallback: localStorage cache (when PRODUCTS not yet loaded on mobile)
+  if (!product) {
+    try {
+      const cached = JSON.parse(localStorage.getItem('ruby_products') || '[]');
+      product = cached.find(p => p.id === productId);
+      if (product && window.PRODUCTS && window.PRODUCTS.length === 0) {
+        window.PRODUCTS = cached; // restore from cache
+      }
+    } catch(e) {}
+  }
+
+  if (!product) {
+    showToast('ກະລຸນາລໍຖ້າສິນຄ້າໂຫຼດ ແລ້ວລອງໃໝ່', 'error');
+    return;
+  }
 
   // Use variant price if provided and valid, else base price
   const price = (variantPrice && variantPrice > 0) ? variantPrice : product.price;
