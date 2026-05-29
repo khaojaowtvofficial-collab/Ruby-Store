@@ -540,73 +540,86 @@
     });
   }
 
+  // ─── Count display helper ───────────────────────────────
+  function updateCounts(p) {
+    var lbl = (typeof RubyI18n !== 'undefined') ? RubyI18n.t('stat_products') : 'ລາຍການ';
+    var total   = p.length;
+    var petCnt  = p.filter(function(x){ return x.store === 'pet'; }).length;
+    var compCnt = p.filter(function(x){ return x.store === 'computer'; }).length;
+    var toyCnt  = p.filter(function(x){ return x.store === 'toy'; }).length;
+    function set(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+    set('heroProductCount', total);
+    set('stigAllCount', total || '—');
+    set('storePetCount',      petCnt  + ' ' + lbl);
+    set('storeComputerCount', compCnt + ' ' + lbl);
+    set('storeToyCount',      toyCnt  + ' ' + lbl);
+    if (petCnt)  set('hsPetCount',  petCnt  + ' ' + lbl);
+    if (compCnt) set('hsCompCount', compCnt + ' ' + lbl);
+    if (toyCnt)  set('hsToyCount',  toyCnt  + ' ' + lbl);
+  }
+
+  // ─── Apply settings helper ──────────────────────────────
+  function applyAllSettings(settings) {
+    var HERO_KEYS = [
+      'hero_intro_bg','hero_intro_title','hero_intro_sub','hero_intro_img',
+      'hero_pet_title','hero_pet_sub','hero_pet_img',
+      'hero_comp_title','hero_comp_sub','hero_comp_img',
+      'hero_toy_title','hero_toy_sub','hero_toy_img'
+    ];
+    ['pet','computer','toy'].forEach(function(id) {
+      function sync(key, lsKey) {
+        var v = settings[key];
+        if (v === undefined) return;
+        if (v) localStorage.setItem(lsKey, v);
+        else localStorage.removeItem(lsKey);
+      }
+      sync('store_name_' + id, 'ruby_store_name_' + id);
+      sync('store_logo_' + id, 'ruby_store_logo_' + id);
+      sync('store_bg_'   + id, 'ruby_store_bg_'   + id);
+    });
+    HERO_KEYS.forEach(function(key) {
+      var v = settings[key];
+      if (v === undefined) return;
+      if (v) localStorage.setItem('ruby_' + key, v);
+      else   localStorage.removeItem('ruby_' + key);
+    });
+    applyStoreNames();
+    applyStoreLogosToSlider();
+    applyStoreBgs();
+    applyHeroSettings();
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
+    // 1. Render immediately from localStorage cache (instant)
     renderHomeProducts('all');
     renderBestsellerCarousel();
     applyStoreBgs();
     applyStoreLogosToSlider();
     applyStoreNames();
     applyHeroSettings();
-
-    // Fetch products + settings in PARALLEL (faster)
-    if (typeof RubyDB !== 'undefined' && RubyDB.isCloudEnabled()) {
-      RubyDB.fetchAll().then(function(result) {
-        var settings = result.settings;
-        var freshProds = result.prods;
-        // Apply fresh products
-        if (freshProds && freshProds.length) {
-          window.PRODUCTS = freshProds;
-          renderHomeProducts('all');
-          renderBestsellerCarousel();
-          updateCounts(freshProds);
-        }
-        if (!settings) return;
-        ['pet','computer','toy'].forEach(function(id) {
-          var name = settings['store_name_' + id];
-          if (name) localStorage.setItem('ruby_store_name_' + id, name);
-          var logo = settings['store_logo_' + id];
-          if (logo !== undefined) {
-            if (logo) localStorage.setItem('ruby_store_logo_' + id, logo);
-            else localStorage.removeItem('ruby_store_logo_' + id);
-          }
-          var bg = settings['store_bg_' + id];
-          if (bg !== undefined) {
-            if (bg) localStorage.setItem('ruby_store_bg_' + id, bg);
-            else localStorage.removeItem('ruby_store_bg_' + id);
-          }
-        });
-        applyStoreNames();
-        applyStoreLogosToSlider();
-        applyStoreBgs();
-        applyHeroSettings();
-      }).catch(function() { /* offline — use cache */ });
-    }
-
-    function updateCounts(p) {
-      var lbl = (typeof RubyI18n !== 'undefined') ? RubyI18n.t('stat_products') : 'ລາຍການ';
-      var total   = p.length;
-      var petCnt  = p.filter(function(x){ return x.store === 'pet'; }).length;
-      var compCnt = p.filter(function(x){ return x.store === 'computer'; }).length;
-      var toyCnt  = p.filter(function(x){ return x.store === 'toy'; }).length;
-      var set = function(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; };
-      set('heroProductCount', total);
-      set('stigAllCount', total || '—');
-      set('storePetCount',      petCnt  + ' ' + lbl);
-      set('storeComputerCount', compCnt + ' ' + lbl);
-      set('storeToyCount',      toyCnt  + ' ' + lbl);
-      if (petCnt)  set('hsPetCount',  petCnt  + ' ' + lbl);
-      if (compCnt) set('hsCompCount', compCnt + ' ' + lbl);
-      if (toyCnt)  set('hsToyCount',  toyCnt  + ' ' + lbl);
-    }
     updateCounts(window.PRODUCTS || []);
 
-    document.querySelectorAll('.filter-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
-        btn.classList.add('active');
-        renderHomeProducts(btn.dataset.filter || 'all');
-      });
+    // 2. When app.js finishes fetching products from Supabase → re-render
+    window.addEventListener('ruby:products-loaded', function(e) {
+      var prods = (e && e.detail) ? e.detail : (window.PRODUCTS || []);
+      renderHomeProducts('all');
+      renderBestsellerCarousel();
+      updateCounts(prods);
+      // Re-apply store names (storeName field now correct)
+      applyStoreNames();
     });
+
+    // 3. Fetch SETTINGS only (products handled by app.js)
+    if (typeof RubyDB !== 'undefined' && RubyDB.isCloudEnabled()) {
+      RubyDB.fetchSettings().then(function(settings) {
+        if (!settings) return;
+        applyAllSettings(settings);
+        // Re-render so storeName picks up custom names
+        renderHomeProducts('all');
+        renderBestsellerCarousel();
+        updateCounts(window.PRODUCTS || []);
+      }).catch(function() { /* offline — use cache */ });
+    }
   });
 </script>
 </body>
