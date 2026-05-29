@@ -210,6 +210,7 @@ function openCart() {
   document.getElementById('cartOverlay')?.classList.add('open');
   document.body.style.overflow = 'hidden';
   renderCartItems();
+  updateCartUI();
 }
 
 function closeCart() {
