@@ -417,8 +417,11 @@
   let _keyPressCount = 0;
   let _humanVerified = false;
   let _hvRunning = false;
-  document.addEventListener('mousemove', () => { if (_mouseMovedCount < 50) _mouseMovedCount++; }, { passive: true });
-  document.addEventListener('keydown',   () => { if (_keyPressCount   < 50) _keyPressCount++;   }, { passive: true });
+  document.addEventListener('mousemove',  () => { if (_mouseMovedCount < 50) _mouseMovedCount++; }, { passive: true });
+  document.addEventListener('keydown',    () => { if (_keyPressCount   < 50) _keyPressCount++;   }, { passive: true });
+  // Mobile touch — count as "mouse movement" so bot check passes
+  document.addEventListener('touchstart', () => { if (_mouseMovedCount < 50) _mouseMovedCount += 3; }, { passive: true });
+  document.addEventListener('touchmove',  () => { if (_mouseMovedCount < 50) _mouseMovedCount++; }, { passive: true });
 
   function runHumanVerify() {
     if (_humanVerified || _hvRunning) return;
@@ -441,8 +444,9 @@
       const hp1 = document.getElementById('_hp_website')?.value || '';
       const hp2 = document.getElementById('_hp_email')?.value   || '';
       const elapsed = (Date.now() - _formOpenedAt) / 1000;
-      const hasActivity = _mouseMovedCount > 0 || _keyPressCount > 0;
-      const isBot = hp1 || hp2 || elapsed < 2 || !hasActivity || !navigator.cookieEnabled;
+      const isMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+      const hasActivity = _mouseMovedCount > 0 || _keyPressCount > 0 || isMobile;
+      const isBot = hp1 || hp2 || elapsed < 1.5 || !hasActivity || !navigator.cookieEnabled;
 
       if (isBot) {
         label.textContent = 'ບໍ່ຜ່ານການກວດສອບ ລອງໃໝ່';
@@ -478,15 +482,17 @@
       return { blocked: true, reason: 'honeypot' };
     }
 
-    // Layer 2: Timing — form submitted too fast (< 4 seconds)
+    // Layer 2: Timing — form submitted too fast (< 2 seconds)
     const elapsed = (Date.now() - _formOpenedAt) / 1000;
-    if (elapsed < 4) {
+    if (elapsed < 2) {
       console.warn('[Security] Form submitted too fast:', elapsed.toFixed(1) + 's');
       return { blocked: true, reason: 'too_fast' };
     }
 
-    // Layer 3: Human activity — no movement detected
-    if (_mouseMovedCount === 0 && _keyPressCount < 3) {
+    // Layer 3: Human activity — mobile uses touch, desktop uses mouse/keyboard
+    const isMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+    const hasActivity = _mouseMovedCount > 0 || _keyPressCount > 0;
+    if (!hasActivity && !isMobile) {
       console.warn('[Security] No human activity detected');
       return { blocked: true, reason: 'no_activity' };
     }
