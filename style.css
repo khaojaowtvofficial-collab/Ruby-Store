@@ -2777,6 +2777,12 @@ input, textarea, select {
   line-height: 1;
 }
 
+/* Floating cart bar animation */
+@keyframes floatIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
 /* cart icon wrap — badge positions relative to icon */
 .cart-icon-wrap {
   position: relative;

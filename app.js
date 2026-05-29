@@ -129,20 +129,33 @@ function updateQty(key, delta) {
 /* ─── CART UI ───────────────────────────────────────────── */
 function updateCartUI() {
   const count = getCartCount();
-  // Desktop badge
+  const total = getCartTotal();
+
+  // Navbar badge (desktop + mobile)
   const badge = document.getElementById('cartBadge');
   if (badge) {
     badge.textContent = count;
     badge.classList.toggle('hidden', count === 0);
   }
-  // Mobile bottom nav badge (number)
+  // Mobile bottom nav badge
   const dot = document.getElementById('mobileCartDot');
   if (dot) {
     dot.textContent = count;
     dot.classList.toggle('hidden', count === 0);
   }
-  // Cart totals
-  const sub = getCartTotal();
+  // Floating cart bar (mobile — most visible)
+  const bar = document.getElementById('floatingCartBar');
+  if (bar) {
+    if (count > 0) {
+      bar.style.display = 'flex';
+      const countEl = document.getElementById('floatingCartCount');
+      if (countEl) countEl.textContent = count + ' ລາຍການ · ₭' + total.toLocaleString();
+    } else {
+      bar.style.display = 'none';
+    }
+  }
+  // Cart sidebar totals
+  const sub = total;
   const subEl = document.getElementById('cartSubtotalVal');
   const totEl = document.getElementById('cartTotalVal');
   if (subEl) subEl.textContent = '₭' + sub.toLocaleString();
