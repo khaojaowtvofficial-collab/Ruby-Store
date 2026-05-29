@@ -448,7 +448,7 @@
   // Load product from hash (#P001) — query params are stripped by npx serve
   function loadProductFromHash() {
     const id = window.location.hash.replace('#', '') || 'P001';
-    const p = (window.PRODUCTS || []).find(x => x.id === id);
+    let p = (window.PRODUCTS || []).find(x => x.id === id);
     currentQty = 1;
     window._selectedVariant = null;
     window._selectedVariantPrice = null;
@@ -457,9 +457,26 @@
       renderRelated(p.id, p.store);
       initStickyBar(p);
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Fetch full product (with images[]) in background and re-render if needed
+      if (typeof RubyDB !== 'undefined' && RubyDB.fetchProductById) {
+        RubyDB.fetchProductById(id).then(function(full) {
+          if (full && full.images && full.images.length > 0) {
+            renderProduct(full);
+            initStickyBar(full);
+          }
+        }).catch(function(){});
+      }
     } else {
+      // Not in cache — fetch directly
       document.getElementById('productDetailGrid').innerHTML =
-        `<div style="padding:60px;text-align:center;color:var(--muted);">ບໍ່ພົບສິນຄ້າ "${id}"</div>`;
+        `<div style="padding:60px;text-align:center;color:var(--muted);">ກຳລັງໂຫຼດ...</div>`;
+      if (typeof RubyDB !== 'undefined' && RubyDB.fetchProductById) {
+        RubyDB.fetchProductById(id).then(function(full) {
+          if (full) { renderProduct(full); renderRelated(full.id, full.store); initStickyBar(full); }
+          else document.getElementById('productDetailGrid').innerHTML =
+            `<div style="padding:60px;text-align:center;color:var(--muted);">ບໍ່ພົບສິນຄ້າ</div>`;
+        }).catch(function(){});
+      }
     }
   }
 

@@ -176,11 +176,30 @@ async function updateOrderStatus(orderNo, status) {
 //  PRODUCTS
 // ═══════════════════════════════════════════════════════
 
+// Fetch listing data ONLY (no images — keeps payload ~2KB instead of 3MB+)
+// Images are restored from localStorage cache; product detail fetches separately
+const _PROD_LIST_COLS = 'id,name,price,old_price,store,cat,badge,bg,emoji,description,brand,specs,stock,variants,created_at';
+
 async function fetchProducts() {
   try {
-    const data = await _rest('GET', 'products?select=*&order=created_at.asc');
+    const data = await _rest('GET', `products?select=${_PROD_LIST_COLS}&order=created_at.asc`);
     if (data && data.length) {
-      const prods = data.map(_rowToProduct);
+      // Restore images from existing localStorage cache (Admin saved them there)
+      let cachedMap = {};
+      try {
+        const cached = JSON.parse(localStorage.getItem('ruby_products') || '[]');
+        cached.forEach(function(p) { cachedMap[p.id] = p; });
+      } catch(e) {}
+
+      const prods = data.map(function(row) {
+        const p = _rowToProduct(row);
+        const c = cachedMap[p.id];
+        if (c) {
+          if (c.imgUrl  && !p.imgUrl)  p.imgUrl  = c.imgUrl;
+          if (c.images  && !p.images.length) p.images = c.images;
+        }
+        return p;
+      });
       localStorage.setItem('ruby_products', JSON.stringify(prods));
       window.PRODUCTS = prods;
       return prods;
@@ -190,6 +209,15 @@ async function fetchProducts() {
   const local = localStorage.getItem('ruby_products');
   if (local) try { const p = JSON.parse(local); if (p.length) return p; } catch(e) {}
   return window.PRODUCTS || [];
+}
+
+// Full product with all images (for product detail page)
+async function fetchProductById(id) {
+  try {
+    const data = await _rest('GET', `products?id=eq.${encodeURIComponent(id)}&select=*`);
+    if (data && data.length) return _rowToProduct(data[0]);
+  } catch(e) { console.warn('[RubyDB] fetchProductById:', e.message); }
+  return null;
 }
 
 async function saveProduct(product) {
@@ -286,6 +314,6 @@ window.RubyDB = {
   getUID, getShortUID, isCloudEnabled,
   saveOrder, fetchMyOrders, fetchAllOrders, updateOrderStatus,
   getLocalOrders: _getLocalOrders,
-  fetchProducts, saveProduct, deleteProduct,
+  fetchProducts, fetchProductById, saveProduct, deleteProduct,
   saveSetting, fetchSettings, fetchAll,
 };

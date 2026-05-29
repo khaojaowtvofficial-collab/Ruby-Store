@@ -599,18 +599,15 @@
 
     // 2. Fetch products + settings directly from Supabase (reliable, no event magic)
     if (typeof RubyDB !== 'undefined' && RubyDB.isCloudEnabled()) {
-      // Fetch products — show debug info if fails
+      // Fetch products (lightweight — no images, ~2KB payload)
       RubyDB.fetchProducts().then(function(prods) {
-        _dbg('fetch ok: ' + (prods ? prods.length : 0) + ' products');
         if (!prods || !prods.length) return;
         window.PRODUCTS = prods;
         renderHomeProducts('all');
         renderBestsellerCarousel();
         updateCounts(prods);
         applyStoreNames();
-      }).catch(function(e) {
-        _dbg('fetch ERROR: ' + (e && e.message ? e.message : String(e)));
-      });
+      }).catch(function() {});
 
       // Fetch settings (logos, names, hero text) — separate from products
       RubyDB.fetchSettings().then(function(settings) {
@@ -621,22 +618,6 @@
         updateCounts(window.PRODUCTS || []);
       }).catch(function() {});
     }
-
-    // Debug banner (tap to dismiss)
-    function _dbg(msg) {
-      var b = document.getElementById('_dbgBanner');
-      if (!b) {
-        b = document.createElement('div');
-        b.id = '_dbgBanner';
-        b.style = 'position:fixed;bottom:70px;left:0;right:0;background:#1e293b;color:#fff;font-size:11px;padding:8px 12px;z-index:9999;max-height:120px;overflow:auto;';
-        b.innerHTML = '<b>DEBUG</b> (tap to hide)<br>';
-        b.onclick = function(){ b.style.display='none'; };
-        document.body.appendChild(b);
-      }
-      b.innerHTML += msg + '<br>';
-    }
-    _dbg('PRODUCTS in localStorage: ' + (window.PRODUCTS || []).length);
-    _dbg('db.js version: REST-direct');
 
     // 3. Also listen to app.js event as extra safety net
     window.addEventListener('ruby:products-loaded', function(e) {
