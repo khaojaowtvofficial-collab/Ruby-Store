@@ -297,7 +297,15 @@
     applyStoreNames();
     applyStore(getStoreFromHash());
 
-    // Re-render when app.js finishes Supabase fetch
+    // Fetch products directly (reliable)
+    if (typeof RubyDB !== 'undefined' && RubyDB.isCloudEnabled()) {
+      RubyDB.fetchProducts().then(prods => {
+        if (!prods || !prods.length) return;
+        window.PRODUCTS = prods;
+        applyStore(getStoreFromHash());
+      }).catch(() => {});
+    }
+    // Also listen as safety net
     window.addEventListener('ruby:products-loaded', () => applyStore(getStoreFromHash()));
     if (window._rubyProdsReady) applyStore(getStoreFromHash());
 

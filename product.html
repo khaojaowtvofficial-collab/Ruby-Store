@@ -497,6 +497,14 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     loadProductFromHash();
+    // Fetch products directly (reliable on mobile)
+    if (typeof RubyDB !== 'undefined' && RubyDB.isCloudEnabled()) {
+      RubyDB.fetchProducts().then(prods => {
+        if (!prods || !prods.length) return;
+        window.PRODUCTS = prods;
+        loadProductFromHash();
+      }).catch(() => {});
+    }
     window.addEventListener('ruby:products-loaded', loadProductFromHash);
     if (window._rubyProdsReady) loadProductFromHash();
   });

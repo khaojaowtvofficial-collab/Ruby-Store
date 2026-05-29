@@ -590,7 +590,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', function() {
-    // 1. Render immediately from localStorage cache (instant)
+    // 1. Render immediately from localStorage cache (instant, zero network)
     renderHomeProducts('all');
     renderBestsellerCarousel();
     applyStoreBgs();
@@ -599,32 +599,36 @@
     applyHeroSettings();
     updateCounts(window.PRODUCTS || []);
 
-    // 2. When app.js finishes fetching products from Supabase → re-render
-    function _onProdsLoaded(prods) {
-      renderHomeProducts('all');
-      renderBestsellerCarousel();
-      updateCounts(prods || window.PRODUCTS || []);
-      applyStoreNames();
-    }
-    window.addEventListener('ruby:products-loaded', function(e) {
-      _onProdsLoaded((e && e.detail) ? e.detail : null);
-    });
-    // If fetch already completed before this listener was registered
-    if (window._rubyProdsReady) {
-      _onProdsLoaded(window.PRODUCTS);
-    }
-
-    // 3. Fetch SETTINGS only (products handled by app.js)
+    // 2. Fetch products + settings directly from Supabase (reliable, no event magic)
     if (typeof RubyDB !== 'undefined' && RubyDB.isCloudEnabled()) {
+      // Fetch products
+      RubyDB.fetchProducts().then(function(prods) {
+        if (!prods || !prods.length) return;
+        window.PRODUCTS = prods;
+        renderHomeProducts('all');
+        renderBestsellerCarousel();
+        updateCounts(prods);
+        applyStoreNames();
+      }).catch(function() {});
+
+      // Fetch settings (logos, names, hero text) — separate from products
       RubyDB.fetchSettings().then(function(settings) {
         if (!settings) return;
         applyAllSettings(settings);
-        // Re-render so storeName picks up custom names
         renderHomeProducts('all');
         renderBestsellerCarousel();
         updateCounts(window.PRODUCTS || []);
-      }).catch(function() { /* offline — use cache */ });
+      }).catch(function() {});
     }
+
+    // 3. Also listen to app.js event as extra safety net
+    window.addEventListener('ruby:products-loaded', function(e) {
+      var prods = (e && e.detail) ? e.detail : window.PRODUCTS;
+      if (!prods || !prods.length) return;
+      renderHomeProducts('all');
+      renderBestsellerCarousel();
+      updateCounts(prods);
+    });
   });
 </script>
 </body>
