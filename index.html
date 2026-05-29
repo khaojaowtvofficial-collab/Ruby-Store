@@ -48,6 +48,7 @@
     </div>
   </div>
 </nav>
+<div id="_cartDebug" style="position:fixed;top:60px;left:0;right:0;background:#1e293b;color:#fff;font-size:12px;padding:6px 12px;z-index:99999;display:none;text-align:center;"></div>
 
 <!-- Mobile Menu -->
 <div class="mobile-menu" id="mobileMenu">
@@ -693,7 +694,11 @@
       var n=c.reduce(function(s,i){return s+(i.qty||1);},0);
       var t=c.reduce(function(s,i){return s+(i.price||0)*(i.qty||1);},0);
       /* Navbar badge */
+      var dbg=document.getElementById('_cartDebug');
       var b=document.getElementById('cartBadge');
+      var d2=document.getElementById('mobileCartDot');
+      var f2=document.getElementById('cartFooter');
+      if(dbg){dbg.style.display='block';dbg.textContent='🛒 cart:'+n+' badge:'+(b?'✓':'✗')+' dot:'+(d2?'✓':'✗')+' footer:'+(f2?'✓':'✗')+' (tap to hide)';dbg.onclick=function(){dbg.style.display='none';};}
       if(b){b.textContent=n||'';b.style.display=n?'flex':'none';}
       /* Bottom nav label — write count into text (most reliable) */
       var lbl=document.getElementById('cartNavLabel');
