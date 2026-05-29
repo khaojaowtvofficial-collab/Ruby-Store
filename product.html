@@ -569,33 +569,20 @@
 </script>
 <script>
 (function(){
-  function syncCart(){var n=0,t=0;try{var c=JSON.parse(localStorage.getItem('ruby_cart')||'[]');n=c.reduce(function(s,i){return s+(i.qty||1);},0);t=c.reduce(function(s,i){return s+(i.price||0)*(i.qty||1);},0);}catch(e){}
-    var fmt='₭'+t.toLocaleString();
-    ['cartBadge','mobileCartDot'].forEach(function(id){var el=document.getElementById(id);if(!el)return;el.textContent=n>0?String(n):'';el.classList.remove('hidden');el.style.display=n>0?'flex':'none';if(n>0)el.style.cssText='display:flex;background:#C0392B;color:#fff;min-width:18px;height:18px;border-radius:9px;font-size:11px;font-weight:800;align-items:center;justify-content:center;padding:0 4px;position:absolute;top:-2px;right:-2px;z-index:999';});
-    /* Change cart button to red with count — most visible approach */
-    var btn=document.getElementById('cartBtn');
-    if(btn){
-      if(n>0){
-        btn.style.cssText='position:relative;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:#C0392B;color:#fff;border:none;cursor:pointer;';
-        var cntEl=btn.querySelector('#cartBadge');
-        if(cntEl){cntEl.style.display='none';}
-        btn.title=n+' items';
-        /* Add count text if not exists */
-        var cnt=btn.querySelector('.cart-count-text');
-        if(!cnt){cnt=document.createElement('span');cnt.className='cart-count-text';cnt.style.cssText='font-size:12px;font-weight:800;color:#fff;';btn.appendChild(cnt);}
-        cnt.textContent=n;
-        /* Show SVG white */
-        var svg=btn.querySelector('svg');if(svg)svg.style.display='none';
-      }else{
-        btn.style.cssText='';
-        var svg=btn.querySelector('svg');if(svg)svg.style.display='';
-        var cnt=btn.querySelector('.cart-count-text');if(cnt)cnt.remove();
-      }
-    }
-    var lbl=document.getElementById('cartNavLabel');if(lbl)lbl.textContent=n>0?'('+n+')':'ກะɱ';
-    var f=document.getElementById('cartFooter');if(f){f.style.display=n>0?'block':'none';}
-    var sv=document.getElementById('cartSubtotalVal');if(sv)sv.textContent=fmt;
-    var tv=document.getElementById('cartTotalVal');if(tv)tv.textContent=fmt;
+  function syncCart(){
+    try{
+      var c=JSON.parse(localStorage.getItem('ruby_cart')||'[]');
+      var n=c.reduce(function(s,i){return s+(i.qty||1);},0);
+      var t=c.reduce(function(s,i){return s+(i.price||0)*(i.qty||1);},0);
+      /* Label text — works on all browsers, no CSS tricks */
+      var lbl=document.getElementById('cartNavLabel');
+      if(lbl)lbl.textContent=n>0?'ກະຕ່າ·'+n:'ກະຕ່າ';
+      /* Footer */
+      var f=document.getElementById('cartFooter');
+      if(f)f.style.display=n>0?'block':'none';
+      var sv=document.getElementById('cartSubtotalVal');if(sv)sv.textContent='₭'+t.toLocaleString();
+      var tv=document.getElementById('cartTotalVal');if(tv)tv.textContent='₭'+t.toLocaleString();
+    }catch(e){}
   }
   document.addEventListener('DOMContentLoaded',syncCart);
   window.addEventListener('pageshow',syncCart);
