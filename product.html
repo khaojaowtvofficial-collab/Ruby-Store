@@ -587,9 +587,11 @@
     }catch(e){}
   }
   /* 1. Run on page load */
-  document.addEventListener('DOMContentLoaded',function(){
-    _upd(localStorage.getItem('ruby_cart'));
-  });
+  document.addEventListener('DOMContentLoaded',function(){_upd(localStorage.getItem('ruby_cart'));});
+  /* pageshow fires even on bfcache restore (Messenger browser) */
+  window.addEventListener('pageshow',function(e){_upd(localStorage.getItem('ruby_cart'));});
+  /* Disable bfcache so page always reloads fresh */
+  window.addEventListener('unload',function(){});
   /* 2. Intercept every localStorage.setItem — catches addToCart/removeFromCart/updateQty */
   var _si=localStorage.setItem.bind(localStorage);
   localStorage.setItem=function(k,v){
