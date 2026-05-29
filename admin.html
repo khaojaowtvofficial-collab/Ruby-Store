@@ -1713,7 +1713,7 @@ function uploadHsrImg(key, input) {
   if (!m || !m.imgk) return;
   var file = input.files[0];
   if (!file) return;
-  _compressImage(file, 1000, 0.85, function(dataUrl) {
+  _compressImage(file, 1400, 0.93, function(dataUrl) {
     localStorage.setItem('ruby_' + m.imgk, dataUrl);
     RubyDB.saveSetting(m.imgk, dataUrl);
     var prevEl = document.getElementById(m.prevId);
@@ -1754,7 +1754,7 @@ function uploadHsrBg(key, input) {
   if (!m || !m.bgk) return;
   var file = input.files[0];
   if (!file) return;
-  _compressImage(file, 1200, 0.82, function(dataUrl) {
+  _compressImage(file, 1400, 0.93, function(dataUrl) {
     localStorage.setItem('ruby_' + m.bgk, dataUrl);
     RubyDB.saveSetting(m.bgk, dataUrl);
     var prevEl = document.getElementById(m.prevId);
@@ -1901,7 +1901,7 @@ function uploadStoreBg(id) {
     if (!file) return;
     if (file.size > 15 * 1024 * 1024) { showToast('ຮູບໃຫຍ່ເກີນ 15MB', 'error'); return; }
     // Compress to max 1000px wide, JPEG 0.82 → ~60-120KB, fits Supabase easily
-    _compressImage(file, 1000, 0.82, function(bgData) {
+    _compressImage(file, 1400, 0.93, function(bgData) {
       localStorage.setItem(STORE_BG_KEY(id), bgData);
       _adminCache.settings['store_bg_' + id] = bgData;
       renderStoreBgPreview(id);
