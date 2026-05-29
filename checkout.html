@@ -422,50 +422,79 @@
   }
 
   async function confirmOrder() {
-    const terms = document.getElementById('termsCheck');
-    document.getElementById('errTerms').textContent = '';
-    if (!terms.checked) {
-      document.getElementById('errTerms').textContent = 'ກະລຸນາຍອມຮັບເງື່ອນໄຂກ່ອນ';
-      showToast('ກະລຸນາຍອມຮັບເງື່ອນໄຂກ່ອນ', 'error');
-      return;
+    try {
+      // 1. Check terms
+      const terms = document.getElementById('termsCheck');
+      if (terms) document.getElementById('errTerms').textContent = '';
+      if (!terms || !terms.checked) {
+        if (document.getElementById('errTerms'))
+          document.getElementById('errTerms').textContent = 'ກະລຸນາຍອມຮັບເງື່ອນໄຂກ່ອນ';
+        showToast('ກະລຸນາຍອມຮັບເງື່ອນໄຂກ່ອນ', 'error');
+        return;
+      }
+
+      // 2. Honeypot check only
+      if (_checkBotProtection().blocked) {
+        showToast('ເກີດຂໍ້ຜິດພາດ ກະລຸນາລອງໃໝ່', 'error');
+        return;
+      }
+
+      // 3. Disable button
+      const btn = document.getElementById('confirmWABtn');
+      if (btn) { btn.disabled = true; btn.textContent = 'ກຳລັງດຳເນີນການ...'; }
+
+      // 4. Save order (localStorage first, Supabase async — won't block)
+      const orderNo = 'RB' + Date.now().toString().slice(-6);
+      const cartItems = JSON.parse(localStorage.getItem('ruby_cart') || '[]');
+      // Strip imgUrl from cart items before saving to DB (reduce payload size)
+      const cleanItems = cartItems.map(function(i) {
+        return { id: i.id, name: i.name, price: i.price, qty: i.qty, variant: i.variant || null };
+      });
+
+      const orderData = {
+        ...formData,
+        orderNo,
+        channel: selectedChannel,
+        items: cleanItems,
+        total: getCartTotal(),
+        uid: typeof RubyDB !== 'undefined' ? RubyDB.getUID() : ('u' + Date.now()),
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+      };
+
+      // Save to localStorage immediately
+      try {
+        const orders = JSON.parse(localStorage.getItem('ruby_orders') || '[]');
+        orders.unshift(orderData);
+        localStorage.setItem('ruby_orders', JSON.stringify(orders.slice(0, 200)));
+        localStorage.setItem('ruby_last_order', JSON.stringify(orderData));
+      } catch(e) { /* ignore */ }
+
+      // Async Supabase save (don't block UI)
+      if (typeof RubyDB !== 'undefined') {
+        RubyDB.saveOrder(orderData).catch(function() {});
+      }
+
+      if (btn) { btn.disabled = false; }
+
+      // 5. Open WA/Messenger modal
+      openWAModal(selectedChannel, formData);
+
+      // 6. On modal close → clear cart → success
+      const origClose = window.closeWAModal;
+      window.closeWAModal = function() {
+        origClose && origClose();
+        clearCart();
+        window.location.href = 'success.html';
+      };
+
+    } catch(err) {
+      // Show visible error so user knows what happened
+      console.error('[Checkout] confirmOrder error:', err);
+      showToast('ຂໍໂທດ ເກີດຂໍ້ຜິດພາດ: ' + (err && err.message ? err.message : String(err)), 'error');
+      const btn = document.getElementById('confirmWABtn');
+      if (btn) { btn.disabled = false; btn.innerHTML = 'ສົ່ງຄຳສັ່ງຊື້'; }
     }
-
-    // Human verification — always passes (honeypot handles real bots)
-
-    // ── Bot protection check (background layers) ──
-    const botCheck = _checkBotProtection();
-    if (botCheck.blocked) {
-      console.warn('[Security] Order blocked — reason:', botCheck.reason);
-      showToast('ເກີດຂໍ້ຜິດພາດ ກະລຸນາລອງໃໝ່', 'error');
-      return;
-    }
-
-    // Disable button while saving
-    const btn = document.getElementById('confirmWABtn');
-    if (btn) { btn.disabled = true; btn.textContent = 'ກຳລັງບັນທຶກ...'; }
-
-    // Generate order number & save (local + Supabase if configured)
-    const orderNo = 'RB' + Date.now().toString().slice(-6);
-    await RubyDB.saveOrder({
-      ...formData,
-      orderNo,
-      channel: selectedChannel,
-      items: JSON.parse(localStorage.getItem('ruby_cart') || '[]'),
-      total: getCartTotal(),
-    });
-
-    if (btn) { btn.disabled = false; }
-
-    // Open WA modal
-    openWAModal(selectedChannel, formData);
-
-    // On modal close → clear cart → success page
-    const origClose = window.closeWAModal;
-    window.closeWAModal = function() {
-      origClose();
-      clearCart();
-      window.location.href = 'success.html';
-    };
   }
 
   /* Render sidebar order summary */
