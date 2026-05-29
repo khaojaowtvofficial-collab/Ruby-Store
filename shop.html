@@ -232,7 +232,7 @@
   </a>
   <a href="#" class="nav-item" id="mobileCartBtn">
     <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg></span>
-    <span class="mobile-cart-badge hidden" id="mobileCartDot">0</span>
+    <span class="cart-badge hidden" id="mobileCartDot">0</span>
     <span data-i18n="nav_cart">ກະຕ່າ</span>
   </a>
   <a href="profile.html" class="nav-item">
@@ -423,7 +423,7 @@
     var b=document.getElementById("cartBadge");
     if(b){b.textContent=n;b.className="cart-badge";}
     var d=document.getElementById("mobileCartDot");
-    if(d){d.textContent=n;d.className="mobile-cart-badge";}
+    if(d){d.textContent=n;d.className="cart-badge";}
     var f=document.getElementById("cartFooter");
     if(f)f.style.display="block";
     var sv=document.getElementById("cartSubtotalVal");if(sv)sv.textContent="₭"+t.toLocaleString();
