@@ -652,6 +652,63 @@ input, textarea, select {
 /* =====================================================
    STORE ROW CARDS
    ===================================================== */
+/* ── Store Icon Tiles (4-column grid) ── */
+.store-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.stig {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  padding: 12px 6px 10px;
+  border-radius: 16px;
+  transition: transform .15s, box-shadow .15s;
+  position: relative;
+}
+.stig:hover { transform: translateY(-3px); }
+.stig:active { transform: scale(.95); }
+
+.stig-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,.10);
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+.stig-icon-wrap svg { width: 28px; height: 28px; }
+
+.stig-name {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.stig-count {
+  font-size: 0.62rem;
+  color: var(--muted);
+  font-weight: 600;
+  background: rgba(0,0,0,.05);
+  padding: 1px 7px;
+  border-radius: 20px;
+}
+
+.stig-all  .stig-icon-wrap { background: linear-gradient(135deg,#FFE4E4,#FECACA); color: var(--red); }
+.stig-pet  .stig-icon-wrap { background: linear-gradient(135deg,#FFE4E4,#FECACA); color: #B91C1C; }
+.stig-comp .stig-icon-wrap { background: linear-gradient(135deg,#DBEAFE,#BFDBFE); color: #1D4ED8; }
+.stig-toy  .stig-icon-wrap { background: linear-gradient(135deg,#FEF3C7,#FDE68A); color: #92400E; }
+
+/* ── Store Row Cards (legacy / shop page) ── */
 .store-row-card {
   display: flex;
   align-items: center;
