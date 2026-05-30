@@ -78,7 +78,8 @@ function addToCart(productId, qty = 1, variant = null, variantPrice = null) {
   }
 
   if (!product) {
-    showToast('ກະລຸນາລໍຖ້າສິນຄ້າໂຫຼດ ແລ້ວລອງໃໝ່', 'error');
+    // Products ยังโหลดไม่เสร็จ — รอ 800ms แล้วลองใหม่
+    setTimeout(() => addToCart(productId, qty, variant, variantPrice), 800);
     return;
   }
 
