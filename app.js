@@ -63,14 +63,15 @@ function getCartTotal() {
 }
 
 function addToCart(productId, qty = 1, variant = null, variantPrice = null) {
+  const pid = typeof productId === 'string' ? (isNaN(productId) ? productId : Number(productId)) : productId;
   // 1. Try window.PRODUCTS first
-  let product = (window.PRODUCTS || []).find(p => p.id === productId);
+  let product = (window.PRODUCTS || []).find(p => p.id === pid);
 
   // 2. Fallback: localStorage cache (when PRODUCTS not yet loaded on mobile)
   if (!product) {
     try {
       const cached = JSON.parse(localStorage.getItem('ruby_products') || '[]');
-      product = cached.find(p => p.id === productId);
+      product = cached.find(p => p.id === pid);
       if (product && window.PRODUCTS && window.PRODUCTS.length === 0) {
         window.PRODUCTS = cached; // restore from cache
       }
@@ -307,7 +308,7 @@ function buildProductCard(p) {
         <div class="product-price">
           ₭${p.price.toLocaleString()} ${oldPriceHtml}
         </div>
-        <button class="product-add-btn" onclick="addToCart('${p.id}')">+ ໃສ່ກະຕ່າ</button>
+        <button class="product-add-btn" onclick="addToCart(${JSON.stringify(p.id)})">+ ໃສ່ກະຕ່າ</button>
       </div>
     </div>`;
 }
