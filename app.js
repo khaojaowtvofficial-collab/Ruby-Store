@@ -78,8 +78,22 @@ function addToCart(productId, qty = 1, variant = null, variantPrice = null) {
   }
 
   if (!product) {
-    // Products ยังโหลดไม่เสร็จ — รอ 800ms แล้วลองใหม่
-    setTimeout(() => addToCart(productId, qty, variant, variantPrice), 800);
+    let waited = 0;
+    const interval = setInterval(() => {
+      waited += 100;
+      let p = (window.PRODUCTS || []).find(p => p.id === productId);
+      if (!p) {
+        try {
+          const cached = JSON.parse(localStorage.getItem('ruby_products') || '[]');
+          p = cached.find(p => p.id === productId);
+        } catch(e) {}
+      }
+      if (p || waited >= 3000) {
+        clearInterval(interval);
+        if (p) addToCart(productId, qty, variant, variantPrice);
+        else showToast('ກະລຸນາລໍຖ້າສິນຄ້າໂຫຼດ ແລ້ວລອງໃໝ່', 'error');
+      }
+    }, 100);
     return;
   }
 
