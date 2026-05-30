@@ -208,7 +208,7 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script src="db.js?v=dce53e14"></script>
-<script src="app.js?v=8728ed59"></script>
+<script src="app.js?v=9dd0c9b8"></script>
 <script>
   /* Product detail page logic */
   const SAMPLE_REVIEWS = [];
@@ -427,7 +427,22 @@
   }
 
   function handleAddToCart() {
-    if (!currentProduct) return;
+    if (!currentProduct) {
+      // currentProduct ยังโหลดไม่เสร็จ — รอแล้วลองใหม่
+      let waited = 0;
+      const interval = setInterval(() => {
+        waited += 100;
+        if (currentProduct) {
+          clearInterval(interval);
+          addToCart(currentProduct.id, currentQty, window._selectedVariant || null, window._selectedVariantPrice || null);
+          openCart();
+        } else if (waited >= 5000) {
+          clearInterval(interval);
+          showToast('ກະລຸນາລໍຖ້າສິນຄ້າໂຫຼດ ແລ້ວລອງໃໝ່', 'error');
+        }
+      }, 100);
+      return;
+    }
     addToCart(currentProduct.id, currentQty, window._selectedVariant || null, window._selectedVariantPrice || null);
     openCart();
   }
