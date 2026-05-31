@@ -3826,6 +3826,14 @@ input, textarea, select {
 .cloud-badge-icon { font-size: 0; display: inline-flex; align-items: center; }
 .cloud-badge-icon svg { width: 13px; height: 13px; }
 
+/* Order info icon (success page) */
+.oii-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--red-l); flex-shrink: 0;
+}
+.oii-icon svg { width: 18px; height: 18px; }
+
 /* ── Skeleton loader ──────────────────────────────── */
 @keyframes skeleton-shimmer {
   0%   { background-position: -600px 0; }
