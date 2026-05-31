@@ -242,7 +242,7 @@ input, textarea, select {
   height: 2px;
   background: var(--text);
   border-radius: 2px;
-  transition: all 0.3s;
+  transition: transform 0.3s, opacity 0.3s;
 }
 
 .hamburger.open span:nth-child(1) {
@@ -307,7 +307,7 @@ input, textarea, select {
   font-size: 0.9rem;
   font-weight: 600;
   font-family: var(--font-th);
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
   line-height: 1;
   border: 2px solid transparent;
@@ -586,7 +586,7 @@ input, textarea, select {
   border: none;
   background: rgba(0,0,0,.2);
   cursor: pointer;
-  transition: all .2s;
+  transition: background 0.2s, width 0.2s, border-radius 0.2s;
   padding: 0;
 }
 .hs-dot.active {
@@ -704,7 +704,7 @@ input, textarea, select {
   border: 2px solid transparent;
   box-shadow: var(--shadow-sm);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
   text-decoration: none;
   color: inherit;
 }
@@ -869,7 +869,7 @@ input, textarea, select {
   font-weight: 500;
   color: var(--text-m);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -903,7 +903,8 @@ input, textarea, select {
   border-radius: var(--radius-card);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  transition: all 0.2s;
+  transition: box-shadow 0.2s, transform 0.2s;
+  transform: translateZ(0);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -963,7 +964,7 @@ input, textarea, select {
   cursor: pointer;
   z-index: 2;
   font-size: 0.9rem;
-  transition: all 0.2s;
+  transition: transform 0.2s;
   border: none;
   backdrop-filter: blur(4px);
 }
@@ -1066,7 +1067,7 @@ input, textarea, select {
   font-weight: 500;
   color: var(--text-m);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -1113,7 +1114,7 @@ input, textarea, select {
   font-weight: 500;
   color: var(--text);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 
 .variant-pill:hover {
@@ -1145,7 +1146,7 @@ input, textarea, select {
   border-radius: 50%;
   border: 2.5px solid transparent;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: outline-color 0.2s;
   outline: 2px solid transparent;
   outline-offset: 2px;
 }
@@ -1185,6 +1186,7 @@ input, textarea, select {
   z-index: 1001;
   transform: translateX(100%);
   transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  will-change: transform;
   display: flex;
   flex-direction: column;
   box-shadow: -4px 0 32px rgba(0,0,0,0.12);
@@ -1311,7 +1313,7 @@ input, textarea, select {
   justify-content: center;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
   font-weight: 600;
   color: var(--text);
 }
@@ -1413,7 +1415,7 @@ input, textarea, select {
   font-size: 0.8rem;
   font-weight: 700;
   color: var(--muted);
-  transition: all 0.3s;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
   flex-shrink: 0;
 }
 
@@ -1573,7 +1575,7 @@ input, textarea, select {
   border: 1.5px solid var(--border);
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: border-color 0.2s;
 }
 
 .delivery-opt:hover {
@@ -1642,7 +1644,7 @@ input, textarea, select {
   background: var(--card);
   border: 2px solid var(--border);
   border-radius: var(--radius-card);
-  transition: all 0.2s;
+  transition: border-color 0.2s;
   position: relative;
 }
 
@@ -1910,6 +1912,7 @@ input, textarea, select {
   box-shadow: 0 24px 64px rgba(0,0,0,0.2);
   transform: scale(0.95) translateY(10px);
   transition: transform 0.3s;
+  will-change: transform;
 }
 
 .wa-modal-overlay.open .wa-modal {
@@ -2015,7 +2018,7 @@ input, textarea, select {
   font-weight: 700;
   font-family: var(--font-th);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .wa-open-btn.msg {
@@ -2038,7 +2041,7 @@ input, textarea, select {
   font-weight: 600;
   font-family: var(--font-th);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s;
 }
 
 .wa-copy-btn:hover {
@@ -2321,7 +2324,7 @@ input, textarea, select {
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s;
   margin-bottom: 2px;
   text-decoration: none;
   border: none;
@@ -2697,7 +2700,7 @@ input, textarea, select {
   align-items: center;
   justify-content: center;
   font-size: 0;
-  transition: all 0.2s;
+  transition: transform 0.2s;
   text-decoration: none;
 }
 .footer-social-btn svg { width: 18px; height: 18px; display: block; }
@@ -2954,7 +2957,7 @@ input, textarea, select {
   font-size: 1.5rem;
   cursor: pointer;
   border: 2px solid transparent;
-  transition: all 0.2s;
+  transition: border-color 0.2s, opacity 0.2s;
 }
 
 .product-thumb.active,
@@ -3173,7 +3176,7 @@ input, textarea, select {
   border: none;
   font-size: 1.2rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3254,7 +3257,7 @@ input, textarea, select {
   cursor: pointer;
   border-bottom: 2px solid transparent;
   margin-bottom: -2px;
-  transition: all 0.2s;
+  transition: color 0.2s, border-bottom-color 0.2s;
   background: none;
   border-top: none;
   border-left: none;
@@ -3417,7 +3420,7 @@ input, textarea, select {
   font-weight: 600;
   color: var(--text-m);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
   white-space: nowrap;
   flex-shrink: 0;
   text-decoration: none;
@@ -3453,7 +3456,7 @@ input, textarea, select {
   justify-content: center;
   font-size: 0.85rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
   font-family: var(--font-th);
   color: var(--text-m);
 }
