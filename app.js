@@ -5,6 +5,16 @@
 
 'use strict';
 
+/* ─── XSS ESCAPE HELPER ────────────────────────────────── */
+function _esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 /* ─── PRODUCT DATA ─────────────────────────────────────── */
 window.PRODUCTS = [];
 window._rubyProdsReady = false; // flag: true once Supabase products loaded
@@ -227,8 +237,8 @@ function renderCartItems() {
     div.innerHTML = `
       <div class="cart-item-img" style="background:${item.bg || '#F5F5F5'};display:flex;align-items:center;justify-content:center;">${_imgContent}</div>
       <div class="cart-item-body">
-        <div class="cart-item-name">${item.name}</div>
-        ${(item.variant && item.variant !== 'undefined') ? `<div class="cart-item-variant">${item.variant}</div>` : ''}
+        <div class="cart-item-name">${_esc(item.name)}</div>
+        ${(item.variant && item.variant !== 'undefined') ? `<div class="cart-item-variant">${_esc(item.variant)}</div>` : ''}
         <div class="cart-item-price">₭${item.price.toLocaleString()}</div>
         <div class="cart-item-controls">
           <button class="qty-btn" onclick="updateQty('${item.key}', -1)">−</button>
@@ -323,8 +333,8 @@ function buildProductCard(p) {
           : `<span style="font-size:3rem;">${p.emoji}</span>`}
       </a>
       <div class="product-body">
-        <div class="product-store">${p.storeName || localStorage.getItem('ruby_store_name_' + p.store) || {pet:'Ruby Pet Shop',computer:'Ruby Computer',toy:'Ruby Toy Shop'}[p.store] || ''}</div>
-        <a href="product.html#${p.id}" class="product-name" style="text-decoration:none;color:inherit;">${p.name}</a>
+        <div class="product-store">${_esc(p.storeName || localStorage.getItem('ruby_store_name_' + p.store) || {pet:'Ruby Pet Shop',computer:'Ruby Computer',toy:'Ruby Toy Shop'}[p.store] || '')}</div>
+        <a href="product.html#${_esc(p.id)}" class="product-name" style="text-decoration:none;color:inherit;">${_esc(p.name)}</a>
         <div class="product-price">
           ₭${p.price.toLocaleString()} ${oldPriceHtml}
         </div>
@@ -451,7 +461,7 @@ function renderOrderSummary(containerId) {
       <div class="order-item-row">
         <div class="order-item-thumb" style="background:${item.bg}">${item.emoji}</div>
         <div class="order-item-info">
-          <div class="order-item-name">${item.name}${item.variant ? ` <small>(${item.variant})</small>` : ''}</div>
+          <div class="order-item-name">${_esc(item.name)}${item.variant ? ` <small>(${_esc(item.variant)})</small>` : ''}</div>
           <div class="order-item-qty">x${item.qty}</div>
         </div>
         <div class="order-item-price">₭${(item.price * item.qty).toLocaleString()}</div>

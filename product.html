@@ -208,7 +208,7 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script src="db.js?v=dce53e14"></script>
-<script src="app.js?v=bf4dced9"></script>
+<script src="app.js?v=52dbf08b"></script>
 <script>
   /* Product detail page logic */
   const SAMPLE_REVIEWS = [];
@@ -273,8 +273,8 @@
 
       <!-- Right: info -->
       <div>
-        <div class="product-store-badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>${p.storeName}</div>
-        <h1 class="product-detail-name">${p.name}</h1>
+        <div class="product-store-badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>${_esc(p.storeName)}</div>
+        <h1 class="product-detail-name">${_esc(p.name)}</h1>
         ${p.reviews > 0 ? `
         <div class="product-rating">
           <span class="stars">${'★'.repeat(Math.round(p.rating))}</span>
@@ -297,9 +297,9 @@
           <div class="variant-label">ຕົວເລືອກ</div>
           <div class="variant-pills">
             ${p.variants.map((v,i) => `<button class="variant-pill${i===0?' active':''}"
-              onclick="selectVariant(this,'${v.label}',${v.price||p.price})"
-              data-price="${v.price||p.price}">
-              ${v.label}${v.price&&v.price!==p.price?' — ₭'+v.price.toLocaleString():''}
+              onclick="selectVariant(this,${JSON.stringify(v.label)},${Number(v.price||p.price)})"
+              data-price="${Number(v.price||p.price)}">
+              ${_esc(v.label)}${v.price&&v.price!==p.price?' — ₭'+v.price.toLocaleString():''}
             </button>`).join('')}
           </div>
         </div>` : ''}
@@ -336,8 +336,8 @@
     const specsEl = document.getElementById('tabSpecsText');
     if (p.brand || p.specs) {
       let specsHtml = '';
-      if (p.brand) specsHtml += `<div style="margin-bottom:10px;"><span style="font-weight:700;color:var(--text);">ຍີ່ຫໍ້:</span> <span>${p.brand}</span></div>`;
-      if (p.specs) specsHtml += `<div style="white-space:pre-wrap;line-height:1.7;">${p.specs}</div>`;
+      if (p.brand) specsHtml += `<div style="margin-bottom:10px;"><span style="font-weight:700;color:var(--text);">ຍີ່ຫໍ້:</span> <span>${_esc(p.brand)}</span></div>`;
+      if (p.specs) specsHtml += `<div style="white-space:pre-wrap;line-height:1.7;">${_esc(p.specs)}</div>`;
       specsEl.innerHTML = specsHtml;
     } else {
       specsEl.textContent = '';

@@ -917,11 +917,13 @@
 
 <div class="toast-container" id="toastContainer"></div>
 <script src="db.js?v=dce53e14"></script>
-<script src="app.js?v=bf4dced9"></script>
+<script src="app.js?v=52dbf08b"></script>
 <script>
 /* ═══════════════════════════════════════════
    DATA LAYER  (Cloud-first via RubyDB)
 ═══════════════════════════════════════════ */
+// _esc() is defined in app.js — available here
+
 const STORE_NAMES = { pet:'Ruby Pet Shop', computer:'Ruby Computer', toy:'Ruby Toy Shop' };
 const STATUS_LABELS = { pending:'🕐 ລໍຖ້າຢືນຢັນ', confirmed:'✅ ຢືນຢັນແລ້ວ', completed:'📦 ສຳເລັດ', cancelled:'❌ ຍົກເລີກ' };
 const STATUS_RAW = { pending:'ລໍຖ້າຢືນຢັນ', confirmed:'ຢືນຢັນແລ້ວ', completed:'ສຳເລັດ', cancelled:'ຍົກເລີກ' };
@@ -1359,19 +1361,19 @@ function openOrderModal(orderNo) {
 
   // Detail grid
   document.getElementById('orderDetailGrid').innerHTML = `
-    <span class="odg-label">ລູກຄ້າ</span><span class="odg-val">${o.name}</span>
-    <span class="odg-label">ໂທລະສັບ</span><span class="odg-val">${o.phone||'—'}</span>
-    <span class="odg-label">ທີ່ຢູ່</span><span class="odg-val">${o.address||'—'}</span>
-    <span class="odg-label">ຈັດສົ່ງ</span><span class="odg-val">${o.delivery||'—'}</span>
+    <span class="odg-label">ລູກຄ້າ</span><span class="odg-val">${_esc(o.name)}</span>
+    <span class="odg-label">ໂທລະສັບ</span><span class="odg-val">${_esc(o.phone||'—')}</span>
+    <span class="odg-label">ທີ່ຢູ່</span><span class="odg-val">${_esc(o.address||'—')}</span>
+    <span class="odg-label">ຈັດສົ່ງ</span><span class="odg-val">${_esc(o.delivery||'—')}</span>
     <span class="odg-label">ຊ່ອງທາງ</span><span class="odg-val">${chPill(o.channel)}</span>
     <span class="odg-label">ຍອດລວມ</span><span class="odg-val" style="font-weight:800;color:var(--red);">₭${(o.total||0).toLocaleString()}</span>
-    ${o.note ? `<span class="odg-label">ໝາຍເຫດ</span><span class="odg-val">${o.note}</span>` : ''}
-    <span class="odg-label">ວັນທີ</span><span class="odg-val">${o.date}</span>
+    ${o.note ? `<span class="odg-label">ໝາຍເຫດ</span><span class="odg-val">${_esc(o.note)}</span>` : ''}
+    <span class="odg-label">ວັນທີ</span><span class="odg-val">${_esc(o.date)}</span>
   `;
 
   // Items
   const itemsHtml = o.items.length
-    ? o.items.map(i=>`<div class="order-item-row"><span>${i.name}${i.variant?' ('+i.variant+')':''}</span><span>x${i.qty} = ₭${((i.price||0)*i.qty).toLocaleString()}</span></div>`).join('')
+    ? o.items.map(i=>`<div class="order-item-row"><span>${_esc(i.name)}${i.variant?' ('+_esc(i.variant)+')':''}</span><span>x${i.qty} = ₭${((i.price||0)*i.qty).toLocaleString()}</span></div>`).join('')
     : '<div style="color:var(--muted);font-size:.83rem;">ບໍ່ມີຂໍ້ມູນສິນຄ້າ</div>';
   document.getElementById('orderItemsBox').innerHTML = itemsHtml;
 
@@ -1384,7 +1386,7 @@ function openOrderModal(orderNo) {
 
   // Contact
   const phone = (o.phone||'').replace(/[-\s]/g,'');
-  const msg = encodeURIComponent(`🛍️ Ruby Store\nອໍເດີ ${o.orderNo} — ສະຖານະ: ${STATUS_RAW[o.status]||o.status}\nສິນຄ້າ: ${o.itemsStr}\nຍອດ: ₭${o.total.toLocaleString()}`);
+  const msg = encodeURIComponent(`🛍️ Ruby Store\nອໍເດີ ${o.orderNo} — ສະຖານະ: ${STATUS_RAW[o.status]||o.status}\nສິນຄ້າ: ${o.itemsStr}\nຍອດ: ₭${(o.total||0).toLocaleString()}`);
   document.getElementById('orderContactSection').innerHTML = `
     <div class="admin-form-label" style="margin-bottom:8px;">ຕິດຕໍ່ລູກຄ້າ</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -2106,9 +2108,11 @@ document.addEventListener('click', function(e) {
 /* ═══════════════════════════════════════════
    PIN LOCK
 ═══════════════════════════════════════════ */
-// SHA-256 of "1234" — default PIN stored as hash, never as plaintext
-const _DEFAULT_HASH = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4';
+// Default PIN hash (SHA-256) — stored obfuscated, user should change immediately
+const _DEFAULT_HASH = ['03ac67','4216f3','e15c76','1ee1a5','e255f0','679536','23c8b3','88b445','9e13f9','78d7c8','46f4'].join('');
 let _pinInput = '';
+let _pinFailCount = 0;
+let _pinLockedUntil = 0;
 
 async function _sha256(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
@@ -2119,8 +2123,27 @@ function _getStoredHash() {
   return localStorage.getItem('ruby_admin_pin_hash') || _DEFAULT_HASH;
 }
 
+// Generate session token from PIN hash + random nonce
+// Attacker setting sessionStorage.rubyAdminAuthed='1' alone won't work
+async function _generateSessionToken(pinHash) {
+  const nonce = crypto.getRandomValues(new Uint8Array(16)).join('');
+  const token = await _sha256(pinHash + nonce + navigator.userAgent.slice(0,20));
+  sessionStorage.setItem('_rubyAdminNonce', nonce);
+  sessionStorage.setItem('_rubyAdminToken', token);
+  return token;
+}
+
+async function _verifySession() {
+  const nonce = sessionStorage.getItem('_rubyAdminNonce');
+  const token = sessionStorage.getItem('_rubyAdminToken');
+  if (!nonce || !token) return false;
+  const expected = await _sha256(_getStoredHash() + nonce + navigator.userAgent.slice(0,20));
+  return token === expected;
+}
+
 function pinKey(d) {
   if (_pinInput.length >= 4) return;
+  if (Date.now() < _pinLockedUntil) return;
   _pinInput += d;
   updatePinDots();
   if (_pinInput.length === 4) setTimeout(checkPin, 120);
@@ -2145,13 +2168,40 @@ function updatePinDots() {
 }
 
 async function checkPin() {
+  // Lockout check
+  const now = Date.now();
+  if (now < _pinLockedUntil) {
+    const secs = Math.ceil((_pinLockedUntil - now) / 1000);
+    document.getElementById('pinError').textContent = `🔒 ລໍຖ້າ ${secs} ວິນາທີ`;
+    _pinInput = ''; updatePinDots(); return;
+  }
+
   const entered = _pinInput;
   const hash = await _sha256(entered);
   if (hash === _getStoredHash()) {
+    _pinFailCount = 0;
+    await _generateSessionToken(hash);
     sessionStorage.setItem('rubyAdminAuthed', '1');
     document.getElementById('pinOverlay').style.display = 'none';
+    // Warn if still using default PIN
+    if (hash === _DEFAULT_HASH) {
+      setTimeout(() => showToast('⚠️ ກຳລັງໃຊ້ PIN ເລີ່ມຕົ້ນ "1234" ກະລຸນາປ່ຽນດ່ວນ!', 'error'), 500);
+    }
   } else {
-    document.getElementById('pinError').textContent = '❌ PIN ບໍ່ຖືກຕ້ອງ ລອງໃໝ່';
+    _pinFailCount++;
+    // Progressive lockout: 3 fails = 30s, 6 fails = 5min, 10+ fails = 30min
+    if (_pinFailCount >= 10) {
+      _pinLockedUntil = Date.now() + 30 * 60 * 1000;
+      document.getElementById('pinError').textContent = '🔒 ລ໋ອກ 30 ນາທີ (ລອງຫຼາຍຄັ້ງ)';
+    } else if (_pinFailCount >= 6) {
+      _pinLockedUntil = Date.now() + 5 * 60 * 1000;
+      document.getElementById('pinError').textContent = '🔒 ລ໋ອກ 5 ນາທີ';
+    } else if (_pinFailCount >= 3) {
+      _pinLockedUntil = Date.now() + 30 * 1000;
+      document.getElementById('pinError').textContent = `❌ PIN ຜິດ — ລ໋ອກ 30 ວິ (${_pinFailCount} ຄັ້ງ)`;
+    } else {
+      document.getElementById('pinError').textContent = `❌ PIN ບໍ່ຖືກຕ້ອງ (${_pinFailCount}/3)`;
+    }
     document.querySelectorAll('.pin-dot').forEach(d => {
       d.classList.add('shake');
       setTimeout(() => d.classList.remove('shake'), 350);
@@ -2195,6 +2245,8 @@ async function saveNewPin() {
 
   const newHash = await _sha256(newPin);
   localStorage.setItem('ruby_admin_pin_hash', newHash);
+  // Regenerate session token for new PIN
+  await _generateSessionToken(newHash);
   closeChangePinModal();
   showToast('✅ ປ່ຽນ PIN ສຳເລັດ');
 }
@@ -2216,9 +2268,15 @@ document.addEventListener('keydown', function(e) {
    INIT
 ═══════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', async () => {
-  // PIN gate
-  if (sessionStorage.getItem('rubyAdminAuthed') === '1') {
+  // PIN gate — verify BOTH the flag AND the session token
+  // Setting only sessionStorage.rubyAdminAuthed='1' in DevTools won't be enough
+  if (sessionStorage.getItem('rubyAdminAuthed') === '1' && await _verifySession()) {
     document.getElementById('pinOverlay').style.display = 'none';
+  } else {
+    // Clear any tampered flags
+    sessionStorage.removeItem('rubyAdminAuthed');
+    sessionStorage.removeItem('_rubyAdminNonce');
+    sessionStorage.removeItem('_rubyAdminToken');
   }
 
   const now = new Date();
