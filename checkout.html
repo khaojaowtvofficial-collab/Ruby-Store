@@ -315,7 +315,7 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script src="db.js?v=dce53e14"></script>
-<script src="app.js?v=a07a616c"></script>
+<script src="app.js?v=bf4dced9"></script>
 <script>
   /* ── Checkout page logic ── */
   let checkoutStep = 1;
@@ -549,8 +549,26 @@
       if (chev) chev.style.transform = 'rotate(180deg)';
     }
     if (cart.length === 0) {
-      showToast('ກະຕ່າວ່າງ ກະລຸນາເລືອກສິນຄ້າກ່ອນ', 'error');
-      setTimeout(() => window.location.href = 'shop.html', 2000);
+      // Re-check after 800ms — iOS sometimes reads storage slightly late
+      setTimeout(() => {
+        if (cart.length === 0) {
+          // Try reading from sessionStorage directly as last resort
+          try {
+            const ss = sessionStorage.getItem('ruby_cart');
+            if (ss) {
+              const items = JSON.parse(ss);
+              if (items.length > 0) {
+                cart.push(...items);
+                renderSidebar();
+                renderMobileSummary();
+                return;
+              }
+            }
+          } catch(e) {}
+          showToast('ກະຕ່າວ່າງ ກະລຸນາເລືອກສິນຄ້າກ່ອນ', 'error');
+          setTimeout(() => window.location.href = 'shop.html', 2500);
+        }
+      }, 800);
     }
   });
 </script>
