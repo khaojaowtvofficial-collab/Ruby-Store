@@ -13,7 +13,7 @@ window._rubyProdsReady = false; // flag: true once Supabase products loaded
 (function () {
   // 1. Load from localStorage cache immediately (sync, no network)
   try {
-    const cache = localStorage.getItem('ruby_products');
+    const cache = (function(){ try { return localStorage.getItem('ruby_products'); } catch(e) { return sessionStorage.getItem('ruby_products'); } })();
     if (cache) {
       const parsed = JSON.parse(cache);
       if (Array.isArray(parsed) && parsed.length > 0) {
@@ -47,11 +47,23 @@ window._rubyProdsReady = false; // flag: true once Supabase products loaded
   }
 })();
 
+/* ─── STORAGE HELPER (iOS Private Mode fallback) ─────────── */
+const _store = (function() {
+  try {
+    localStorage.setItem('_rb_test', '1');
+    localStorage.removeItem('_rb_test');
+    return localStorage;
+  } catch(e) {
+    // iOS Safari Private Mode — fall back to sessionStorage
+    return sessionStorage;
+  }
+})();
+
 /* ─── CART STATE ────────────────────────────────────────── */
-let cart = JSON.parse(localStorage.getItem('ruby_cart') || '[]');
+let cart = JSON.parse(_store.getItem('ruby_cart') || '[]');
 
 function saveCart() {
-  localStorage.setItem('ruby_cart', JSON.stringify(cart));
+  try { _store.setItem('ruby_cart', JSON.stringify(cart)); } catch(e) {}
 }
 
 function getCartCount() {

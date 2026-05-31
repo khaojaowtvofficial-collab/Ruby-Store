@@ -473,7 +473,7 @@ input, textarea, select {
   text-decoration: none;
   transition: transform .15s, opacity .15s;
 }
-.hs-chip:hover { transform: translateY(-2px); opacity: .9; }
+@media (hover: hover) { .hs-chip:hover { transform: translateY(-2px); opacity: .9; } }
 .hs-chip-pet  { background: #FEE2E2; color: #B91C1C; }
 .hs-chip-comp { background: #DBEAFE; color: #1D4ED8; }
 .hs-chip-toy  { background: #FEF3C7; color: #92400E; }
@@ -530,7 +530,7 @@ input, textarea, select {
   text-decoration: none;
   transition: opacity .15s, transform .15s;
 }
-.hs-btn:hover { opacity: .88; transform: translateY(-1px); }
+@media (hover: hover) { .hs-btn:hover { opacity: .88; transform: translateY(-1px); } }
 .hs-pet  .hs-btn { background: #C0392B; }
 .hs-comp .hs-btn { background: #1D4ED8; }
 .hs-toy  .hs-btn { background: #D97706; }
@@ -655,7 +655,7 @@ input, textarea, select {
   transition: transform .15s, box-shadow .15s;
   position: relative;
 }
-.stig:hover { transform: translateY(-3px); }
+@media (hover: hover) { .stig:hover { transform: translateY(-3px); } }
 .stig:active { transform: scale(.95); }
 
 .stig-icon-wrap {
@@ -709,9 +709,11 @@ input, textarea, select {
   color: inherit;
 }
 
-.store-row-card:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
+@media (hover: hover) {
+  .store-row-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
 }
 
 .store-row-card.active {
@@ -907,9 +909,11 @@ input, textarea, select {
   flex-direction: column;
 }
 
-.product-card:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-3px);
+@media (hover: hover) {
+  .product-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+  }
 }
 
 .product-img {
