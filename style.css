@@ -3851,6 +3851,24 @@ input, textarea, select {
 .skeleton-line.w-40 { width: 40%; height: 18px; }
 .skeleton-btn  { height: 36px; margin-top: 4px; border-radius: 10px; }
 
+/* Wishlist heart button on product card */
+.wishlist-btn {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  border: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted);
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+  z-index: 2;
+  padding: 0;
+}
+.wishlist-btn:active { transform: scale(0.88); }
+.wishlist-btn.active { color: var(--red); }
+
 /* Share button */
 .btn-share {
   display: inline-flex; align-items: center; gap: 6px;

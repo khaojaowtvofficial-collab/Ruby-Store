@@ -317,6 +317,31 @@ function initCartButtons() {
 
 /* ─── PRODUCT CARD BUILDER ──────────────────────────────── */
 // NOTE: use hash (#P001) not query param — npx serve strips query strings
+/* ─── WISHLIST ───────────────────────────────────────────── */
+function getWishlist() {
+  try { return JSON.parse(localStorage.getItem('ruby_wishlist') || '[]'); } catch { return []; }
+}
+function isWishlisted(id) { return getWishlist().includes(String(id)); }
+function toggleWishlist(id, btnEl) {
+  const sid = String(id);
+  let wl = getWishlist();
+  if (wl.includes(sid)) {
+    wl = wl.filter(x => x !== sid);
+    if (btnEl) btnEl.innerHTML = _heartIcon(false);
+    showToast('ລຶບອອກຈາກ Wishlist');
+  } else {
+    wl.push(sid);
+    if (btnEl) btnEl.innerHTML = _heartIcon(true);
+    showToast('ເພີ່ມໃນ Wishlist ✓', 'success');
+  }
+  localStorage.setItem('ruby_wishlist', JSON.stringify(wl));
+}
+function _heartIcon(filled) {
+  return filled
+    ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="#E53935" stroke="#E53935" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`
+    : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`;
+}
+
 function buildProductCard(p) {
   const badgeHtml = p.badge
     ? `<span class="product-badge ${p.badge}">${p.badge === 'new' ? '✨ ໃໝ່' : '🏷️ Sale'}</span>`
@@ -324,6 +349,7 @@ function buildProductCard(p) {
   const oldPriceHtml = p.oldPrice
     ? `<span style="text-decoration:line-through;color:var(--muted);font-size:0.8rem;font-weight:400;">₭${p.oldPrice.toLocaleString()}</span>`
     : '';
+  const wished = isWishlisted(p.id);
   return `
     <div class="product-card" data-id="${p.id}">
       <a href="product.html#${p.id}" class="product-img" style="background:${p.bg};text-decoration:none;">
@@ -331,6 +357,7 @@ function buildProductCard(p) {
         ${p.imgUrl
           ? `<img src="${p.imgUrl}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
           : `<span style="font-size:3rem;">${p.emoji}</span>`}
+        <button class="wishlist-btn${wished?' active':''}" onclick="event.preventDefault();event.stopPropagation();toggleWishlist(${JSON.stringify(p.id)},this);" aria-label="Wishlist">${_heartIcon(wished)}</button>
       </a>
       <div class="product-body">
         <div class="product-store">${_esc(p.storeName || localStorage.getItem('ruby_store_name_' + p.store) || {pet:'Ruby Pet Shop',computer:'Ruby Computer',toy:'Ruby Toy Shop'}[p.store] || '')}</div>
@@ -348,8 +375,8 @@ function bindAddToCart() {
 }
 
 /* ─── WA MODAL ──────────────────────────────────────────── */
-const WA_NUMBER = '8562078926245'; // shop WA number
-const MSG_LINK = 'https://m.me/rubystore';
+function getWaNumber() { return localStorage.getItem('ruby_wa_number') || '8562078926245'; }
+function getMsgLink()  { return localStorage.getItem('ruby_msg_link')  || 'https://m.me/rubystore'; }
 
 function buildOrderMessage(form) {
   const name     = form?.name     || 'ລູກຄ້າ';
@@ -392,7 +419,7 @@ function openWAModal(channel, form) {
       openBtn.className = 'btn btn-wa wa-open-btn';
       openBtn.innerHTML = _btnSvg + 'ເປີດ WhatsApp';
       openBtn.onclick = () => {
-        const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
+        const url = `https://wa.me/${getWaNumber()}?text=${encodeURIComponent(msg)}`;
         window.open(url, '_blank');
       };
     }
@@ -402,7 +429,7 @@ function openWAModal(channel, form) {
     if (openBtn) {
       openBtn.className = 'btn btn-msg wa-open-btn msg';
       openBtn.innerHTML = _btnSvg + 'ເປີດ Messenger';
-      openBtn.onclick = () => window.open(MSG_LINK, '_blank');
+      openBtn.onclick = () => window.open(getMsgLink(), '_blank');
     }
   }
 
