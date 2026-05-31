@@ -27,6 +27,9 @@ window._rubyProdsReady = false; // flag: true once Supabase products loaded
   //    registering their event listeners BEFORE the event fires.
   async function _fetchFromCloud() {
     if (typeof RubyDB === 'undefined' || !RubyDB.isCloudEnabled()) return;
+    // Skip product fetch on checkout/success pages — not needed & wastes iOS RAM
+    const _pg = window.location.pathname;
+    if (_pg.includes('checkout') || _pg.includes('success')) return;
     try {
       const prods = await RubyDB.fetchProducts();
       if (prods && prods.length > 0) {

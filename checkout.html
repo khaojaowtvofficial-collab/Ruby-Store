@@ -315,7 +315,7 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script src="db.js?v=dce53e14"></script>
-<script src="app.js?v=8a8e76b3"></script>
+<script src="app.js?v=a07a616c"></script>
 <script>
   /* ── Checkout page logic ── */
   let checkoutStep = 1;
@@ -448,9 +448,8 @@
 
       // 4. Save order (localStorage first, Supabase async — won't block)
       const orderNo = 'RB' + Date.now().toString().slice(-6);
-      const cartItems = JSON.parse(localStorage.getItem('ruby_cart') || '[]');
-      // Strip imgUrl from cart items before saving to DB (reduce payload size)
-      const cleanItems = cartItems.map(function(i) {
+      // Use cart variable from app.js (works on iOS Private Mode via _store)
+      const cleanItems = cart.map(function(i) {
         return { id: i.id, name: i.name, price: i.price, qty: i.qty, variant: i.variant || null };
       });
 
@@ -524,8 +523,8 @@
     if (el) el.textContent = '₭' + total.toLocaleString();
     const items = document.getElementById('mobileSummaryItems');
     if (items) {
-      const cartItems = JSON.parse(localStorage.getItem('ruby_cart') || '[]');
-      items.innerHTML = cartItems.map(item =>
+      // Use cart from app.js (works on iOS Private Mode via _store)
+      items.innerHTML = cart.map(item =>
         `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:.85rem;">
           <span style="color:var(--text-m);">${item.name}${item.variant?' ('+item.variant+')':''} ×${item.qty}</span>
           <span style="font-weight:700;color:var(--red);">₭${((item.price||0)*item.qty).toLocaleString()}</span>
@@ -539,10 +538,15 @@
   document.addEventListener('DOMContentLoaded', () => {
     renderSidebar();
     renderMobileSummary();
-    // Show mobile summary only on small screens
+    // Show mobile summary expanded by default on small screens
     if (window.innerWidth < 768) {
       const ms = document.getElementById('mobileCartSummary');
       if (ms) ms.style.display = 'block';
+      // Expand by default so user sees order summary immediately
+      const body = document.getElementById('mobileSummaryBody');
+      const chev = document.getElementById('mobileSummaryChevron');
+      if (body) body.style.display = 'block';
+      if (chev) chev.style.transform = 'rotate(180deg)';
     }
     if (cart.length === 0) {
       showToast('ກະຕ່າວ່າງ ກະລຸນາເລືອກສິນຄ້າກ່ອນ', 'error');
