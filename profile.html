@@ -237,6 +237,12 @@
       <a href="shop.html" class="btn btn-primary"><span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></span> ໄປເລືອກສິນຄ້າ</a>
     </div>
 
+    <!-- ── WISHLIST ── -->
+    <div class="section-head" style="margin-top:24px;">
+      <div class="section-title"><span class="profile-sec-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></span> Wishlist ສິນຄ້າທີ່ຖືກໃຈ</div>
+    </div>
+    <div id="wishlistSection"></div>
+
     <!-- ── QUICK LINKS ── -->
     <div class="ql-card" style="margin-top:24px;">
       <div class="ql-title" data-i18n="nav_stores">ຮ້ານຄ້າ</div>
@@ -264,12 +270,12 @@
 
     <div class="ql-card">
       <div class="ql-title" data-i18n="prof_contact">ຕິດຕໍ່ຮ້ານຄ້າ</div>
-      <a href="https://wa.me/8562078926245" target="_blank" class="ql-row">
+      <a id="profileWaLink" href="https://wa.me/8562078926245" target="_blank" class="ql-row">
         <div class="ql-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
         <div class="ql-body"><div class="ql-label">WhatsApp</div><div class="ql-desc">ສອບຖາມ / ຕິດຕາມອໍເດີ</div></div>
         <div class="ql-arrow">›</div>
       </a>
-      <a href="https://m.me/rubystore" target="_blank" class="ql-row">
+      <a id="profileMsgLink" href="https://m.me/rubystore" target="_blank" class="ql-row">
         <div class="ql-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
         <div class="ql-body"><div class="ql-label">Facebook Messenger</div><div class="ql-desc">inbox ຮ້ານໄດ້ເລີຍ</div></div>
         <div class="ql-arrow">›</div>
@@ -433,6 +439,27 @@
     list.style.display = 'block';
   }
 
+  function renderWishlist() {
+    const el = document.getElementById('wishlistSection');
+    if (!el) return;
+    let wl = [];
+    try { wl = JSON.parse(localStorage.getItem('ruby_wishlist') || '[]'); } catch {}
+    if (!wl.length) {
+      el.innerHTML = `<div style="background:var(--card);border-radius:var(--radius-card);padding:20px;text-align:center;color:var(--muted);font-size:.875rem;box-shadow:var(--shadow-sm);">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:0 auto 8px;color:var(--border)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        ຍັງບໍ່ມີສິນຄ້າໃນ Wishlist<br><a href="shop.html" style="color:var(--red);font-weight:600;">ໄປເລືອກສິນຄ້າ →</a>
+      </div>`;
+      return;
+    }
+    const prods = (window.PRODUCTS || []).filter(p => wl.includes(String(p.id)));
+    if (!prods.length) {
+      el.innerHTML = `<div class="products-grid">${wl.map(id=>`
+        <div class="skeleton-card"><div class="skeleton-pulse skeleton-img"></div><div class="skeleton-body"><div class="skeleton-pulse skeleton-line w-80"></div><div class="skeleton-pulse skeleton-line w-40"></div></div></div>`).join('')}</div>`;
+      return;
+    }
+    el.innerHTML = `<div class="products-grid">${prods.map(p => buildProductCard(p)).join('')}</div>`;
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     // UID display
     document.getElementById('uidDisplay').textContent = RubyDB.getShortUID();
@@ -448,6 +475,14 @@
       ? `<span class="cloud-badge">${cloudSVG} Cloud Sync</span>`
       : `<span class="local-badge">${localSVG} ເກັບໃນເຄື່ອງ</span>`;
 
+    // Update contact links dynamically from localStorage
+    const waNum = localStorage.getItem('ruby_wa_number') || '8562078926245';
+    const msgUrl = localStorage.getItem('ruby_msg_link') || 'https://m.me/rubystore';
+    const waEl = document.getElementById('profileWaLink');
+    const msgEl = document.getElementById('profileMsgLink');
+    if (waEl) waEl.href = `https://wa.me/${waNum}`;
+    if (msgEl) msgEl.href = msgUrl;
+
     // Cart shortcut
     const count = cart.reduce((s, i) => s + i.qty, 0);
     if (count > 0) document.getElementById('profileCartDesc').textContent = `${count} ລາຍການ — ₭${getCartTotal().toLocaleString()}`;
@@ -455,6 +490,9 @@
 
     // Load orders
     loadOrders();
+
+    // Wishlist
+    renderWishlist();
 
     // Secret admin tap (5×)
     let tapCount = 0, tapTimer;
