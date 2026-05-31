@@ -327,11 +327,11 @@ function toggleWishlist(id, btnEl) {
   let wl = getWishlist();
   if (wl.includes(sid)) {
     wl = wl.filter(x => x !== sid);
-    if (btnEl) btnEl.innerHTML = _heartIcon(false);
+    if (btnEl) { btnEl.innerHTML = _heartIcon(false); btnEl.classList.remove('active'); }
     showToast('ລຶບອອກຈາກ Wishlist');
   } else {
     wl.push(sid);
-    if (btnEl) btnEl.innerHTML = _heartIcon(true);
+    if (btnEl) { btnEl.innerHTML = _heartIcon(true); btnEl.classList.add('active'); }
     showToast('ເພີ່ມໃນ Wishlist ✓', 'success');
   }
   localStorage.setItem('ruby_wishlist', JSON.stringify(wl));
@@ -357,7 +357,7 @@ function buildProductCard(p) {
         ${p.imgUrl
           ? `<img src="${p.imgUrl}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
           : `<span style="font-size:3rem;">${p.emoji}</span>`}
-        <button class="wishlist-btn${wished?' active':''}" onclick="event.preventDefault();event.stopPropagation();toggleWishlist(${JSON.stringify(p.id)},this);" aria-label="Wishlist">${_heartIcon(wished)}</button>
+        <button class="wishlist-btn${wished?' active':''}" onclick="event.preventDefault();event.stopPropagation();toggleWishlist('${p.id}',this);" aria-label="Wishlist">${_heartIcon(wished)}</button>
       </a>
       <div class="product-body">
         <div class="product-store">${_esc(p.storeName || localStorage.getItem('ruby_store_name_' + p.store) || {pet:'Ruby Pet Shop',computer:'Ruby Computer',toy:'Ruby Toy Shop'}[p.store] || '')}</div>
