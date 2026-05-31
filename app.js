@@ -309,7 +309,7 @@ function buildProductCard(p) {
         <div class="product-price">
           ₭${p.price.toLocaleString()} ${oldPriceHtml}
         </div>
-        <button class="product-add-btn" onclick="addToCart(${JSON.stringify(p.id)})">+ ໃສ່ກະຕ່າ</button>
+        <button class="product-add-btn" onclick="addToCart(${JSON.stringify(p.id)});this.blur();">+ ໃສ່ກະຕ່າ</button>
       </div>
     </div>`;
 }

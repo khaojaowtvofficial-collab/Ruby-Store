@@ -1585,18 +1585,14 @@ function saveProduct() {
   if (!name) { showToast('ກະລຸນາໃສ່ຊື່ສິນຄ້າ','error'); return; }
   if (!price) { showToast('ກະລຸນາໃສ່ລາຄາ','error'); return; }
 
-  // getAdminProducts() returns _adminCache.products by reference — do NOT push twice
-  const prods = getAdminProducts();
-  if (!_adminCache.products) _adminCache.products = prods; // ensure cache is set
   const oldPrice = parseInt(document.getElementById('pOldPrice').value) || null;
-
   const imgs = getGalleryImages();
-  // imgUrl = tiny thumbnail (150px/0.55) for fast mobile listing
-  // images[] = full quality for product detail gallery
+  const editId = _editProductId; // capture before async
+
   const fields = {
     emoji:    document.getElementById('pEmoji').value || '📦',
     images:   imgs,
-    imgUrl:   undefined, // will be set below after thumbnail generation
+    imgUrl:   undefined,
     name,
     price,
     oldPrice: oldPrice || undefined,
@@ -1611,15 +1607,19 @@ function saveProduct() {
     variants: getVariantsFromModal(),
   };
 
-  // Generate tiny thumbnail for img_url (150px/0.55 ≈ 8KB) then save
   function _doSave(thumbUrl) {
     fields.imgUrl = thumbUrl || undefined;
 
+    // Re-read products at save time (fixes race: _initAdminData may have finished by now)
+    const prods = getAdminProducts();
+    if (!_adminCache.products) _adminCache.products = prods;
+
     let savedProdId;
-    if (_editProductId) {
-      savedProdId = _editProductId;
-      const idx = prods.findIndex(p => p.id === _editProductId);
+    if (editId) {
+      savedProdId = editId;
+      const idx = prods.findIndex(p => p.id === editId);
       if (idx >= 0) prods[idx] = { ...prods[idx], ...fields };
+      else prods.push({ id: editId, ...fields });
       showToast(`✅ ອັບເດດ "${name}" ແລ້ວ`);
     } else {
       const newId = 'P' + String(Date.now()).slice(-4).padStart(3,'0');
@@ -1628,7 +1628,7 @@ function saveProduct() {
       showToast(`✅ ເພີ່ມ "${name}" ແລ້ວ`);
     }
 
-    localStorage.setItem('ruby_products', JSON.stringify(prods));
+    try { localStorage.setItem('ruby_products', JSON.stringify(prods)); } catch(e) { console.warn('[Admin] localStorage quota:', e); }
     window.PRODUCTS = prods;
 
     const savedProd = prods.find(p => p.id === savedProdId);
@@ -1823,16 +1823,22 @@ function _compressImage(file, maxPx, quality, callback) {
 // Compress a data URL (base64) to a smaller thumbnail
 function _compressDataUrl(dataUrl, maxPx, quality, callback) {
   const img = new Image();
+  let _done = false;
+  function _cb(result) { if (!_done) { _done = true; clearTimeout(_t); callback(result); } }
+  const _t = setTimeout(function() { _cb(null); }, 8000);
+  img.onerror = function() { _cb(null); };
   img.onload = function() {
-    let w = img.width, h = img.height;
-    if (w > maxPx || h > maxPx) {
-      if (w >= h) { h = Math.round(h * maxPx / w); w = maxPx; }
-      else        { w = Math.round(w * maxPx / h); h = maxPx; }
-    }
-    const canvas = document.createElement('canvas');
-    canvas.width = w; canvas.height = h;
-    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-    callback(canvas.toDataURL('image/jpeg', quality));
+    try {
+      let w = img.width, h = img.height;
+      if (w > maxPx || h > maxPx) {
+        if (w >= h) { h = Math.round(h * maxPx / w); w = maxPx; }
+        else        { w = Math.round(w * maxPx / h); h = maxPx; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      _cb(canvas.toDataURL('image/jpeg', quality));
+    } catch(e) { _cb(null); }
   };
   img.src = dataUrl;
 }
