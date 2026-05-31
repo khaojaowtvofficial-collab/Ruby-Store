@@ -62,7 +62,7 @@ function getCartTotal() {
   return cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 }
 
-function addToCart(productId, qty = 1, variant = null, variantPrice = null) {
+function addToCart(productId, qty = 1, variant = null, variantPrice = null, onSuccess = null) {
   const pid = typeof productId === 'string' ? (isNaN(productId) ? productId : Number(productId)) : productId;
   // 1. Try window.PRODUCTS first
   let product = (window.PRODUCTS || []).find(p => p.id === pid);
@@ -91,7 +91,7 @@ function addToCart(productId, qty = 1, variant = null, variantPrice = null) {
       }
       if (p || waited >= 3000) {
         clearInterval(interval);
-        if (p) addToCart(productId, qty, variant, variantPrice);
+        if (p) addToCart(productId, qty, variant, variantPrice, onSuccess);
         else showToast('ກະລຸນາລໍຖ້າສິນຄ້າໂຫຼດ ແລ້ວລອງໃໝ່', 'error');
       }
     }, 100);
@@ -125,6 +125,7 @@ function addToCart(productId, qty = 1, variant = null, variantPrice = null) {
   updateCartUI();
   if (typeof window._refreshCartBar === 'function') window._refreshCartBar();
   showToast(`ເພີ່ມ "${product.name}" ໃສ່ກະຕ່າແລ້ວ`, 'success');
+  if (typeof onSuccess === 'function') onSuccess();
 }
 
 function removeFromCart(key) {

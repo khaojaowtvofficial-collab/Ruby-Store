@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://wqxzobxqkwyrffvibdxg.supabase.co">
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=f9d0dbaa">
+  <link rel="stylesheet" href="style.css?v=d652c024">
   <script src="i18n.js?v=736d2c21" defer></script>
 </head>
 <body>
@@ -208,7 +208,7 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script src="db.js?v=dce53e14"></script>
-<script src="app.js?v=9dd0c9b8"></script>
+<script src="app.js?v=930ceeb5"></script>
 <script>
   /* Product detail page logic */
   const SAMPLE_REVIEWS = [];
@@ -434,8 +434,7 @@
         waited += 100;
         if (currentProduct) {
           clearInterval(interval);
-          addToCart(currentProduct.id, currentQty, window._selectedVariant || null, window._selectedVariantPrice || null);
-          openCart();
+          addToCart(currentProduct.id, currentQty, window._selectedVariant || null, window._selectedVariantPrice || null, openCart);
         } else if (waited >= 5000) {
           clearInterval(interval);
           showToast('ກະລຸນາລໍຖ້າສິນຄ້າໂຫຼດ ແລ້ວລອງໃໝ່', 'error');
@@ -443,8 +442,7 @@
       }, 100);
       return;
     }
-    addToCart(currentProduct.id, currentQty, window._selectedVariant || null, window._selectedVariantPrice || null);
-    openCart();
+    addToCart(currentProduct.id, currentQty, window._selectedVariant || null, window._selectedVariantPrice || null, openCart);
   }
 
   function handleBuyWA() {
