@@ -440,7 +440,9 @@
   function renderBestsellerCarousel() {
     var scroll = document.getElementById('bestsellerScroll');
     if (!scroll) return;
-    var products = (window.PRODUCTS || []).slice(0, 10);
+    var all = (window.PRODUCTS || []).slice();
+    for (var i = all.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = all[i]; all[i] = all[j]; all[j] = t; }
+    var products = all.slice(0, 10);
     if (!products.length) {
       var sec = document.getElementById('bestsellerCarousel');
       if (sec) sec.style.display = 'none';
