@@ -1736,7 +1736,7 @@ function saveProduct() {
   }
 
   if (imgs[0]) {
-    _compressDataUrl(imgs[0], 150, 0.55, _doSave);
+    _compressDataUrl(imgs[0], 600, 0.82, _doSave);
   } else {
     _doSave(undefined);
   }
@@ -1937,7 +1937,7 @@ function _compressDataUrl(dataUrl, maxPx, quality, callback) {
   img.src = dataUrl;
 }
 
-// Rebuild all product img_url as small thumbnails (150px/0.55) for fast mobile loading
+// Rebuild all product img_url as card thumbnails (600px/0.82) for crisp display
 async function rebuildThumbnails() {
   const prods = getAdminProducts();
   const toRebuild = prods.filter(p => p.images && p.images.length > 0 && p.images[0]);
@@ -1946,7 +1946,7 @@ async function rebuildThumbnails() {
   let done = 0;
   for (const p of toRebuild) {
     await new Promise(resolve => {
-      _compressDataUrl(p.images[0], 150, 0.55, function(thumb) {
+      _compressDataUrl(p.images[0], 600, 0.82, function(thumb) {
         p.imgUrl = thumb;
         RubyDB.saveProduct(p).catch(() => {});
         done++;
