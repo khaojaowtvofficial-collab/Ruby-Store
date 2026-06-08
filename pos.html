@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruby POS — ระบบขายหน้าร้าน</title>
+  <style>
+    /* ── Design tokens (offline-safe, no CDN) ── */
+    :root {
+      --red:       #E53935;
+      --red-d:     #B71C1C;
+      --red-l:     #FFF1F1;
+      --bg:        #F9F7F5;
+      --card:      #FFFFFF;
+      --text:      #1F1F23;
+      --text-m:    #555555;
+      --muted:     #9C9C9C;
+      --border:    #EDEAEA;
+      --green:     #22C55E;
+      --green-l:   #ECFDF5;
+      --amber:     #F59E0B;
+      --amber-l:   #FFFBEB;
+      --blue:      #3B82F6;
+      --blue-l:    #EFF6FF;
+      --font:      'Prompt', system-ui, -apple-system, sans-serif;
+      --radius:    14px;
+      --shadow:    0 4px 16px rgba(0,0,0,.10);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { height: 100%; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      display: flex; align-items: center; gap: 14px;
+      padding: 0 20px; height: 56px; background: var(--red);
+      flex-shrink: 0;
+    }
+    .topbar-logo {
+      font-size: 1.1rem; font-weight: 800; color: #fff;
+      letter-spacing: -.5px;
+    }
+    .topbar-logo span { opacity: .7; font-weight: 500; font-size: .85rem; margin-left: 6px; }
+    .topbar-spacer { flex: 1; }
+    .topbar-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.18); color: #fff;
+      border: 1.5px solid rgba(255,255,255,.3);
+      border-radius: 100px; padding: 7px 16px;
+      font-family: var(--font); font-size: .82rem; font-weight: 600;
+      cursor: pointer; transition: background .15s;
+    }
+    .topbar-btn:hover { background: rgba(255,255,255,.28); }
+
+    /* ── Main layout: left = products, right = cart ── */
+    .main {
+      display: flex; flex: 1; overflow: hidden;
+    }
+
+    /* ══════════════════════════════════════
+       LEFT PANEL — Product browser
+    ══════════════════════════════════════ */
+    .products-panel {
+      flex: 1; display: flex; flex-direction: column;
+      overflow: hidden; border-right: 1.5px solid var(--border);
+    }
+
+    /* Search + filter bar */
+    .filter-bar {
+      display: flex; gap: 10px; padding: 14px 16px;
+      background: var(--card); border-bottom: 1.5px solid var(--border);
+      flex-shrink: 0; flex-wrap: wrap; align-items: center;
+    }
+    .search-wrap {
+      position: relative; flex: 1; min-width: 180px;
+    }
+    .search-wrap svg {
+      position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+      color: var(--muted); pointer-events: none;
+    }
+    .search-input {
+      width: 100%; padding: 9px 12px 9px 36px;
+      border: 1.5px solid var(--border); border-radius: 100px;
+      font-family: var(--font); font-size: .875rem; outline: none;
+      background: var(--bg); transition: border .15s;
+    }
+    .search-input:focus { border-color: var(--red); background: #fff; }
+
+    .cat-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+    .cat-tab {
+      padding: 7px 14px; border-radius: 100px;
+      border: 1.5px solid var(--border); background: var(--bg);
+      font-family: var(--font); font-size: .8rem; font-weight: 600;
+      cursor: pointer; transition: all .15s; color: var(--text-m);
+      white-space: nowrap;
+    }
+    .cat-tab:hover { border-color: var(--red); color: var(--red); }
+    .cat-tab.active { background: var(--red); border-color: var(--red); color: #fff; }
+
+    /* Product grid */
+    .products-grid-wrap { flex: 1; overflow-y: auto; padding: 16px; }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+      gap: 12px;
+    }
+
+    /* Product card */
+    .prod-card {
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: var(--radius); padding: 14px 12px 12px;
+      cursor: pointer; transition: all .15s; position: relative;
+      display: flex; flex-direction: column; gap: 6px;
+      user-select: none;
+    }
+    .prod-card:hover:not(.out) {
+      border-color: var(--red); box-shadow: var(--shadow);
+      transform: translateY(-1px);
+    }
+    .prod-card.out { opacity: .45; cursor: not-allowed; }
+    .prod-card-emoji { font-size: 2rem; line-height: 1; text-align: center; margin-bottom: 2px; }
+    .prod-card-name {
+      font-size: .8rem; font-weight: 700; color: var(--text);
+      line-height: 1.35; text-align: center;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .prod-card-price {
+      font-size: .95rem; font-weight: 800; color: var(--red);
+      text-align: center;
+    }
+    .prod-card-price small { font-size: .7rem; font-weight: 600; }
+    .stock-badge {
+      position: absolute; top: 8px; right: 8px;
+      font-size: .65rem; font-weight: 700; padding: 2px 7px;
+      border-radius: 100px; text-transform: uppercase; letter-spacing: .3px;
+    }
+    .stock-ok        { background: var(--green-l); color: #14532d; }
+    .stock-low       { background: var(--amber-l); color: #78350f; }
+    .stock-out       { background: #FEE2E2; color: #991b1b; }
+    .stock-unlimited { background: var(--blue-l); color: #1e3a8a; }
+
+    /* In-cart indicator on product card */
+    .in-cart-badge {
+      position: absolute; top: 8px; left: 8px;
+      background: var(--red); color: #fff;
+      font-size: .68rem; font-weight: 800; padding: 2px 8px;
+      border-radius: 100px; z-index: 1;
+    }
+    .prod-card.in-cart { border-color: var(--red); background: var(--red-l); }
+
+    /* "Just added" pulse feedback */
+    @keyframes addPulse {
+      0%   { transform: scale(1); }
+      35%  { transform: scale(.93); box-shadow: 0 0 0 4px rgba(34,197,94,.35); }
+      100% { transform: scale(1); box-shadow: none; }
+    }
+    .prod-card.added { animation: addPulse .4s ease; }
+
+    .empty-state {
+      grid-column: 1/-1; text-align: center; padding: 60px 20px;
+      color: var(--muted);
+    }
+    .empty-state .es-icon { font-size: 3rem; margin-bottom: 12px; }
+    .empty-state p { font-size: .9rem; }
+
+    /* ══════════════════════════════════════
+       RIGHT PANEL — Cart
+    ══════════════════════════════════════ */
+    .cart-panel {
+      width: 340px; flex-shrink: 0;
+      display: flex; flex-direction: column;
+      background: var(--card);
+    }
+
+    .cart-header {
+      padding: 14px 18px; border-bottom: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .cart-header h2 { font-size: .95rem; font-weight: 800; }
+    .cart-count {
+      background: var(--red); color: #fff;
+      font-size: .72rem; font-weight: 700;
+      border-radius: 100px; padding: 2px 8px;
+      min-width: 22px; text-align: center;
+    }
+    .clear-cart-btn {
+      font-size: .75rem; color: var(--muted); font-family: var(--font);
+      font-weight: 600; cursor: pointer; border: none; background: none;
+      transition: color .15s;
+    }
+    .clear-cart-btn:hover { color: var(--red); }
+
+    /* Cart item list */
+    .cart-items { flex: 1; overflow-y: auto; padding: 10px 14px; }
+    .cart-empty {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; height: 100%; gap: 8px;
+      color: var(--muted); text-align: center;
+    }
+    .cart-empty .ce-icon { font-size: 2.5rem; }
+    .cart-empty p { font-size: .85rem; }
+
+    .cart-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .cart-item:last-child { border-bottom: none; }
+    .ci-emoji { font-size: 1.4rem; flex-shrink: 0; width: 32px; text-align: center; margin-top: 2px; }
+    .ci-info { flex: 1; min-width: 0; }
+    .ci-name { font-size: .8rem; font-weight: 700; line-height: 1.3; }
+    .ci-price-unit { font-size: .72rem; color: var(--muted); }
+    .ci-controls {
+      display: flex; align-items: center; gap: 6px; margin-top: 6px;
+    }
+    .qty-btn {
+      width: 26px; height: 26px; border-radius: 50%;
+      border: 1.5px solid var(--border); background: var(--bg);
+      font-size: .9rem; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .12s; color: var(--text);
+    }
+    .qty-btn:hover { border-color: var(--red); color: var(--red); }
+    .qty-btn.del-btn:hover { background: #FEE2E2; border-color: var(--red); }
+    .qty-val { font-size: .85rem; font-weight: 700; min-width: 22px; text-align: center; }
+    .ci-subtotal { font-size: .85rem; font-weight: 800; color: var(--red); flex-shrink: 0; align-self: center; }
+
+    /* Cart footer — totals + checkout */
+    .cart-footer { border-top: 1.5px solid var(--border); padding: 14px 16px; flex-shrink: 0; }
+    .totals-row {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: .85rem; margin-bottom: 6px;
+    }
+    .totals-row .label { color: var(--text-m); font-weight: 500; }
+    .totals-row .value { font-weight: 700; }
+    .totals-row.total-final {
+      font-size: 1.05rem; font-weight: 800; color: var(--red);
+      border-top: 1.5px solid var(--border); padding-top: 10px; margin-top: 8px;
+    }
+    .totals-row.total-final .label { color: var(--text); }
+
+    .discount-row {
+      display: flex; align-items: center; gap: 8px; margin: 10px 0;
+    }
+    .discount-label { font-size: .8rem; font-weight: 600; color: var(--text-m); white-space: nowrap; }
+    .discount-input {
+      flex: 1; padding: 7px 10px; border: 1.5px solid var(--border);
+      border-radius: 10px; font-family: var(--font); font-size: .875rem;
+      text-align: right; outline: none; transition: border .15s;
+    }
+    .discount-input:focus { border-color: var(--red); }
+    .discount-quick { display: flex; gap: 6px; margin: -4px 0 10px; }
+    .dq-btn {
+      flex: 1; padding: 5px 0; border-radius: 8px;
+      border: 1.5px solid var(--border); background: var(--bg);
+      font-family: var(--font); font-size: .72rem; font-weight: 700;
+      cursor: pointer; color: var(--text-m); transition: all .12s;
+    }
+    .dq-btn:hover { border-color: var(--red); color: var(--red); }
+    .dq-btn.active { background: var(--red); border-color: var(--red); color: #fff; }
+
+    .checkout-btn {
+      width: 100%; padding: 14px; border-radius: var(--radius);
+      background: var(--red); color: #fff;
+      font-family: var(--font); font-size: 1rem; font-weight: 800;
+      cursor: pointer; border: none; margin-top: 12px;
+      transition: background .15s, transform .1s;
+    }
+    .checkout-btn:hover:not(:disabled) { background: var(--red-d); }
+    .checkout-btn:active:not(:disabled) { transform: scale(.98); }
+    .checkout-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* ══════════════════════════════════════
+       MODALS (Receipt + Sales History)
+    ══════════════════════════════════════ */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.52);
+      z-index: 1000; display: none; align-items: center;
+      justify-content: center; padding: 16px;
+    }
+    .overlay.open { display: flex; }
+
+    .modal {
+      background: var(--card); border-radius: 18px;
+      width: min(520px, 100%); max-height: 90vh;
+      overflow-y: auto; box-shadow: 0 24px 80px rgba(0,0,0,.28);
+      display: flex; flex-direction: column;
+    }
+    .modal-hd {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 22px; border-bottom: 1.5px solid var(--border);
+      position: sticky; top: 0; background: var(--card); z-index: 1;
+      border-radius: 18px 18px 0 0;
+    }
+    .modal-hd h3 { font-size: 1rem; font-weight: 800; }
+    .modal-close {
+      background: none; border: none; font-size: 1.6rem;
+      cursor: pointer; color: var(--muted); line-height: 1; padding: 0 4px;
+    }
+    .modal-body { padding: 22px; flex: 1; }
+    .modal-footer {
+      padding: 14px 22px; border-top: 1.5px solid var(--border);
+      display: flex; gap: 10px; justify-content: flex-end;
+      position: sticky; bottom: 0; background: var(--card);
+      border-radius: 0 0 18px 18px;
+    }
+
+    /* Receipt */
+    .receipt-header { text-align: center; margin-bottom: 18px; }
+    .receipt-header .r-icon { font-size: 2.5rem; }
+    .receipt-header h4 { font-size: 1.2rem; font-weight: 800; margin: 6px 0 2px; }
+    .receipt-header p { font-size: .8rem; color: var(--muted); }
+
+    .receipt-items { margin: 14px 0; }
+    .receipt-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 5px 0; border-bottom: 1px dashed var(--border);
+      font-size: .85rem;
+    }
+    .receipt-row:last-child { border-bottom: none; }
+    .r-item-name { color: var(--text-m); flex: 1; }
+    .r-item-qty { color: var(--muted); font-size: .78rem; margin: 0 8px; }
+    .r-item-price { font-weight: 700; }
+
+    .receipt-totals { margin-top: 14px; padding-top: 12px; border-top: 2px solid var(--text); }
+    .receipt-total-row {
+      display: flex; justify-content: space-between;
+      font-size: .9rem; padding: 3px 0;
+    }
+    .receipt-total-row.grand {
+      font-size: 1.1rem; font-weight: 800; color: var(--red);
+      border-top: 1px solid var(--border); padding-top: 8px; margin-top: 6px;
+    }
+
+    /* Sales history */
+    .sale-entry {
+      border: 1.5px solid var(--border); border-radius: var(--radius);
+      margin-bottom: 10px; overflow: hidden;
+    }
+    .sale-entry-hd {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 14px; background: var(--bg); cursor: pointer;
+    }
+    .sale-entry-hd:hover { background: var(--red-l); }
+    .sale-date { font-size: .78rem; color: var(--muted); }
+    .sale-total { font-weight: 800; color: var(--red); font-size: .95rem; }
+    .sale-meta { font-size: .75rem; color: var(--text-m); }
+    .sale-detail {
+      display: none; padding: 10px 14px;
+      border-top: 1px solid var(--border);
+      font-size: .8rem;
+    }
+    .sale-detail.open { display: block; }
+    .sale-detail-row { display: flex; justify-content: space-between; padding: 3px 0; }
+
+    /* Buttons shared */
+    .btn {
+      padding: 10px 20px; border-radius: 100px;
+      font-family: var(--font); font-size: .875rem; font-weight: 700;
+      cursor: pointer; border: none; transition: all .15s;
+    }
+    .btn-primary { background: var(--red); color: #fff; }
+    .btn-primary:hover { background: var(--red-d); }
+    .btn-ghost {
+      background: none; border: 1.5px solid var(--border);
+      color: var(--text-m);
+    }
+    .btn-ghost:hover { border-color: var(--red); color: var(--red); }
+    .btn-new-sale { background: var(--green); color: #fff; }
+    .btn-new-sale:hover { background: #16a34a; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(120%);
+      background: #1F1F23; color: #fff;
+      padding: 10px 22px; border-radius: 100px;
+      font-size: .85rem; font-weight: 600; z-index: 9999;
+      transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--green); }
+    .toast.error   { background: var(--red); }
+
+    /* Print receipt only */
+    @media print {
+      body * { visibility: hidden; }
+      #receiptOverlay, #receiptOverlay * { visibility: visible; }
+      #receiptOverlay { position: absolute; inset: 0; background: #fff; padding: 0; }
+      #receiptOverlay .modal { box-shadow: none; max-height: none; width: 100%; }
+      #receiptOverlay .modal-hd, #receiptOverlay .modal-footer { display: none; }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 100px; }
+  </style>
+</head>
+<body>
+
+<!-- ── Topbar ── -->
+<header class="topbar">
+  <div class="topbar-logo">💎 Ruby POS <span>ระบบขายหน้าร้าน</span></div>
+  <div class="topbar-spacer"></div>
+  <a class="topbar-btn" href="admin.html">← Admin</a>
+  <button class="topbar-btn" onclick="openHistory()">
+    📋 ประวัติการขาย
+  </button>
+</header>
+
+<!-- ── Main ── -->
+<div class="main">
+
+  <!-- LEFT: Products -->
+  <div class="products-panel">
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input class="search-input" id="searchInput" type="search" placeholder="ค้นหาสินค้า... (พิมพ์ชื่อแล้วกด Enter เพื่อเพิ่มเร็ว)" oninput="renderProducts()" onkeydown="handleSearchKeydown(event)">
+      </div>
+      <div class="cat-tabs" id="catTabs"></div>
+    </div>
+    <div class="products-grid-wrap">
+      <div class="products-grid" id="productsGrid"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Cart -->
+  <div class="cart-panel">
+    <div class="cart-header">
+      <h2>🛒 รายการสั่งซื้อ</h2>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="cart-count" id="cartCount">0</span>
+        <button class="clear-cart-btn" onclick="clearCart()">ล้างทั้งหมด</button>
+      </div>
+    </div>
+
+    <div class="cart-items" id="cartItems">
+      <div class="cart-empty">
+        <div class="ce-icon">🛒</div>
+        <p>ยังไม่มีสินค้าในรายการ<br>คลิกสินค้าเพื่อเพิ่ม</p>
+      </div>
+    </div>
+
+    <div class="cart-footer">
+      <div class="totals-row">
+        <span class="label">ยอดรวม</span>
+        <span class="value" id="subtotalVal">₭0</span>
+      </div>
+      <div class="discount-row">
+        <span class="discount-label">ส่วนลด (₭)</span>
+        <input class="discount-input" id="discountInput" type="number" min="0" placeholder="0" oninput="onDiscountInput()">
+      </div>
+      <div class="discount-quick">
+        <button class="dq-btn active" data-pct="0"  onclick="setDiscountPct(0)">ไม่มี</button>
+        <button class="dq-btn" data-pct="5"  onclick="setDiscountPct(5)">−5%</button>
+        <button class="dq-btn" data-pct="10" onclick="setDiscountPct(10)">−10%</button>
+      </div>
+      <div class="totals-row total-final">
+        <span class="label">ยอดสุทธิ</span>
+        <span class="value" id="totalVal">₭0</span>
+      </div>
+      <button class="checkout-btn" id="checkoutBtn" onclick="doCheckout()" disabled>
+        ✅ ชำระเงิน
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Receipt Modal ── -->
+<div class="overlay" id="receiptOverlay">
+  <div class="modal">
+    <div class="modal-hd">
+      <h3>🧾 ใบเสร็จรับเงิน</h3>
+      <button class="modal-close" onclick="closeReceipt()">×</button>
+    </div>
+    <div class="modal-body" id="receiptBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeReceipt()">ปิด</button>
+      <button class="btn btn-ghost" onclick="window.print()">🖨️ พิมพ์ใบเสร็จ</button>
+      <button class="btn btn-new-sale" onclick="newSale()">🛒 ขายต่อ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Sales History Modal ── -->
+<div class="overlay" id="historyOverlay">
+  <div class="modal">
+    <div class="modal-hd">
+      <h3>📋 ประวัติการขาย</h3>
+      <button class="modal-close" onclick="closeHistory()">×</button>
+    </div>
+    <div class="modal-body" id="historyBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeHistory()">ปิด</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toast ── -->
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+/* ═══════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════ */
+let products = [];
+let cart = [];        // [{ product, qty }]
+let activeCat = 'all';
+
+/* ═══════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════ */
+function init() {
+  loadProducts();
+  renderCategoryTabs();
+  renderProducts();
+  renderCart();
+  document.getElementById('searchInput').focus();
+}
+
+/* ── Quick "scan & add" — type product name, press Enter ── */
+function handleSearchKeydown(e) {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  const input = e.target;
+  const query = input.value.trim().toLowerCase();
+  if (!query) return;
+
+  let matches = products.filter(p => {
+    if (activeCat !== 'all' && (p.cat || p.category) !== activeCat) return false;
+    return p.name.toLowerCase().includes(query);
+  }).filter(p => getStockStatus(typeof p.stock === 'number' ? p.stock : 0) !== 'out');
+
+  if (matches.length === 1) {
+    addToCart(matches[0]);
+    input.value = '';
+    renderProducts();
+  } else if (matches.length > 1) {
+    showToast(`พบ ${matches.length} รายการ — เลือกจากรายการด้านล่าง`, 'error');
+  } else {
+    showToast('ไม่พบสินค้าที่พร้อมขาย', 'error');
+  }
+}
+
+/* ── Keyboard shortcuts: Esc closes any open modal ── */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeReceipt();
+    closeHistory();
+  }
+});
+
+/* ═══════════════════════════════════════════════════════
+   PRODUCTS
+═══════════════════════════════════════════════════════ */
+function loadProducts() {
+  try {
+    products = JSON.parse(localStorage.getItem('ruby_products') || '[]');
+  } catch(e) {
+    products = [];
+    console.warn('[POS] Failed to parse ruby_products:', e);
+  }
+}
+
+function getCategories() {
+  const cats = [...new Set(products.map(p => p.cat || p.category).filter(Boolean))];
+  return cats.sort();
+}
+
+function renderCategoryTabs() {
+  const cats = getCategories();
+  const tabs = document.getElementById('catTabs');
+  tabs.innerHTML = '';
+
+  const allTab = document.createElement('button');
+  allTab.className = 'cat-tab' + (activeCat === 'all' ? ' active' : '');
+  allTab.textContent = 'ทั้งหมด';
+  allTab.onclick = () => { activeCat = 'all'; renderCategoryTabs(); renderProducts(); };
+  tabs.appendChild(allTab);
+
+  cats.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-tab' + (activeCat === cat ? ' active' : '');
+    btn.textContent = cat;
+    btn.onclick = () => { activeCat = cat; renderCategoryTabs(); renderProducts(); };
+    tabs.appendChild(btn);
+  });
+}
+
+// Stock semantics (must match Admin): -1 = out of stock, 0 = unlimited (∞), >0 = limited qty
+function getLowStockThreshold() {
+  const v = parseInt(localStorage.getItem('ruby_low_stock_threshold') || '5', 10);
+  return isNaN(v) ? 5 : v;
+}
+function isUnlimitedStock(stock) { return stock === 0; }
+function getStockStatus(stock) {
+  if (stock === -1) return 'out';
+  if (stock === 0)  return 'unlimited';
+  if (stock > 0 && stock <= getLowStockThreshold()) return 'low';
+  return 'ok';
+}
+
+function renderProducts() {
+  const query = document.getElementById('searchInput').value.trim().toLowerCase();
+  const grid  = document.getElementById('productsGrid');
+
+  let filtered = products;
+
+  if (activeCat !== 'all') {
+    filtered = filtered.filter(p => (p.cat || p.category) === activeCat);
+  }
+  if (query) {
+    filtered = filtered.filter(p => p.name.toLowerCase().includes(query));
+  }
+
+  if (!filtered.length) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="es-icon">🔍</div>
+        <p>ไม่พบสินค้าที่ตรงกับการค้นหา</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = '';
+  filtered.forEach(p => {
+    const stock  = typeof p.stock === 'number' ? p.stock : 0;
+    const status = getStockStatus(stock);
+    const isOut  = status === 'out';
+    const emoji  = p.emoji || '📦';
+    const inCart = findCartItem(p.id);
+
+    const badgeLabel = { ok: 'พร้อมขาย', low: `เหลือ ${stock}`, out: 'หมด', unlimited: '∞ ไม่จำกัด' }[status];
+    const badgeClass = { ok: 'stock-ok', low: 'stock-low', out: 'stock-out', unlimited: 'stock-unlimited' }[status];
+
+    const cartBadge = inCart
+      ? `<span class="in-cart-badge">🛒 ${inCart.qty}</span>`
+      : '';
+
+    const card = document.createElement('div');
+    card.className = 'prod-card' + (isOut ? ' out' : '') + (inCart ? ' in-cart' : '');
+    card.dataset.id = p.id;
+    card.innerHTML = `
+      <span class="stock-badge ${badgeClass}">${badgeLabel}</span>
+      ${cartBadge}
+      <div class="prod-card-emoji">${emoji}</div>
+      <div class="prod-card-name">${escHtml(p.name)}</div>
+      <div class="prod-card-price">₭${fmtNum(p.price)}<small></small></div>`;
+
+    if (!isOut) {
+      card.onclick = () => addToCart(p);
+      card.title = 'คลิกเพื่อเพิ่มลงตะกร้า';
+    } else {
+      card.title = 'สินค้าหมด';
+    }
+    grid.appendChild(card);
+  });
+}
+
+function pulseCard(id) {
+  const card = document.querySelector(`.prod-card[data-id="${(window.CSS && CSS.escape) ? CSS.escape(id) : id}"]`);
+  if (!card) return;
+  card.classList.remove('added');
+  void card.offsetWidth; // restart animation
+  card.classList.add('added');
+}
+
+/* ═══════════════════════════════════════════════════════
+   CART
+═══════════════════════════════════════════════════════ */
+function findCartItem(id) {
+  return cart.find(c => c.product.id === id);
+}
+
+function addToCart(product) {
+  // Reload latest stock from localStorage
+  loadProducts();
+  const fresh = products.find(p => p.id === product.id);
+  if (!fresh) {
+    showToast('ไม่พบสินค้านี้แล้ว', 'error');
+    renderProducts();
+    return;
+  }
+  const stock = typeof fresh.stock === 'number' ? fresh.stock : 0;
+  if (stock === -1) {
+    showToast('สินค้าหมดแล้ว', 'error');
+    renderProducts();
+    return;
+  }
+  const unlimited = isUnlimitedStock(stock);
+
+  const existing = findCartItem(product.id);
+  if (existing) {
+    if (!unlimited && existing.qty >= stock) {
+      showToast(`สินค้าไม่พอ (มีแค่ ${stock} ชิ้น)`, 'error');
+      return;
+    }
+    existing.qty++;
+  } else {
+    cart.push({ product: fresh, qty: 1 });
+  }
+  renderCart();
+  showToast(`เพิ่ม ${fresh.name} ✓`, 'success');
+  pulseCard(product.id);
+}
+
+function changeQty(id, delta) {
+  const item = findCartItem(id);
+  if (!item) return;
+
+  if (delta > 0) {
+    const fresh = products.find(p => p.id === id);
+    const stock = fresh ? (typeof fresh.stock === 'number' ? fresh.stock : 0) : 0;
+    const unlimited = isUnlimitedStock(stock);
+    if (!unlimited && item.qty >= stock) {
+      showToast(`มีสินค้าแค่ ${stock} ชิ้น`, 'error');
+      return;
+    }
+  }
+
+  item.qty += delta;
+  if (item.qty <= 0) {
+    cart = cart.filter(c => c.product.id !== id);
+  }
+  renderCart();
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(c => c.product.id !== id);
+  renderCart();
+}
+
+function resetDiscountUI() {
+  document.getElementById('discountInput').value = '';
+  document.querySelectorAll('.dq-btn').forEach(b => b.classList.toggle('active', b.dataset.pct === '0'));
+}
+
+function clearCart() {
+  if (!cart.length) return;
+  if (!confirm('ล้างรายการสั่งซื้อทั้งหมด?')) return;
+  cart = [];
+  resetDiscountUI();
+  renderCart();
+  document.getElementById('searchInput').focus();
+}
+
+function renderCart() {
+  const container = document.getElementById('cartItems');
+  const countEl   = document.getElementById('cartCount');
+  const totalItems = cart.reduce((s, c) => s + c.qty, 0);
+  countEl.textContent = totalItems;
+
+  if (!cart.length) {
+    container.innerHTML = `
+      <div class="cart-empty">
+        <div class="ce-icon">🛒</div>
+        <p>ยังไม่มีสินค้าในรายการ<br>คลิกสินค้าเพื่อเพิ่ม</p>
+      </div>`;
+  } else {
+    container.innerHTML = '';
+    cart.forEach(item => {
+      const { product, qty } = item;
+      const subtotal = product.price * qty;
+      const row = document.createElement('div');
+      row.className = 'cart-item';
+      row.innerHTML = `
+        <div class="ci-emoji">${product.emoji || '📦'}</div>
+        <div class="ci-info">
+          <div class="ci-name">${escHtml(product.name)}</div>
+          <div class="ci-price-unit">₭${fmtNum(product.price)} / ชิ้น</div>
+          <div class="ci-controls">
+            <button class="qty-btn del-btn" onclick="changeQty('${product.id}',-1)" title="ลด">−</button>
+            <span class="qty-val">${qty}</span>
+            <button class="qty-btn" onclick="changeQty('${product.id}',1)" title="เพิ่ม">+</button>
+            <button class="qty-btn del-btn" onclick="removeFromCart('${product.id}')" title="ลบ" style="margin-left:4px;font-size:.75rem;">🗑</button>
+          </div>
+        </div>
+        <div class="ci-subtotal">₭${fmtNum(subtotal)}</div>`;
+      container.appendChild(row);
+    });
+  }
+
+  updateTotals();
+  renderProducts(); // refresh "in cart" badges on product grid
+}
+
+/* ═══════════════════════════════════════════════════════
+   TOTALS
+═══════════════════════════════════════════════════════ */
+function getDiscount() {
+  const v = parseFloat(document.getElementById('discountInput').value) || 0;
+  const subtotal = cart.reduce((s, c) => s + c.product.price * c.qty, 0);
+  return Math.min(Math.max(0, v), subtotal);
+}
+
+// Manual edit of discount → deselect quick % buttons
+function onDiscountInput() {
+  document.querySelectorAll('.dq-btn').forEach(b => b.classList.remove('active'));
+  updateTotals();
+}
+
+function calcTotals() {
+  const subtotal = cart.reduce((s, c) => s + c.product.price * c.qty, 0);
+  const discount = getDiscount();
+  const total    = Math.max(0, subtotal - discount);
+  return { subtotal, discount, total };
+}
+
+function updateTotals() {
+  const { subtotal, total } = calcTotals();
+  document.getElementById('subtotalVal').textContent = '₭' + fmtNum(subtotal);
+  document.getElementById('totalVal').textContent    = '₭' + fmtNum(total);
+  const btn = document.getElementById('checkoutBtn');
+  btn.disabled = cart.length === 0;
+  btn.textContent = cart.length ? `✅ ชำระเงิน · ₭${fmtNum(total)}` : '✅ ชำระเงิน';
+}
+
+function setDiscountPct(pct) {
+  const { subtotal } = calcTotals();
+  const input = document.getElementById('discountInput');
+  input.value = pct === 0 ? '' : Math.round(subtotal * pct / 100);
+  document.querySelectorAll('.dq-btn').forEach(b => b.classList.toggle('active', Number(b.dataset.pct) === pct));
+  updateTotals();
+}
+
+/* ═══════════════════════════════════════════════════════
+   CHECKOUT
+═══════════════════════════════════════════════════════ */
+function doCheckout() {
+  if (!cart.length) return;
+
+  // Re-validate stock before checkout
+  loadProducts();
+  for (const item of cart) {
+    const fresh = products.find(p => p.id === item.product.id);
+    const stock = fresh ? (typeof fresh.stock === 'number' ? fresh.stock : 0) : 0;
+    if (isUnlimitedStock(stock)) continue; // unlimited — no check needed
+    if (item.qty > stock) {
+      showToast(`${item.product.name}: สต็อกไม่พอ (มี ${Math.max(stock, 0)} ชิ้น)`, 'error');
+      return;
+    }
+  }
+
+  const { subtotal, discount, total } = calcTotals();
+
+  // a) Deduct stock in ruby_products (skip products with unlimited stock = 0)
+  const updatedProducts = products.map(p => {
+    const cartItem = findCartItem(p.id);
+    if (cartItem) {
+      const stock = typeof p.stock === 'number' ? p.stock : 0;
+      if (isUnlimitedStock(stock)) return p;
+      return { ...p, stock: stock - cartItem.qty };
+    }
+    return p;
+  });
+  localStorage.setItem('ruby_products', JSON.stringify(updatedProducts));
+  products = updatedProducts;
+
+  // b) Build sale record
+  const saleItems = cart.map(c => ({
+    id:    c.product.id,
+    name:  c.product.name,
+    price: c.product.price,
+    qty:   c.qty,
+  }));
+  const sale = {
+    id:       Date.now(),
+    date:     new Date().toISOString(),
+    items:    saleItems,
+    subtotal,
+    discount,
+    total,
+  };
+
+  // Append to ruby_sales
+  let sales = [];
+  try { sales = JSON.parse(localStorage.getItem('ruby_sales') || '[]'); } catch(e) {}
+  sales.unshift(sale);
+  localStorage.setItem('ruby_sales', JSON.stringify(sales));
+
+  // c) Show receipt
+  showReceipt(sale);
+
+  // Refresh product grid (stock changed)
+  renderProducts();
+}
+
+/* ═══════════════════════════════════════════════════════
+   RECEIPT MODAL
+═══════════════════════════════════════════════════════ */
+function showReceipt(sale) {
+  const body = document.getElementById('receiptBody');
+  const dateStr = new Date(sale.date).toLocaleString('th-TH', {
+    day: 'numeric', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit',
+  });
+
+  const itemRows = sale.items.map(i => `
+    <div class="receipt-row">
+      <span class="r-item-name">${escHtml(i.name)}</span>
+      <span class="r-item-qty">x${i.qty}</span>
+      <span class="r-item-price">₭${fmtNum(i.price * i.qty)}</span>
+    </div>`).join('');
+
+  const discountRow = sale.discount > 0
+    ? `<div class="receipt-total-row"><span>ส่วนลด</span><span>−₭${fmtNum(sale.discount)}</span></div>`
+    : '';
+
+  body.innerHTML = `
+    <div class="receipt-header">
+      <div class="r-icon">✅</div>
+      <h4>ชำระเงินสำเร็จ</h4>
+      <p>${dateStr} · รหัส #${String(sale.id).slice(-6)}</p>
+    </div>
+    <div class="receipt-items">${itemRows}</div>
+    <div class="receipt-totals">
+      <div class="receipt-total-row">
+        <span>ยอดรวม</span><span>₭${fmtNum(sale.subtotal)}</span>
+      </div>
+      ${discountRow}
+      <div class="receipt-total-row grand">
+        <span>ยอดสุทธิ</span><span>₭${fmtNum(sale.total)}</span>
+      </div>
+    </div>`;
+
+  openOverlay('receiptOverlay');
+}
+
+function closeReceipt() {
+  closeOverlay('receiptOverlay');
+}
+
+function newSale() {
+  cart = [];
+  resetDiscountUI();
+  renderCart();
+  closeReceipt();
+  showToast('เริ่มรายการขายใหม่', 'success');
+  document.getElementById('searchInput').focus();
+}
+
+/* ═══════════════════════════════════════════════════════
+   SALES HISTORY MODAL
+═══════════════════════════════════════════════════════ */
+function openHistory() {
+  let sales = [];
+  try { sales = JSON.parse(localStorage.getItem('ruby_sales') || '[]'); } catch(e) {}
+
+  const body = document.getElementById('historyBody');
+
+  if (!sales.length) {
+    body.innerHTML = `
+      <div style="text-align:center;padding:40px 20px;color:var(--muted);">
+        <div style="font-size:2.5rem;margin-bottom:12px;">📋</div>
+        <p>ยังไม่มีประวัติการขาย</p>
+      </div>`;
+  } else {
+    const totalRevenue = sales.reduce((s, sale) => s + sale.total, 0);
+    body.innerHTML = `
+      <div style="background:var(--red-l);border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:.78rem;color:var(--muted);">รายการขายทั้งหมด</div>
+          <div style="font-size:1.1rem;font-weight:800;">${sales.length} รายการ</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:.78rem;color:var(--muted);">ยอดรวมทั้งสิ้น</div>
+          <div style="font-size:1.1rem;font-weight:800;color:var(--red);">₭${fmtNum(totalRevenue)}</div>
+        </div>
+      </div>
+      ${sales.map((sale, idx) => renderSaleEntry(sale, idx)).join('')}`;
+  }
+
+  openOverlay('historyOverlay');
+}
+
+function renderSaleEntry(sale, idx) {
+  const dateStr = new Date(sale.date).toLocaleString('th-TH', {
+    day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
+  });
+  const itemCount = sale.items.reduce((s, i) => s + i.qty, 0);
+  const detailId  = 'sale-detail-' + idx;
+
+  const detailRows = sale.items.map(i => `
+    <div class="sale-detail-row">
+      <span>${escHtml(i.name)} × ${i.qty}</span>
+      <span>₭${fmtNum(i.price * i.qty)}</span>
+    </div>`).join('');
+
+  const discRow = sale.discount > 0
+    ? `<div class="sale-detail-row" style="color:var(--muted);">
+        <span>ส่วนลด</span><span>−₭${fmtNum(sale.discount)}</span>
+       </div>`
+    : '';
+
+  return `
+    <div class="sale-entry">
+      <div class="sale-entry-hd" onclick="toggleSaleDetail('${detailId}')">
+        <div>
+          <div class="sale-date">${dateStr} · #${String(sale.id).slice(-6)}</div>
+          <div class="sale-meta">${itemCount} รายการ · ${sale.items.length} ชนิด</div>
+        </div>
+        <div class="sale-total">₭${fmtNum(sale.total)}</div>
+      </div>
+      <div class="sale-detail" id="${detailId}">
+        ${detailRows}
+        ${discRow}
+        <div class="sale-detail-row" style="font-weight:800;border-top:1px solid var(--border);padding-top:6px;margin-top:4px;">
+          <span>ยอดสุทธิ</span><span style="color:var(--red);">₭${fmtNum(sale.total)}</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+function toggleSaleDetail(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+function closeHistory() {
+  closeOverlay('historyOverlay');
+}
+
+/* ═══════════════════════════════════════════════════════
+   OVERLAY HELPERS
+═══════════════════════════════════════════════════════ */
+function openOverlay(id)  { document.getElementById(id).classList.add('open'); }
+function closeOverlay(id) { document.getElementById(id).classList.remove('open'); }
+
+// Close on backdrop click
+document.querySelectorAll('.overlay').forEach(ov => {
+  ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('open'); });
+});
+
+/* ═══════════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════════ */
+let _toastTimer;
+function showToast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => { el.className = 'toast'; }, 2200);
+}
+
+/* ═══════════════════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════════════════ */
+function fmtNum(n) {
+  return Number(n).toLocaleString('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+}
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/* ═══════════════════════════════════════════════════════
+   STORAGE SYNC (listen for changes from other tabs/Admin)
+═══════════════════════════════════════════════════════ */
+window.addEventListener('storage', e => {
+  if (e.key === 'ruby_products') {
+    loadProducts();
+    renderCategoryTabs();
+    renderProducts();
+  }
+});
+
+/* ── Start ── */
+init();
+</script>
+</body>
+</html>

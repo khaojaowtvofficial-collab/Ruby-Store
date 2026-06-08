@@ -311,6 +311,10 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         ລູກຄ້າ
       </a>
+      <a href="#" class="admin-nav-link" onclick="showPanel('salesreport',this);return false;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Sales Report
+      </a>
       <a href="#" class="admin-nav-link" onclick="showPanel('settings',this);return false;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         ຕັ້ງຄ່າ
@@ -802,6 +806,67 @@
           <table class="admin-table">
             <thead><tr><th>ຊື່</th><th>ໂທ</th><th>ອໍເດີຫຼ້າສຸດ</th><th>ຍອດລວມ</th><th>ຊ່ອງທາງ</th><th>ອໍເດີທັງໝົດ</th></tr></thead>
             <tbody id="customersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SALES REPORT PANEL ══ -->
+    <div class="admin-content admin-panel" id="panelSalesreport" style="display:none;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+        <div style="flex:1;">
+          <h2 style="font-size:1.05rem;font-weight:800;margin:0;">Sales Report</h2>
+          <p style="font-size:.82rem;color:var(--muted);margin:4px 0 0;">ຍອດຂາຍຈາກ POS (ruby_sales)</p>
+        </div>
+        <button class="btn btn-sm" style="background:#FEE2E2;color:#991B1B;border:1.5px solid #FECACA;" onclick="clearSalesHistory()">🗑 ລຶບປະຫວັດທັງໝົດ</button>
+      </div>
+
+      <!-- Summary KPI row -->
+      <div class="kpi-row" style="margin-bottom:20px;">
+        <div class="kpi-card">
+          <div class="kpi-icon green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <div class="kpi-label">ຍອດຂາຍວັນນີ້</div>
+          <div class="kpi-num green" id="srRevToday">₭0</div>
+          <div class="kpi-sub" id="srRevTodaySub">—</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+          <div class="kpi-label">ຈຳນວນການຂາຍວັນນີ້</div>
+          <div class="kpi-num blue" id="srOrdersToday">0</div>
+          <div class="kpi-sub" id="srOrdersTodaySub">—</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+          <div class="kpi-label">ຍອດຂາຍລວມ (ທັງໝົດ)</div>
+          <div class="kpi-num amber" id="srRevTotal">₭0</div>
+          <div class="kpi-sub" id="srRevTotalSub">—</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon indigo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
+          <div class="kpi-label">ສ່ວນລົດລວມ</div>
+          <div class="kpi-num indigo" id="srDiscountTotal">₭0</div>
+          <div class="kpi-sub">ທັງໝົດ</div>
+        </div>
+      </div>
+
+      <!-- Sales table -->
+      <div class="admin-table-card">
+        <div class="admin-table-header">
+          <div class="admin-table-title">ລາຍການຂາຍ POS</div>
+          <span id="srTableCount" style="font-size:.8rem;color:var(--muted);"></span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ວັນທີ / ເວລາ</th>
+                <th>ສິນຄ້າທີ່ຂາຍ</th>
+                <th style="text-align:right;">ຍອດລວມ</th>
+                <th style="text-align:right;">ສ່ວນລົດ</th>
+                <th style="text-align:right;">ຍອດສຸດທິ</th>
+              </tr>
+            </thead>
+            <tbody id="srTableBody"></tbody>
           </table>
         </div>
       </div>
@@ -1890,7 +1955,7 @@ function clearHsrBg(key) {
 /* ═══════════════════════════════════════════
    PANEL NAVIGATION
 ═══════════════════════════════════════════ */
-const PANEL_TITLES = { dashboard:'Dashboard', orders:'ອໍເດີ', stores:'ຮ້ານຄ້າ', products:'ສິນຄ້າ', customers:'ລູກຄ້າ', settings:'ຕັ້ງຄ່າ' };
+const PANEL_TITLES = { dashboard:'Dashboard', orders:'ອໍເດີ', stores:'ຮ້ານຄ້າ', products:'ສິນຄ້າ', customers:'ລູກຄ້າ', settings:'ຕັ້ງຄ່າ', salesreport:'Sales Report' };
 
 /* ═══════════════════════════════════════════
    STORE LOGO MANAGEMENT
@@ -2194,12 +2259,72 @@ function showPanel(name, linkEl) {
     if (l.getAttribute('onclick')?.includes(`'${name}'`)) l.classList.add('active');
   });
 
-  if (name==='dashboard') renderDashboard();
-  if (name==='orders')    renderAllOrders();
-  if (name==='stores')    { renderStores(); initStoreLogos(); initStoreBgs(); initStoreNames(); initHsrPanel(); }
-  if (name==='products')  renderProducts();
-  if (name==='customers') renderCustomers();
-  if (name==='settings')  loadSettingsPanel();
+  if (name==='dashboard')   renderDashboard();
+  if (name==='orders')      renderAllOrders();
+  if (name==='stores')      { renderStores(); initStoreLogos(); initStoreBgs(); initStoreNames(); initHsrPanel(); }
+  if (name==='products')    renderProducts();
+  if (name==='customers')   renderCustomers();
+  if (name==='settings')    loadSettingsPanel();
+  if (name==='salesreport') renderSalesReport();
+}
+
+/* ═══════════════════════════════════════════
+   SALES REPORT (ruby_sales from POS)
+═══════════════════════════════════════════ */
+function _getSales() {
+  try { return JSON.parse(localStorage.getItem('ruby_sales') || '[]'); } catch(e) { return []; }
+}
+
+function renderSalesReport() {
+  const sales = _getSales();
+  const todayKey = new Date().toISOString().slice(0, 10);
+
+  const todaySales = sales.filter(s => s.date && s.date.slice(0, 10) === todayKey);
+  const revToday   = todaySales.reduce((sum, s) => sum + (s.total || 0), 0);
+  const revTotal   = sales.reduce((sum, s) => sum + (s.total || 0), 0);
+  const discTotal  = sales.reduce((sum, s) => sum + (s.discount || 0), 0);
+
+  document.getElementById('srRevToday').textContent      = '₭' + revToday.toLocaleString();
+  document.getElementById('srRevTodaySub').textContent   = `ຈາກ ${todaySales.length} ລາຍການ`;
+  document.getElementById('srOrdersToday').textContent   = todaySales.length;
+  document.getElementById('srOrdersTodaySub').textContent = todaySales.length > 0 ? 'ລາຍການ POS ວັນນີ້' : 'ຍັງບໍ່ມີການຂາຍ';
+  document.getElementById('srRevTotal').textContent      = '₭' + revTotal.toLocaleString();
+  document.getElementById('srRevTotalSub').textContent   = `${sales.length} ລາຍການທັງໝົດ`;
+  document.getElementById('srDiscountTotal').textContent = '₭' + discTotal.toLocaleString();
+  document.getElementById('srTableCount').textContent    = sales.length ? `${sales.length} ລາຍການ` : '';
+
+  const tbody = document.getElementById('srTableBody');
+  if (!sales.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--muted);">ຍັງບໍ່ມີຂໍ້ມູນການຂາຍ POS</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = sales.map(s => {
+    const dateStr = new Date(s.date).toLocaleString('th-TH', {
+      day: 'numeric', month: 'short', year: '2-digit',
+      hour: '2-digit', minute: '2-digit',
+    });
+    const itemsSummary = (s.items || []).map(i => `${_esc(i.name)} ×${i.qty}`).join(', ');
+    const discHtml = s.discount > 0
+      ? `<span style="color:#D97706;font-weight:700;">−₭${(s.discount).toLocaleString()}</span>`
+      : '<span style="color:var(--muted);">—</span>';
+    return `<tr>
+      <td style="font-size:.82rem;color:var(--muted);white-space:nowrap;">${dateStr}</td>
+      <td style="font-size:.82rem;max-width:260px;color:var(--text-m);">${itemsSummary || '—'}</td>
+      <td style="text-align:right;font-size:.875rem;">₭${(s.subtotal||0).toLocaleString()}</td>
+      <td style="text-align:right;">${discHtml}</td>
+      <td style="text-align:right;font-weight:800;color:var(--red);">₭${(s.total||0).toLocaleString()}</td>
+    </tr>`;
+  }).join('');
+}
+
+function clearSalesHistory() {
+  const sales = _getSales();
+  if (!sales.length) { showToast('ບໍ່ມີຂໍ້ມູນໃຫ້ລຶບ'); return; }
+  if (!confirm(`ລຶບປະຫວັດການຂາຍທັງໝົດ ${sales.length} ລາຍການ?\nການກະທຳນີ້ບໍ່ສາມາດກູ້ຄືນໄດ້`)) return;
+  localStorage.removeItem('ruby_sales');
+  renderSalesReport();
+  showToast('🗑 ລຶບປະຫວັດການຂາຍທັງໝົດແລ້ວ');
 }
 
 /* ═══════════════════════════════════════════
