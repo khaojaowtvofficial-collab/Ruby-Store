@@ -218,7 +218,31 @@
     .ci-emoji { font-size: 1.4rem; flex-shrink: 0; width: 32px; text-align: center; margin-top: 2px; }
     .ci-info { flex: 1; min-width: 0; }
     .ci-name { font-size: .8rem; font-weight: 700; line-height: 1.3; }
+    .ci-variant {
+      display: inline-block; font-size: .68rem; font-weight: 700;
+      color: var(--red); background: var(--red-l); border-radius: 100px;
+      padding: 1px 8px; margin: 2px 0;
+    }
     .ci-price-unit { font-size: .72rem; color: var(--muted); }
+
+    /* Variant hint on product cards */
+    .prod-card-variant-hint {
+      font-size: .65rem; font-weight: 700; color: var(--red);
+      text-align: center; margin-top: -2px;
+    }
+
+    /* Variant picker modal */
+    .variant-pick-list { display: flex; flex-direction: column; gap: 8px; }
+    .variant-pick-btn {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; padding: 12px 16px;
+      border: 1.5px solid var(--border); border-radius: 12px;
+      background: var(--bg); font-family: var(--font);
+      font-size: .875rem; font-weight: 700; color: var(--text);
+      cursor: pointer; transition: all .15s;
+    }
+    .variant-pick-btn:hover { border-color: var(--red); background: var(--red-l); color: var(--red); }
+    .variant-pick-btn .vp-price { font-weight: 800; color: var(--red); }
     .ci-controls {
       display: flex; align-items: center; gap: 6px; margin-top: 6px;
     }
@@ -510,6 +534,17 @@
   </div>
 </div>
 
+<!-- ── Variant Picker Modal (color/size/option — mirrors storefront) ── -->
+<div class="overlay" id="variantOverlay">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-hd">
+      <h3>🎨 เลือกตัวเลือกสินค้า</h3>
+      <button class="modal-close" onclick="closeVariantPicker()">×</button>
+    </div>
+    <div class="modal-body" id="variantBody"></div>
+  </div>
+</div>
+
 <!-- ── Toast ── -->
 <div class="toast" id="toast"></div>
 
@@ -567,6 +602,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     closeReceipt();
     closeHistory();
+    closeVariantPicker();
   }
 });
 
@@ -662,32 +698,46 @@ function renderProducts() {
 
   grid.innerHTML = '';
   filtered.forEach(p => {
-    const stock  = typeof p.stock === 'number' ? p.stock : 0;
-    const status = getStockStatus(stock);
-    const isOut  = status === 'out';
-    const emoji  = p.emoji || '📦';
-    const inCart = findCartItem(p.id);
+    const stock   = typeof p.stock === 'number' ? p.stock : 0;
+    const status  = getStockStatus(stock);
+    const isOut   = status === 'out';
+    const emoji   = p.emoji || '📦';
+    const cartQty = cartQtyForProduct(p.id);
+    const hasVariants = Array.isArray(p.variants) && p.variants.length > 0;
 
     const badgeLabel = { ok: 'พร้อมขาย', low: `เหลือ ${stock}`, out: 'หมด', unlimited: '∞ ไม่จำกัด' }[status];
     const badgeClass = { ok: 'stock-ok', low: 'stock-low', out: 'stock-out', unlimited: 'stock-unlimited' }[status];
 
-    const cartBadge = inCart
-      ? `<span class="in-cart-badge">🛒 ${inCart.qty}</span>`
+    const cartBadge = cartQty
+      ? `<span class="in-cart-badge">🛒 ${cartQty}</span>`
+      : '';
+
+    // Show price range across variants (e.g. "₭19,000 – ₭25,000") so the
+    // cashier sees the same pricing info as the storefront before clicking
+    let priceHtml = `₭${fmtNum(p.price)}`;
+    if (hasVariants) {
+      const prices = p.variants.map(v => (typeof v.price === 'number') ? v.price : p.price);
+      const min = Math.min(...prices, p.price), max = Math.max(...prices, p.price);
+      priceHtml = (min === max) ? `₭${fmtNum(min)}` : `₭${fmtNum(min)}–${fmtNum(max)}`;
+    }
+    const variantHint = hasVariants
+      ? `<div class="prod-card-variant-hint">🎨 ${p.variants.length} ตัวเลือก</div>`
       : '';
 
     const card = document.createElement('div');
-    card.className = 'prod-card' + (isOut ? ' out' : '') + (inCart ? ' in-cart' : '');
+    card.className = 'prod-card' + (isOut ? ' out' : '') + (cartQty ? ' in-cart' : '');
     card.dataset.id = p.id;
     card.innerHTML = `
       <span class="stock-badge ${badgeClass}">${badgeLabel}</span>
       ${cartBadge}
       <div class="prod-card-emoji">${emoji}</div>
       <div class="prod-card-name">${escHtml(p.name)}</div>
-      <div class="prod-card-price">₭${fmtNum(p.price)}<small></small></div>`;
+      <div class="prod-card-price">${priceHtml}<small></small></div>
+      ${variantHint}`;
 
     if (!isOut) {
       card.onclick = () => addToCart(p);
-      card.title = 'คลิกเพื่อเพิ่มลงตะกร้า';
+      card.title = hasVariants ? 'คลิกเพื่อเลือกตัวเลือกสินค้า' : 'คลิกเพื่อเพิ่มลงตะกร้า';
     } else {
       card.title = 'สินค้าหมด';
     }
@@ -706,11 +756,23 @@ function pulseCard(id) {
 /* ═══════════════════════════════════════════════════════
    CART
 ═══════════════════════════════════════════════════════ */
-function findCartItem(id) {
-  return cart.find(c => c.product.id === id);
+// Variant-aware helpers — a cart line is uniquely identified by
+// product id + variant label (so "เสื้อ — สีแดง" and "เสื้อ — สีฟ้า"
+// show up as separate lines with their own price/qty)
+function variantKey(variant) { return variant ? variant.label : ''; }
+function cartItemPrice(item) {
+  return (item.variant && typeof item.variant.price === 'number') ? item.variant.price : item.product.price;
+}
+function findCartItem(id, variantLabel) {
+  const key = variantLabel || '';
+  return cart.find(c => c.product.id === id && variantKey(c.variant) === key);
+}
+// Total qty across *all* variant-lines of a product (for stock checks / badges)
+function cartQtyForProduct(id) {
+  return cart.filter(c => c.product.id === id).reduce((s, c) => s + c.qty, 0);
 }
 
-function addToCart(product) {
+function addToCart(product, variant) {
   // Quick local refresh of latest known stock (synced in background by db.js)
   loadProductsLocal();
   const fresh = products.find(p => p.id === product.id);
@@ -719,6 +781,14 @@ function addToCart(product) {
     renderProducts();
     return;
   }
+
+  // Has variants but none chosen yet → ask the cashier to pick one first
+  // (mirrors the storefront's "ตัวเลือก" picker so price/label match exactly)
+  if (!variant && Array.isArray(fresh.variants) && fresh.variants.length > 0) {
+    openVariantPicker(fresh);
+    return;
+  }
+
   const stock = typeof fresh.stock === 'number' ? fresh.stock : 0;
   if (stock === -1) {
     showToast('สินค้าหมดแล้ว', 'error');
@@ -726,31 +796,37 @@ function addToCart(product) {
     return;
   }
   const unlimited = isUnlimitedStock(stock);
+  const totalQtyForProduct = cartQtyForProduct(product.id);
 
-  const existing = findCartItem(product.id);
+  const existing = findCartItem(product.id, variant ? variant.label : null);
   if (existing) {
-    if (!unlimited && existing.qty >= stock) {
+    if (!unlimited && totalQtyForProduct >= stock) {
       showToast(`สินค้าไม่พอ (มีแค่ ${stock} ชิ้น)`, 'error');
       return;
     }
     existing.qty++;
   } else {
-    cart.push({ product: fresh, qty: 1 });
+    if (!unlimited && totalQtyForProduct >= stock) {
+      showToast(`สินค้าไม่พอ (มีแค่ ${stock} ชิ้น)`, 'error');
+      return;
+    }
+    cart.push({ product: fresh, variant: variant || null, qty: 1 });
   }
   renderCart();
-  showToast(`เพิ่ม ${fresh.name} ✓`, 'success');
+  const label = variant ? `${fresh.name} (${variant.label})` : fresh.name;
+  showToast(`เพิ่ม ${label} ✓`, 'success');
   pulseCard(product.id);
 }
 
-function changeQty(id, delta) {
-  const item = findCartItem(id);
+function changeQty(id, variantLabel, delta) {
+  const item = findCartItem(id, variantLabel);
   if (!item) return;
 
   if (delta > 0) {
     const fresh = products.find(p => p.id === id);
     const stock = fresh ? (typeof fresh.stock === 'number' ? fresh.stock : 0) : 0;
     const unlimited = isUnlimitedStock(stock);
-    if (!unlimited && item.qty >= stock) {
+    if (!unlimited && cartQtyForProduct(id) >= stock) {
       showToast(`มีสินค้าแค่ ${stock} ชิ้น`, 'error');
       return;
     }
@@ -758,15 +834,49 @@ function changeQty(id, delta) {
 
   item.qty += delta;
   if (item.qty <= 0) {
-    cart = cart.filter(c => c.product.id !== id);
+    cart = cart.filter(c => !(c.product.id === id && variantKey(c.variant) === (variantLabel || '')));
   }
   renderCart();
 }
 
-function removeFromCart(id) {
-  cart = cart.filter(c => c.product.id !== id);
+function removeFromCart(id, variantLabel) {
+  cart = cart.filter(c => !(c.product.id === id && variantKey(c.variant) === (variantLabel || '')));
   renderCart();
 }
+
+/* ═══════════════════════════════════════════════════════
+   VARIANT PICKER  (color/size/option — mirrors storefront)
+═══════════════════════════════════════════════════════ */
+function openVariantPicker(product) {
+  const body = document.getElementById('variantBody');
+  body.innerHTML = `
+    <div style="text-align:center;margin-bottom:14px;">
+      <div style="font-size:2rem;">${product.emoji || '📦'}</div>
+      <div style="font-weight:800;margin-top:4px;">${escHtml(product.name)}</div>
+      <div style="color:var(--muted);font-size:.8rem;">เลือกตัวเลือกสินค้าก่อนเพิ่มลงตะกร้า</div>
+    </div>
+    <div class="variant-pick-list">
+      ${product.variants.map(v => {
+        const price = (typeof v.price === 'number') ? v.price : product.price;
+        return `<button class="variant-pick-btn" data-label="${escHtml(v.label)}">
+          <span>${escHtml(v.label)}</span>
+          <span class="vp-price">₭${fmtNum(price)}</span>
+        </button>`;
+      }).join('')}
+    </div>`;
+
+  body.querySelectorAll('.variant-pick-btn').forEach(btn => {
+    btn.onclick = () => {
+      const label = btn.dataset.label;
+      const v = product.variants.find(x => x.label === label);
+      closeOverlay('variantOverlay');
+      addToCart(product, v);
+    };
+  });
+
+  openOverlay('variantOverlay');
+}
+function closeVariantPicker() { closeOverlay('variantOverlay'); }
 
 function resetDiscountUI() {
   document.getElementById('discountInput').value = '';
@@ -797,20 +907,27 @@ function renderCart() {
   } else {
     container.innerHTML = '';
     cart.forEach(item => {
-      const { product, qty } = item;
-      const subtotal = product.price * qty;
+      const { product, variant, qty } = item;
+      const unitPrice = cartItemPrice(item);
+      const subtotal  = unitPrice * qty;
+      const vKey  = variant ? variant.label : '';
+      const vAttr = escHtml(vKey).replace(/'/g, "\\'");
+      const variantLine = variant
+        ? `<div class="ci-variant">🎨 ${escHtml(variant.label)}</div>`
+        : '';
       const row = document.createElement('div');
       row.className = 'cart-item';
       row.innerHTML = `
         <div class="ci-emoji">${product.emoji || '📦'}</div>
         <div class="ci-info">
           <div class="ci-name">${escHtml(product.name)}</div>
-          <div class="ci-price-unit">₭${fmtNum(product.price)} / ชิ้น</div>
+          ${variantLine}
+          <div class="ci-price-unit">₭${fmtNum(unitPrice)} / ชิ้น</div>
           <div class="ci-controls">
-            <button class="qty-btn del-btn" onclick="changeQty('${product.id}',-1)" title="ลด">−</button>
+            <button class="qty-btn del-btn" onclick="changeQty('${product.id}','${vAttr}',-1)" title="ลด">−</button>
             <span class="qty-val">${qty}</span>
-            <button class="qty-btn" onclick="changeQty('${product.id}',1)" title="เพิ่ม">+</button>
-            <button class="qty-btn del-btn" onclick="removeFromCart('${product.id}')" title="ลบ" style="margin-left:4px;font-size:.75rem;">🗑</button>
+            <button class="qty-btn" onclick="changeQty('${product.id}','${vAttr}',1)" title="เพิ่ม">+</button>
+            <button class="qty-btn del-btn" onclick="removeFromCart('${product.id}','${vAttr}')" title="ลบ" style="margin-left:4px;font-size:.75rem;">🗑</button>
           </div>
         </div>
         <div class="ci-subtotal">₭${fmtNum(subtotal)}</div>`;
@@ -827,7 +944,7 @@ function renderCart() {
 ═══════════════════════════════════════════════════════ */
 function getDiscount() {
   const v = parseFloat(document.getElementById('discountInput').value) || 0;
-  const subtotal = cart.reduce((s, c) => s + c.product.price * c.qty, 0);
+  const subtotal = cart.reduce((s, c) => s + cartItemPrice(c) * c.qty, 0);
   return Math.min(Math.max(0, v), subtotal);
 }
 
@@ -838,7 +955,7 @@ function onDiscountInput() {
 }
 
 function calcTotals() {
-  const subtotal = cart.reduce((s, c) => s + c.product.price * c.qty, 0);
+  const subtotal = cart.reduce((s, c) => s + cartItemPrice(c) * c.qty, 0);
   const discount = getDiscount();
   const total    = Math.max(0, subtotal - discount);
   return { subtotal, discount, total };
@@ -873,11 +990,17 @@ async function doCheckout() {
   // Re-validate stock against the latest data from the shared cloud DB
   // (so two cashiers selling the same item at once don't oversell it)
   await loadProducts();
+  // Stock is per-product (shared across variants), so sum qty across all
+  // variant-lines of the same product before comparing against stock
+  const checkedIds = new Set();
   for (const item of cart) {
+    if (checkedIds.has(item.product.id)) continue;
+    checkedIds.add(item.product.id);
     const fresh = products.find(p => p.id === item.product.id);
     const stock = fresh ? (typeof fresh.stock === 'number' ? fresh.stock : 0) : 0;
     if (isUnlimitedStock(stock)) continue; // unlimited — no check needed
-    if (item.qty > stock) {
+    const neededQty = cartQtyForProduct(item.product.id);
+    if (neededQty > stock) {
       showToast(`${item.product.name}: สต็อกไม่พอ (มี ${Math.max(stock, 0)} ชิ้น)`, 'error');
       btn.disabled = false;
       return;
@@ -891,11 +1014,11 @@ async function doCheckout() {
   //    stock levels right away (and Admin stays in sync too).
   const changedProducts = [];
   const updatedProducts = products.map(p => {
-    const cartItem = findCartItem(p.id);
-    if (cartItem) {
+    const qtyInCart = cartQtyForProduct(p.id); // sums across all variant-lines
+    if (qtyInCart > 0) {
       const stock = typeof p.stock === 'number' ? p.stock : 0;
       if (isUnlimitedStock(stock)) return p;
-      const updated = { ...p, stock: stock - cartItem.qty };
+      const updated = { ...p, stock: stock - qtyInCart };
       changedProducts.push(updated);
       return updated;
     }
@@ -910,11 +1033,12 @@ async function doCheckout() {
       .catch(e => console.warn('[POS] Stock cloud sync failed:', e));
   }
 
-  // b) Build sale record
+  // b) Build sale record — include the chosen variant label in the item
+  // name so receipts/reports show exactly what was sold (e.g. "เสื้อ (สีแดง)")
   const saleItems = cart.map(c => ({
     id:    c.product.id,
-    name:  c.product.name,
-    price: c.product.price,
+    name:  c.variant ? `${c.product.name} (${c.variant.label})` : c.product.name,
+    price: cartItemPrice(c),
     qty:   c.qty,
   }));
   const sale = {
