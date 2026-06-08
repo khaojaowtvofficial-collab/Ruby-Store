@@ -2275,8 +2275,12 @@ function _getSales() {
   try { return JSON.parse(localStorage.getItem('ruby_sales') || '[]'); } catch(e) { return []; }
 }
 
-function renderSalesReport() {
-  const sales = _getSales();
+async function renderSalesReport() {
+  // Pull from the shared cloud DB so the report reflects sales made by every
+  // cashier on every device (POS syncs sales there too) — falls back to the
+  // local cache automatically if offline.
+  let sales = window.RubyDB ? await RubyDB.fetchSales().catch(() => null) : null;
+  if (!sales) sales = _getSales();
   const todayKey = new Date().toISOString().slice(0, 10);
 
   const todaySales = sales.filter(s => s.date && s.date.slice(0, 10) === todayKey);
@@ -2318,11 +2322,13 @@ function renderSalesReport() {
   }).join('');
 }
 
-function clearSalesHistory() {
-  const sales = _getSales();
+async function clearSalesHistory() {
+  let sales = window.RubyDB ? await RubyDB.fetchSales().catch(() => null) : null;
+  if (!sales) sales = _getSales();
   if (!sales.length) { showToast('ບໍ່ມີຂໍ້ມູນໃຫ້ລຶບ'); return; }
   if (!confirm(`ລຶບປະຫວັດການຂາຍທັງໝົດ ${sales.length} ລາຍການ?\nການກະທຳນີ້ບໍ່ສາມາດກູ້ຄືນໄດ້`)) return;
-  localStorage.removeItem('ruby_sales');
+  if (window.RubyDB) await RubyDB.clearSales();
+  else localStorage.removeItem('ruby_sales');
   renderSalesReport();
   showToast('🗑 ລຶບປະຫວັດການຂາຍທັງໝົດແລ້ວ');
 }

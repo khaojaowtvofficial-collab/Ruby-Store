@@ -28,7 +28,11 @@ async function _rest(method, path, body, extra) {
     throw new Error('[RubyDB] ' + method + ' ' + path + ' → ' + res.status + ' ' + txt);
   }
   if (res.status === 204) return null;
-  return res.json();
+  // Supabase replies 200/201 with an empty body when 'Prefer: return=minimal'
+  // is set — guard against "Unexpected end of JSON input" on empty responses.
+  const text = await res.text();
+  if (!text) return null;
+  try { return JSON.parse(text); } catch(e) { return null; }
 }
 
 // ── ANONYMOUS USER ID ────────────────────────────────────
@@ -279,6 +283,63 @@ function _upsertLocalProduct(product) {
 }
 
 // ═══════════════════════════════════════════════════════
+//  SALES  (POS checkout records — shared across devices)
+// ═══════════════════════════════════════════════════════
+
+function _getLocalSales() {
+  try { return JSON.parse(localStorage.getItem('ruby_sales') || '[]'); } catch(e) { return []; }
+}
+function _pushLocalSale(sale) {
+  const sales = _getLocalSales();
+  const idx = sales.findIndex(s => s.id === sale.id);
+  if (idx >= 0) sales[idx] = sale; else sales.unshift(sale);
+  localStorage.setItem('ruby_sales', JSON.stringify(sales.slice(0, 500)));
+  return sales;
+}
+
+// Save a POS sale — writes to local cache immediately, then syncs to cloud
+// so other devices/staff see it too. Falls back gracefully if offline.
+async function saveSale(sale) {
+  _pushLocalSale(sale);
+  try {
+    await _rest('POST', 'sales', {
+      id: sale.id, date: sale.date, items: sale.items,
+      subtotal: sale.subtotal, discount: sale.discount, total: sale.total,
+      cashier: sale.cashier || null,
+    }, { 'Prefer': 'resolution=merge-duplicates,return=minimal' });
+    console.log('[RubyDB] Sale synced ✓', sale.id);
+  } catch(e) { console.warn('[RubyDB] saveSale:', e.message); }
+  return sale;
+}
+
+// Fetch all sales (cloud first so every device/cashier sees the same history,
+// fallback to local cache when offline)
+async function fetchSales(limit = 500) {
+  try {
+    const data = await _rest('GET', `sales?order=date.desc&limit=${limit}`);
+    if (data) {
+      const sales = data.map(row => ({
+        id: row.id, date: row.date, items: row.items || [],
+        subtotal: row.subtotal || 0, discount: row.discount || 0,
+        total: row.total || 0, cashier: row.cashier || undefined,
+      }));
+      localStorage.setItem('ruby_sales', JSON.stringify(sales));
+      return sales;
+    }
+  } catch(e) { console.warn('[RubyDB] fetchSales:', e.message); }
+  return _getLocalSales();
+}
+
+// Clear all sales history — cloud + local
+async function clearSales() {
+  localStorage.removeItem('ruby_sales');
+  try {
+    await _rest('DELETE', 'sales?id=gt.0');
+    console.log('[RubyDB] Sales history cleared ✓');
+  } catch(e) { console.warn('[RubyDB] clearSales:', e.message); }
+}
+
+// ═══════════════════════════════════════════════════════
 //  SETTINGS
 // ═══════════════════════════════════════════════════════
 
@@ -338,4 +399,5 @@ window.RubyDB = {
   getLocalOrders: _getLocalOrders,
   fetchProducts, fetchProductById, fetchProductImages, saveProduct, deleteProduct,
   saveSetting, fetchSettings, fetchAll,
+  saveSale, fetchSales, clearSales, getLocalSales: _getLocalSales,
 };

@@ -72,3 +72,23 @@ create table if not exists settings (
 alter table settings enable row level security;
 create policy "anon_all_settings" on settings
   for all to anon using (true) with check (true);
+
+-- ─────────────────────────────────────────────────────────
+-- Sales table  (POS checkout records — shared across devices)
+-- ─────────────────────────────────────────────────────────
+create table if not exists sales (
+  id          bigint primary key,
+  date        timestamptz not null default now(),
+  items       jsonb   not null default '[]'::jsonb,
+  subtotal    integer not null default 0,
+  discount    integer not null default 0,
+  total       integer not null default 0,
+  cashier     text,
+  created_at  timestamptz default now()
+);
+
+create index if not exists sales_date_idx on sales (date desc);
+
+alter table sales enable row level security;
+create policy "anon_all_sales" on sales
+  for all to anon using (true) with check (true);
