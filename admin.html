@@ -861,6 +861,7 @@
               <tr>
                 <th>ວັນທີ / ເວລາ</th>
                 <th>ສິນຄ້າທີ່ຂາຍ</th>
+                <th>ພະນັກງານ</th>
                 <th style="text-align:right;">ຍອດລວມ</th>
                 <th style="text-align:right;">ສ່ວນລົດ</th>
                 <th style="text-align:right;">ຍອດສຸດທິ</th>
@@ -2299,7 +2300,7 @@ async function renderSalesReport() {
 
   const tbody = document.getElementById('srTableBody');
   if (!sales.length) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--muted);">ຍັງບໍ່ມີຂໍ້ມູນການຂາຍ POS</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--muted);">ຍັງບໍ່ມີຂໍ້ມູນການຂາຍ POS</td></tr>';
     return;
   }
 
@@ -2312,9 +2313,13 @@ async function renderSalesReport() {
     const discHtml = s.discount > 0
       ? `<span style="color:#D97706;font-weight:700;">−₭${(s.discount).toLocaleString()}</span>`
       : '<span style="color:var(--muted);">—</span>';
+    const cashierHtml = s.cashier
+      ? `<span style="font-weight:600;">${_esc(s.cashier)}</span>`
+      : '<span style="color:var(--muted);">—</span>';
     return `<tr>
       <td style="font-size:.82rem;color:var(--muted);white-space:nowrap;">${dateStr}</td>
-      <td style="font-size:.82rem;max-width:260px;color:var(--text-m);">${itemsSummary || '—'}</td>
+      <td style="font-size:.82rem;max-width:240px;color:var(--text-m);">${itemsSummary || '—'}</td>
+      <td style="font-size:.82rem;">${cashierHtml}</td>
       <td style="text-align:right;font-size:.875rem;">₭${(s.subtotal||0).toLocaleString()}</td>
       <td style="text-align:right;">${discHtml}</td>
       <td style="text-align:right;font-weight:800;color:var(--red);">₭${(s.total||0).toLocaleString()}</td>

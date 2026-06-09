@@ -501,10 +501,9 @@
 <header class="topbar">
   <div class="topbar-logo">💎 Ruby POS <span>ระบบขายหน้าร้าน</span></div>
   <div class="topbar-spacer"></div>
+  <button class="topbar-btn" id="cashierBadge" onclick="openCashierModal()" title="เปลี่ยนพนักงาน">👤 —</button>
   <a class="topbar-btn" href="admin.html">← Admin</a>
-  <button class="topbar-btn" onclick="openHistory()">
-    📋 ประวัติการขาย
-  </button>
+  <button class="topbar-btn" onclick="openHistory()">📋 ประวัติ</button>
 </header>
 
 <!-- ── Main ── -->
@@ -599,6 +598,26 @@
   </div>
 </div>
 
+<!-- ── Cashier Login Modal ── -->
+<div class="overlay" id="cashierOverlay">
+  <div class="modal" style="max-width:340px;">
+    <div class="modal-hd">
+      <h3>👤 พนักงานผู้ขาย</h3>
+    </div>
+    <div class="modal-body" style="padding:24px;">
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">ระบุชื่อพนักงานก่อนเริ่มขาย — ชื่อนี้จะบันทึกในทุกรายการขาย</p>
+      <input id="cashierInput" type="text" placeholder="ชื่อพนักงาน เช่น สมชาย"
+        style="width:100%;padding:11px 14px;border:2px solid var(--border);border-radius:12px;font-family:var(--font);font-size:1rem;outline:none;transition:border .15s;"
+        onfocus="this.style.borderColor='var(--red)'" onblur="this.style.borderColor='var(--border)'"
+        onkeydown="if(event.key==='Enter')saveCashier()">
+    </div>
+    <div class="modal-footer">
+      <button class="btn" style="background:var(--red);color:#fff;font-weight:800;width:100%;"
+        onclick="saveCashier()">✅ เริ่มขาย</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── Payment Modal ── -->
 <div class="overlay" id="paymentOverlay">
   <div class="modal" style="max-width:400px;">
@@ -686,15 +705,41 @@
 let products = [];
 let cart = [];        // [{ product, qty }]
 let activeCat = 'all';
+let _cashierName = localStorage.getItem('ruby_pos_cashier') || '';
 
 /* ═══════════════════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════════════════ */
 async function init() {
+  initCashier();
   await loadProducts();
   renderCategoryTabs();
   renderProducts();
   renderCart();
+  document.getElementById('searchInput').focus();
+}
+
+/* ─── Cashier name ─────────────────────────────────── */
+function initCashier() {
+  if (!_cashierName) openCashierModal();
+  else renderCashierBadge();
+}
+function renderCashierBadge() {
+  const el = document.getElementById('cashierBadge');
+  if (el) el.textContent = '👤 ' + _cashierName;
+}
+function openCashierModal() {
+  document.getElementById('cashierInput').value = _cashierName;
+  openOverlay('cashierOverlay');
+  setTimeout(() => document.getElementById('cashierInput').select(), 80);
+}
+function saveCashier() {
+  const name = document.getElementById('cashierInput').value.trim();
+  if (!name) { showToast('กรุณาระบุชื่อพนักงาน', 'error'); return; }
+  _cashierName = name;
+  localStorage.setItem('ruby_pos_cashier', name);
+  renderCashierBadge();
+  closeOverlay('cashierOverlay');
   document.getElementById('searchInput').focus();
 }
 
@@ -1285,6 +1330,7 @@ async function doCheckout(paymentInfo) {
     paymentMethod: pay.paymentMethod,
     received:      pay.received,
     change:        pay.change,
+    cashier:       _cashierName || undefined,
   };
 
   // Append to ruby_sales — synced to the shared cloud DB so every
@@ -1346,6 +1392,7 @@ function showReceipt(sale) {
       <div class="r-icon">✅</div>
       <h4>ชำระเงินสำเร็จ</h4>
       <p>${dateStr} · รหัส #${String(sale.id).slice(-6)}</p>
+      ${sale.cashier ? `<p style="font-size:.78rem;color:var(--muted);">👤 ${escHtml(sale.cashier)}</p>` : ''}
     </div>
     <div class="receipt-items">${itemRows}</div>
     <div class="receipt-totals">
