@@ -887,7 +887,7 @@ function renderProducts() {
     // cashier sees the same pricing info as the storefront before clicking
     let priceHtml = `₭${fmtNum(p.price)}`;
     if (hasVariants) {
-      const prices = p.variants.map(v => (typeof v.price === 'number') ? v.price : p.price);
+      const prices = p.variants.map(v => v.price || p.price);
       const min = Math.min(...prices, p.price), max = Math.max(...prices, p.price);
       priceHtml = (min === max) ? `₭${fmtNum(min)}` : `₭${fmtNum(min)}–${fmtNum(max)}`;
     }
@@ -932,7 +932,9 @@ function pulseCard(id) {
 // show up as separate lines with their own price/qty)
 function variantKey(variant) { return variant ? variant.label : ''; }
 function cartItemPrice(item) {
-  return (item.variant && typeof item.variant.price === 'number') ? item.variant.price : item.product.price;
+  // variant.price === 0 means "same as base price" (Admin convention) — not free
+  const vp = item.variant && item.variant.price;
+  return (vp) ? vp : item.product.price;
 }
 function findCartItem(id, variantLabel) {
   const key = variantLabel || '';
@@ -1028,7 +1030,7 @@ function openVariantPicker(product) {
     </div>
     <div class="variant-pick-list">
       ${product.variants.map(v => {
-        const price = (typeof v.price === 'number') ? v.price : product.price;
+        const price = v.price || product.price;
         return `<button class="variant-pick-btn" data-label="${escHtml(v.label)}">
           <span>${escHtml(v.label)}</span>
           <span class="vp-price">₭${fmtNum(price)}</span>
