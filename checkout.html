@@ -446,6 +446,7 @@
 
       // 3. Disable button
       const btn = document.getElementById('confirmWABtn');
+      const btnPrevHtml = btn ? btn.innerHTML : '';
       if (btn) { btn.disabled = true; btn.textContent = 'ກຳລັງດຳເນີນການ...'; }
 
       // 4. Save order (localStorage first, Supabase async — won't block)
@@ -479,7 +480,7 @@
         RubyDB.saveOrder(orderData).catch(function() {});
       }
 
-      if (btn) { btn.disabled = false; }
+      if (btn) { btn.disabled = false; btn.innerHTML = btnPrevHtml; }
 
       // 5. Open WA/Messenger modal
       openWAModal(selectedChannel, formData);

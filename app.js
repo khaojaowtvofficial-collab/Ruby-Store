@@ -400,6 +400,14 @@ function buildOrderMessage(form) {
   return lines.join('\n');
 }
 
+// เปิดลิงก์ภายนอก (wa.me / m.me) — in-app browser (Messenger/FB/IG) และ
+// popup blocker มักบล็อก window.open เงียบๆ → ถ้าเปิดไม่ได้ ให้ navigate ตรงแทน
+function _openExternal(url) {
+  let w = null;
+  try { w = window.open(url, '_blank'); } catch(e) {}
+  if (!w || w.closed) window.location.href = url;
+}
+
 function openWAModal(channel, form) {
   const overlay = document.getElementById('waModalOverlay');
   const msg = buildOrderMessage(form);
@@ -420,7 +428,7 @@ function openWAModal(channel, form) {
       openBtn.innerHTML = _btnSvg + 'ເປີດ WhatsApp';
       openBtn.onclick = () => {
         const url = `https://wa.me/${getWaNumber()}?text=${encodeURIComponent(msg)}`;
-        window.open(url, '_blank');
+        _openExternal(url);
       };
     }
   } else {
@@ -429,7 +437,7 @@ function openWAModal(channel, form) {
     if (openBtn) {
       openBtn.className = 'btn btn-msg wa-open-btn msg';
       openBtn.innerHTML = _btnSvg + 'ເປີດ Messenger';
-      openBtn.onclick = () => window.open(getMsgLink(), '_blank');
+      openBtn.onclick = () => _openExternal(getMsgLink());
     }
   }
 
