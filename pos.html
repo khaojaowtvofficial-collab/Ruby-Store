@@ -480,6 +480,79 @@
     .toast.success { background: var(--green); }
     .toast.error   { background: var(--red); }
 
+    /* ══════════════════════════════════════
+       MOBILE LAYOUT (≤ 860px)
+       Products take the full screen; the cart becomes a
+       bottom-sheet drawer opened via a floating summary bar.
+    ══════════════════════════════════════ */
+    .cart-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.45); z-index: 199;
+    }
+    .cart-drawer-handle, .cart-close-btn, .mobile-cart-bar { display: none; }
+
+    @media (max-width: 860px) {
+      .topbar { gap: 8px; padding: 0 12px; }
+      .topbar-logo { font-size: 1rem; }
+      .topbar-logo span { display: none; }
+      .topbar-btn { padding: 6px 12px; font-size: .75rem; gap: 4px; }
+
+      .main { flex-direction: column; }
+
+      .products-panel { border-right: none; width: 100%; }
+      .filter-bar { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px 12px; }
+      .search-wrap { min-width: 0; }
+      .cat-tabs { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
+      .cat-tabs::-webkit-scrollbar { display: none; }
+      .products-grid-wrap { padding: 12px; padding-bottom: 88px; }
+      .products-grid { grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 10px; }
+
+      /* Cart becomes a bottom-sheet drawer */
+      .cart-panel {
+        position: fixed; left: 0; right: 0; bottom: 0; width: 100%;
+        max-height: 85vh; border-radius: 18px 18px 0 0;
+        box-shadow: 0 -8px 32px rgba(0,0,0,.18);
+        transform: translateY(100%);
+        transition: transform .25s ease;
+        z-index: 200;
+      }
+      .cart-panel.open { transform: translateY(0); }
+      .cart-header { padding-top: 22px; position: relative; border-radius: 18px 18px 0 0; }
+      .cart-drawer-handle {
+        display: block; position: absolute; top: 8px; left: 50%;
+        transform: translateX(-50%); width: 40px; height: 4px;
+        border-radius: 100px; background: var(--border);
+      }
+      .cart-close-btn {
+        display: flex; align-items: center; justify-content: center;
+        width: 30px; height: 30px; border-radius: 50%; border: none;
+        background: var(--bg); color: var(--muted);
+        font-size: 1.3rem; cursor: pointer; flex-shrink: 0;
+      }
+
+      /* Floating cart summary bar */
+      .cart-backdrop.open { display: block; }
+      .mobile-cart-bar {
+        display: none; position: fixed; left: 12px; right: 12px; bottom: 12px;
+        background: var(--red); color: #fff; border-radius: 100px;
+        padding: 14px 20px; align-items: center; justify-content: space-between;
+        box-shadow: var(--shadow); cursor: pointer; z-index: 150;
+        font-weight: 800; border: none; font-family: var(--font);
+      }
+      .mobile-cart-bar.show { display: flex; }
+      .mobile-cart-bar .mcb-left { display: flex; align-items: center; gap: 10px; font-size: .9rem; }
+      .mobile-cart-bar .mcb-count {
+        background: #fff; color: var(--red); border-radius: 50%;
+        width: 24px; height: 24px; display: flex; align-items: center;
+        justify-content: center; font-size: .78rem; flex-shrink: 0;
+      }
+      .mobile-cart-bar .mcb-total { font-size: 1rem; }
+
+      /* Bigger touch targets */
+      .qty-btn { width: 32px; height: 32px; font-size: 1.05rem; }
+      .checkout-btn { padding: 16px; font-size: 1.05rem; }
+    }
+
     /* Print receipt only */
     @media print {
       body * { visibility: hidden; }
@@ -526,12 +599,14 @@
   </div>
 
   <!-- RIGHT: Cart -->
-  <div class="cart-panel">
+  <div class="cart-panel" id="cartPanel">
     <div class="cart-header">
+      <div class="cart-drawer-handle"></div>
       <h2>🛒 ລາຍການສັ່ງຊື້</h2>
       <div style="display:flex;align-items:center;gap:10px;">
         <span class="cart-count" id="cartCount">0</span>
         <button class="clear-cart-btn" onclick="clearCart()">ລ້າງທັງໝົດ</button>
+        <button class="cart-close-btn" onclick="closeCartDrawer()">×</button>
       </div>
     </div>
 
@@ -567,6 +642,13 @@
   </div>
 
 </div>
+
+<!-- ── Mobile cart drawer backdrop + floating summary bar ── -->
+<div class="cart-backdrop" id="cartBackdrop" onclick="closeCartDrawer()"></div>
+<button class="mobile-cart-bar" id="mobileCartBar" onclick="openCartDrawer()">
+  <span class="mcb-left"><span class="mcb-count" id="mcbCount">0</span> ກວດກາລາຍການ</span>
+  <span class="mcb-total" id="mcbTotal">₭0</span>
+</button>
 
 <!-- ── Receipt Modal ── -->
 <div class="overlay" id="receiptOverlay">
@@ -1141,6 +1223,28 @@ function updateTotals() {
   const btn = document.getElementById('checkoutBtn');
   btn.disabled = cart.length === 0;
   btn.textContent = cart.length ? `✅ ຊຳລະເງິນ · ₭${fmtNum(total)}` : '✅ ຊຳລະເງິນ';
+
+  // Mobile floating cart bar
+  const mcb = document.getElementById('mobileCartBar');
+  if (mcb) {
+    const totalItems = cart.reduce((s, c) => s + c.qty, 0);
+    document.getElementById('mcbCount').textContent = totalItems;
+    document.getElementById('mcbTotal').textContent = '₭' + fmtNum(total);
+    mcb.classList.toggle('show', cart.length > 0);
+    if (!cart.length) closeCartDrawer();
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   MOBILE CART DRAWER
+═══════════════════════════════════════════════════════ */
+function openCartDrawer() {
+  document.getElementById('cartPanel').classList.add('open');
+  document.getElementById('cartBackdrop').classList.add('open');
+}
+function closeCartDrawer() {
+  document.getElementById('cartPanel').classList.remove('open');
+  document.getElementById('cartBackdrop').classList.remove('open');
 }
 
 function setDiscountPct(pct) {
@@ -1422,6 +1526,7 @@ function newSale() {
   resetDiscountUI();
   renderCart();
   closeReceipt();
+  closeCartDrawer();
   showToast('ເລີ່ມລາຍການຂາຍໃໝ່', 'success');
   document.getElementById('searchInput').focus();
 }
