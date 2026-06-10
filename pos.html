@@ -469,7 +469,7 @@
 
     /* Toast */
     .toast {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(120%);
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(150px);
       background: #1F1F23; color: #fff;
       padding: 10px 22px; border-radius: 100px;
       font-size: .85rem; font-weight: 600; z-index: 9999;
@@ -889,6 +889,14 @@ async function loadProducts() {
   loadProductsLocal();
 }
 
+async function retryLoadProducts() {
+  const grid = document.getElementById('productsGrid');
+  grid.innerHTML = `<div class="empty-state"><div class="es-icon">⏳</div><p>ກຳລັງໂຫຼດ...</p></div>`;
+  await loadProducts();
+  renderCategoryTabs();
+  renderProducts();
+}
+
 function getCategories() {
   const cats = [...new Set(products.map(p => p.cat || p.category).filter(Boolean))];
   return cats.sort();
@@ -941,11 +949,20 @@ function renderProducts() {
   }
 
   if (!filtered.length) {
-    grid.innerHTML = `
-      <div class="empty-state">
-        <div class="es-icon">🔍</div>
-        <p>ບໍ່ພົບສິນຄ້າທີ່ກົງກັບການຄົ້ນຫາ</p>
-      </div>`;
+    if (!products.length) {
+      grid.innerHTML = `
+        <div class="empty-state">
+          <div class="es-icon">📡</div>
+          <p>ໂຫຼດສິນຄ້າບໍ່ສຳເລັດ ກະລຸນາກວດສອບອິນເຕີເນັດ</p>
+          <button class="btn btn-primary" style="margin-top:12px;" onclick="retryLoadProducts()">🔄 ລອງໃໝ່</button>
+        </div>`;
+    } else {
+      grid.innerHTML = `
+        <div class="empty-state">
+          <div class="es-icon">🔍</div>
+          <p>ບໍ່ພົບສິນຄ້າທີ່ກົງກັບການຄົ້ນຫາ</p>
+        </div>`;
+    }
     return;
   }
 
