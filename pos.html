@@ -1391,8 +1391,13 @@ async function doCheckout(paymentInfo) {
   btn.disabled = true;
 
   // Re-validate stock against the latest data from the shared cloud DB
-  // (so two cashiers selling the same item at once don't oversell it)
-  await loadProducts();
+  // (so two cashiers selling the same item at once don't oversell it).
+  // Best-effort: ถ้าเน็ตช้า/ค้าง ให้ใช้สต็อกจาก local cache ภายใน 4 วิ
+  // แทนที่จะค้างเงียบๆ จนพนักงานคิดว่าระบบหยุดทำงาน
+  await Promise.race([
+    loadProducts(),
+    new Promise(resolve => setTimeout(resolve, 4000)),
+  ]);
   // Stock is per-product (shared across variants), so sum qty across all
   // variant-lines of the same product before comparing against stock
   const checkedIds = new Set();
@@ -1459,9 +1464,11 @@ async function doCheckout(paymentInfo) {
   };
 
   // Append to ruby_sales — synced to the shared cloud DB so every
-  // cashier/device and the Admin Sales Report see the same history
+  // cashier/device and the Admin Sales Report see the same history.
+  // saveSale เขียนลง localStorage ทันทีก่อน sync cloud — ใบเสร็จจึงไม่ต้อง
+  // รอเน็ต (ไม่ await) เพื่อไม่ให้หน้าจอค้างเมื่อเครือข่ายมีปัญหา
   if (window.RubyDB) {
-    await RubyDB.saveSale(sale);
+    RubyDB.saveSale(sale).catch(() => {});
   } else {
     let sales = [];
     try { sales = JSON.parse(localStorage.getItem('ruby_sales') || '[]'); } catch(e) {}

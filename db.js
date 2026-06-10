@@ -22,6 +22,16 @@ const _H = {
 const SUPABASE_PROXY = '/sb';
 let _apiBase = SUPABASE_URL;
 
+// เครือข่ายบางที่ "ดูด" connection เงียบๆ (ไม่ reject ทันที) — ใส่ timeout
+// เพื่อให้ล้มเร็วภายใน 8 วิ แล้วสลับไป proxy ได้ทันที แทนที่จะค้างเป็นนาที
+const _FETCH_TIMEOUT_MS = 8000;
+function _fetchTimeout(url, opts) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), _FETCH_TIMEOUT_MS);
+  return fetch(url, Object.assign({}, opts, { signal: ctrl.signal }))
+    .finally(() => clearTimeout(t));
+}
+
 async function _rest(method, path, body, extra) {
   const opts = {
     method:  method,
@@ -30,11 +40,11 @@ async function _rest(method, path, body, extra) {
   };
   let res;
   try {
-    res = await fetch(_apiBase + '/rest/v1/' + path, opts);
+    res = await _fetchTimeout(_apiBase + '/rest/v1/' + path, opts);
   } catch(e) {
-    // Network-level failure (DNS/firewall) — retry once through our own domain
+    // Network-level failure (DNS/firewall/timeout) — retry once through our own domain
     if (_apiBase !== SUPABASE_PROXY && location.protocol.indexOf('http') === 0) {
-      res = await fetch(SUPABASE_PROXY + '/rest/v1/' + path, opts);
+      res = await _fetchTimeout(SUPABASE_PROXY + '/rest/v1/' + path, opts);
       _apiBase = SUPABASE_PROXY;   // stick with the proxy for later calls
       console.log('[RubyDB] Direct connection blocked — switched to /sb proxy');
     } else {
