@@ -46,6 +46,7 @@
       flex-shrink: 0;
     }
     .topbar-logo {
+      display: flex; align-items: center; gap: 8px;
       font-size: 1.1rem; font-weight: 800; color: #fff;
       letter-spacing: -.5px;
     }
@@ -151,6 +152,7 @@
     /* In-cart indicator on product card */
     .in-cart-badge {
       position: absolute; top: 8px; left: 8px;
+      display: flex; align-items: center; gap: 3px;
       background: var(--red); color: #fff;
       font-size: .68rem; font-weight: 800; padding: 2px 8px;
       border-radius: 100px; z-index: 1;
@@ -186,7 +188,7 @@
       display: flex; align-items: center; justify-content: space-between;
       flex-shrink: 0;
     }
-    .cart-header h2 { font-size: .95rem; font-weight: 800; }
+    .cart-header h2 { display: flex; align-items: center; gap: 6px; font-size: .95rem; font-weight: 800; }
     .cart-count {
       background: var(--red); color: #fff;
       font-size: .72rem; font-weight: 700;
@@ -219,7 +221,7 @@
     .ci-info { flex: 1; min-width: 0; }
     .ci-name { font-size: .8rem; font-weight: 700; line-height: 1.3; }
     .ci-variant {
-      display: inline-block; font-size: .68rem; font-weight: 700;
+      display: inline-flex; align-items: center; gap: 3px; font-size: .68rem; font-weight: 700;
       color: var(--red); background: var(--red-l); border-radius: 100px;
       padding: 1px 8px; margin: 2px 0;
     }
@@ -227,6 +229,7 @@
 
     /* Variant hint on product cards */
     .prod-card-variant-hint {
+      display: flex; align-items: center; justify-content: center; gap: 3px;
       font-size: .65rem; font-weight: 700; color: var(--red);
       text-align: center; margin-top: -2px;
     }
@@ -294,6 +297,7 @@
 
     .checkout-btn {
       width: 100%; padding: 14px; border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
       background: var(--red); color: #fff;
       font-family: var(--font); font-size: 1rem; font-weight: 800;
       cursor: pointer; border: none; margin-top: 12px;
@@ -390,7 +394,7 @@
       position: sticky; top: 0; background: var(--card); z-index: 1;
       border-radius: 18px 18px 0 0;
     }
-    .modal-hd h3 { font-size: 1rem; font-weight: 800; }
+    .modal-hd h3 { display: flex; align-items: center; gap: 8px; font-size: 1rem; font-weight: 800; }
     .modal-close {
       background: none; border: none; font-size: 1.6rem;
       cursor: pointer; color: var(--muted); line-height: 1; padding: 0 4px;
@@ -466,6 +470,12 @@
     .btn-ghost:hover { border-color: var(--red); color: var(--red); }
     .btn-new-sale { background: var(--green); color: #fff; }
     .btn-new-sale:hover { background: #16a34a; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+
+    /* Icons (inline SVG, replaces emoji stickers) */
+    .icon { width: 1.05em; height: 1.05em; flex-shrink: 0; vertical-align: -0.15em; }
+    .icon-spin { animation: iconSpin 1s linear infinite; }
+    @keyframes iconSpin { to { transform: rotate(360deg); } }
 
     /* Toast */
     .toast {
@@ -572,11 +582,11 @@
 
 <!-- ── Topbar ── -->
 <header class="topbar">
-  <div class="topbar-logo">💎 Ruby POS <span>ລະບົບຂາຍໜ້າຮ້ານ</span></div>
+  <div class="topbar-logo"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 12L2 9Z"/><path d="M11 3 8 9l4 12 4-12-3-6"/><path d="M2 9h20"/></svg> Ruby POS <span>ລະບົບຂາຍໜ້າຮ້ານ</span></div>
   <div class="topbar-spacer"></div>
-  <button class="topbar-btn" id="cashierBadge" onclick="openCashierModal()" title="ປ່ຽນພະນັກງານ">👤 —</button>
+  <button class="topbar-btn" id="cashierBadge" onclick="openCashierModal()" title="ປ່ຽນພະນັກງານ"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> —</button>
   <a class="topbar-btn" href="admin.html">← Admin</a>
-  <button class="topbar-btn" onclick="openHistory()">📋 ປະຫວັດ</button>
+  <button class="topbar-btn" onclick="openHistory()"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg> ປະຫວັດ</button>
 </header>
 
 <!-- ── Main ── -->
@@ -602,7 +612,7 @@
   <div class="cart-panel" id="cartPanel">
     <div class="cart-header">
       <div class="cart-drawer-handle"></div>
-      <h2>🛒 ລາຍການສັ່ງຊື້</h2>
+      <h2><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> ລາຍການສັ່ງຊື້</h2>
       <div style="display:flex;align-items:center;gap:10px;">
         <span class="cart-count" id="cartCount">0</span>
         <button class="clear-cart-btn" onclick="clearCart()">ລ້າງທັງໝົດ</button>
@@ -612,7 +622,7 @@
 
     <div class="cart-items" id="cartItems">
       <div class="cart-empty">
-        <div class="ce-icon">🛒</div>
+        <div class="ce-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
         <p>ຍັງບໍ່ມີສິນຄ້າໃນລາຍການ<br>ກົດສິນຄ້າເພື່ອເພີ່ມ</p>
       </div>
     </div>
@@ -636,7 +646,7 @@
         <span class="value" id="totalVal">₭0</span>
       </div>
       <button class="checkout-btn" id="checkoutBtn" onclick="openPayment()" disabled>
-        ✅ ຊຳລະເງິນ
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 17.01"/></svg> ຊຳລະເງິນ
       </button>
     </div>
   </div>
@@ -654,14 +664,14 @@
 <div class="overlay" id="receiptOverlay">
   <div class="modal">
     <div class="modal-hd">
-      <h3>🧾 ໃບຮັບເງິນ</h3>
+      <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg> ໃບຮັບເງິນ</h3>
       <button class="modal-close" onclick="closeReceipt()">×</button>
     </div>
     <div class="modal-body" id="receiptBody"></div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeReceipt()">ປິດ</button>
-      <button class="btn btn-ghost" onclick="window.print()">🖨️ ພິມໃບຮັບເງິນ</button>
-      <button class="btn btn-new-sale" onclick="newSale()">🛒 ຂາຍຕໍ່</button>
+      <button class="btn btn-ghost" onclick="window.print()"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> ພິມໃບຮັບເງິນ</button>
+      <button class="btn btn-new-sale" onclick="newSale()"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> ຂາຍຕໍ່</button>
     </div>
   </div>
 </div>
@@ -670,7 +680,7 @@
 <div class="overlay" id="historyOverlay">
   <div class="modal">
     <div class="modal-hd">
-      <h3>📋 ປະຫວັດການຂາຍ</h3>
+      <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg> ປະຫວັດການຂາຍ</h3>
       <button class="modal-close" onclick="closeHistory()">×</button>
     </div>
     <div class="modal-body" id="historyBody"></div>
@@ -684,7 +694,7 @@
 <div class="overlay" id="cashierOverlay">
   <div class="modal" style="max-width:340px;">
     <div class="modal-hd">
-      <h3>👤 ພະນັກງານຂາຍ</h3>
+      <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ພະນັກງານຂາຍ</h3>
     </div>
     <div class="modal-body" style="padding:24px;">
       <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">ກະລຸນາລະບຸຊື່ພະນັກງານກ່ອນເລີ່ມຂາຍ — ຊື່ນີ້ຈະຖືກບັນທຶກໃນທຸກລາຍການຂາຍ</p>
@@ -695,7 +705,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn" style="background:var(--red);color:#fff;font-weight:800;width:100%;"
-        onclick="saveCashier()">✅ ເລີ່ມຂາຍ</button>
+        onclick="saveCashier()"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 17.01"/></svg> ເລີ່ມຂາຍ</button>
     </div>
   </div>
 </div>
@@ -704,7 +714,7 @@
 <div class="overlay" id="paymentOverlay">
   <div class="modal" style="max-width:400px;">
     <div class="modal-hd">
-      <h3>💳 ຊຳລະເງິນ</h3>
+      <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> ຊຳລະເງິນ</h3>
       <button class="modal-close" onclick="closePayment()">×</button>
     </div>
     <div class="modal-body">
@@ -717,15 +727,15 @@
       <!-- เลือกช่องทาง -->
       <div class="pay-methods">
         <button class="pay-method-btn active" data-method="cash" onclick="selectPayMethod('cash')">
-          <span class="pm-icon">💵</span>
+          <span class="pm-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></span>
           <span class="pm-label">ເງິນສົດ</span>
         </button>
         <button class="pay-method-btn" data-method="transfer" onclick="selectPayMethod('transfer')">
-          <span class="pm-icon">📱</span>
+          <span class="pm-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></span>
           <span class="pm-label">ໂອນເງິນ</span>
         </button>
         <button class="pay-method-btn" data-method="qr" onclick="selectPayMethod('qr')">
-          <span class="pm-icon">📷</span>
+          <span class="pm-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/></svg></span>
           <span class="pm-label">QR Code</span>
         </button>
       </div>
@@ -755,7 +765,7 @@
       <button class="btn btn-ghost" onclick="closePayment()">ຍົກເລີກ</button>
       <button class="btn" id="confirmPayBtn"
         style="background:var(--green);color:#fff;font-weight:800;"
-        onclick="confirmPayment()">✅ ຢືນຢັນການຊຳລະ</button>
+        onclick="confirmPayment()"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 17.01"/></svg> ຢືນຢັນການຊຳລະ</button>
     </div>
   </div>
 </div>
@@ -764,7 +774,7 @@
 <div class="overlay" id="variantOverlay">
   <div class="modal" style="max-width:380px;">
     <div class="modal-hd">
-      <h3>🎨 ເລືອກຕົວເລືອກສິນຄ້າ</h3>
+      <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg> ເລືອກຕົວເລືອກສິນຄ້າ</h3>
       <button class="modal-close" onclick="closeVariantPicker()">×</button>
     </div>
     <div class="modal-body" id="variantBody"></div>
@@ -790,6 +800,29 @@ let activeCat = 'all';
 let _cashierName = localStorage.getItem('ruby_pos_cashier') || '';
 
 /* ═══════════════════════════════════════════════════════
+   ICONS (inline SVG, replaces emoji stickers)
+═══════════════════════════════════════════════════════ */
+const ICONS = {
+  cart:       '<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>',
+  user:       '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  check:      '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 17.01"/>',
+  trash:      '<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>',
+  palette:    '<circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>',
+  banknote:   '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>',
+  smartphone: '<rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>',
+  qrcode:     '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/>',
+  wifiOff:    '<line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.58 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/>',
+  search:     '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+  refresh:    '<polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>',
+  loader:     '<line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>',
+  clipboard:  '<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/>',
+};
+function icon(name, cls) {
+  const spin = name === 'loader' ? ' icon-spin' : '';
+  return `<svg class="icon${cls ? ' ' + cls : ''}${spin}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]}</svg>`;
+}
+
+/* ═══════════════════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════════════════ */
 async function init() {
@@ -808,7 +841,7 @@ function initCashier() {
 }
 function renderCashierBadge() {
   const el = document.getElementById('cashierBadge');
-  if (el) el.textContent = '👤 ' + _cashierName;
+  if (el) el.innerHTML = icon('user') + ' ' + escHtml(_cashierName);
 }
 function openCashierModal() {
   document.getElementById('cashierInput').value = _cashierName;
@@ -891,7 +924,7 @@ async function loadProducts() {
 
 async function retryLoadProducts() {
   const grid = document.getElementById('productsGrid');
-  grid.innerHTML = `<div class="empty-state"><div class="es-icon">⏳</div><p>ກຳລັງໂຫຼດ...</p></div>`;
+  grid.innerHTML = `<div class="empty-state"><div class="es-icon">${icon('loader')}</div><p>ກຳລັງໂຫຼດ...</p></div>`;
   await loadProducts();
   renderCategoryTabs();
   renderProducts();
@@ -953,15 +986,15 @@ function renderProducts() {
       const errMsg = window.RUBY_LAST_PRODUCTS_ERROR || '';
       grid.innerHTML = `
         <div class="empty-state">
-          <div class="es-icon">📡</div>
+          <div class="es-icon">${icon('wifiOff')}</div>
           <p>ໂຫຼດສິນຄ້າບໍ່ສຳເລັດ ກະລຸນາກວດສອບອິນເຕີເນັດ</p>
           ${errMsg ? `<p style="font-size:.7rem;color:var(--muted);margin-top:6px;word-break:break-all;">${escHtml(errMsg)}</p>` : ''}
-          <button class="btn btn-primary" style="margin-top:12px;" onclick="retryLoadProducts()">🔄 ລອງໃໝ່</button>
+          <button class="btn btn-primary" style="margin-top:12px;" onclick="retryLoadProducts()">${icon('refresh')} ລອງໃໝ່</button>
         </div>`;
     } else {
       grid.innerHTML = `
         <div class="empty-state">
-          <div class="es-icon">🔍</div>
+          <div class="es-icon">${icon('search')}</div>
           <p>ບໍ່ພົບສິນຄ້າທີ່ກົງກັບການຄົ້ນຫາ</p>
         </div>`;
     }
@@ -981,7 +1014,7 @@ function renderProducts() {
     const badgeClass = { ok: 'stock-ok', low: 'stock-low', out: 'stock-out', unlimited: 'stock-unlimited' }[status];
 
     const cartBadge = cartQty
-      ? `<span class="in-cart-badge">🛒 ${cartQty}</span>`
+      ? `<span class="in-cart-badge">${icon('cart')} ${cartQty}</span>`
       : '';
 
     // Show price range across variants (e.g. "₭19,000 – ₭25,000") so the
@@ -993,7 +1026,7 @@ function renderProducts() {
       priceHtml = (min === max) ? `₭${fmtNum(min)}` : `₭${fmtNum(min)}–${fmtNum(max)}`;
     }
     const variantHint = hasVariants
-      ? `<div class="prod-card-variant-hint">🎨 ${p.variants.length} ຕົວເລືອກ</div>`
+      ? `<div class="prod-card-variant-hint">${icon('palette')} ${p.variants.length} ຕົວເລືອກ</div>`
       : '';
 
     const card = document.createElement('div');
@@ -1175,7 +1208,7 @@ function renderCart() {
   if (!cart.length) {
     container.innerHTML = `
       <div class="cart-empty">
-        <div class="ce-icon">🛒</div>
+        <div class="ce-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
         <p>ຍັງບໍ່ມີສິນຄ້າໃນລາຍການ<br>ກົດສິນຄ້າເພື່ອເພີ່ມ</p>
       </div>`;
   } else {
@@ -1187,7 +1220,7 @@ function renderCart() {
       const vKey  = variant ? variant.label : '';
       const vAttr = escHtml(vKey).replace(/'/g, "\\'");
       const variantLine = variant
-        ? `<div class="ci-variant">🎨 ${escHtml(variant.label)}</div>`
+        ? `<div class="ci-variant">${icon('palette')} ${escHtml(variant.label)}</div>`
         : '';
       const row = document.createElement('div');
       row.className = 'cart-item';
@@ -1201,7 +1234,7 @@ function renderCart() {
             <button class="qty-btn del-btn" onclick="changeQty('${product.id}','${vAttr}',-1)" title="ຫຼຸດ">−</button>
             <span class="qty-val">${qty}</span>
             <button class="qty-btn" onclick="changeQty('${product.id}','${vAttr}',1)" title="ເພີ່ມ">+</button>
-            <button class="qty-btn del-btn" onclick="removeFromCart('${product.id}','${vAttr}')" title="ລຶບ" style="margin-left:4px;font-size:.75rem;">🗑</button>
+            <button class="qty-btn del-btn" onclick="removeFromCart('${product.id}','${vAttr}')" title="ລຶບ" style="margin-left:4px;font-size:.75rem;">${icon('trash')}</button>
           </div>
         </div>
         <div class="ci-subtotal">₭${fmtNum(subtotal)}</div>`;
@@ -1241,7 +1274,7 @@ function updateTotals() {
   document.getElementById('totalVal').textContent    = '₭' + fmtNum(total);
   const btn = document.getElementById('checkoutBtn');
   btn.disabled = cart.length === 0;
-  btn.textContent = cart.length ? `✅ ຊຳລະເງິນ · ₭${fmtNum(total)}` : '✅ ຊຳລະເງິນ';
+  btn.innerHTML = cart.length ? `${icon('check')} ຊຳລະເງິນ · ₭${fmtNum(total)}` : `${icon('check')} ຊຳລະເງິນ`;
 
   // Mobile floating cart bar
   const mcb = document.getElementById('mobileCartBar');
@@ -1505,7 +1538,7 @@ function showReceipt(sale) {
     ? `<div class="receipt-total-row"><span>ສ່ວນຫຼຸດ</span><span>−₭${fmtNum(sale.discount)}</span></div>`
     : '';
 
-  const payMethodLabel = { cash: '💵 ເງິນສົດ', transfer: '📱 ໂອນເງິນ', qr: '📷 QR Code' };
+  const payMethodLabel = { cash: icon('banknote') + ' ເງິນສົດ', transfer: icon('smartphone') + ' ໂອນເງິນ', qr: icon('qrcode') + ' QR Code' };
   const pm = sale.paymentMethod || 'cash';
   const payRow = `<div class="receipt-total-row" style="color:var(--text-m);font-size:.82rem;">
     <span>ຊ່ອງທາງຊຳລະ</span><span>${payMethodLabel[pm] || pm}</span>
@@ -1521,10 +1554,10 @@ function showReceipt(sale) {
 
   body.innerHTML = `
     <div class="receipt-header">
-      <div class="r-icon">✅</div>
+      <div class="r-icon" style="color:var(--green);">${icon('check')}</div>
       <h4>ຊຳລະເງິນສຳເລັດ</h4>
       <p>${dateStr} · ລະຫັດ #${String(sale.id).slice(-6)}</p>
-      ${sale.cashier ? `<p style="font-size:.78rem;color:var(--muted);">👤 ${escHtml(sale.cashier)}</p>` : ''}
+      ${sale.cashier ? `<p style="font-size:.78rem;color:var(--muted);">${icon('user')} ${escHtml(sale.cashier)}</p>` : ''}
     </div>
     <div class="receipt-items">${itemRows}</div>
     <div class="receipt-totals">
@@ -1579,7 +1612,7 @@ async function openHistory() {
   if (!sales.length) {
     body.innerHTML = `
       <div style="text-align:center;padding:40px 20px;color:var(--muted);">
-        <div style="font-size:2.5rem;margin-bottom:12px;">📋</div>
+        <div style="font-size:2.5rem;margin-bottom:12px;display:flex;justify-content:center;">${icon('clipboard')}</div>
         <p>ຍັງບໍ່ມີປະຫວັດການຂາຍ</p>
       </div>`;
   } else {
