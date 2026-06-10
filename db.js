@@ -17,12 +17,30 @@ const _H = {
 };
 
 // ── CORE REST HELPER ─────────────────────────────────────
+// บาง ISP/เครือข่ายบล็อก *.supabase.co — ถ้ายิงตรงไม่ได้ จะสลับไปยิงผ่าน
+// same-origin proxy (/sb → rewrite ใน vercel.json) ให้อัตโนมัติ
+const SUPABASE_PROXY = '/sb';
+let _apiBase = SUPABASE_URL;
+
 async function _rest(method, path, body, extra) {
-  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+  const opts = {
     method:  method,
     headers: Object.assign({}, _H, extra || {}),
     body:    body ? JSON.stringify(body) : undefined,
-  });
+  };
+  let res;
+  try {
+    res = await fetch(_apiBase + '/rest/v1/' + path, opts);
+  } catch(e) {
+    // Network-level failure (DNS/firewall) — retry once through our own domain
+    if (_apiBase !== SUPABASE_PROXY && location.protocol.indexOf('http') === 0) {
+      res = await fetch(SUPABASE_PROXY + '/rest/v1/' + path, opts);
+      _apiBase = SUPABASE_PROXY;   // stick with the proxy for later calls
+      console.log('[RubyDB] Direct connection blocked — switched to /sb proxy');
+    } else {
+      throw e;
+    }
+  }
   if (!res.ok) {
     const txt = await res.text().catch(() => res.status);
     throw new Error('[RubyDB] ' + method + ' ' + path + ' → ' + res.status + ' ' + txt);
