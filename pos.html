@@ -950,10 +950,12 @@ function renderProducts() {
 
   if (!filtered.length) {
     if (!products.length) {
+      const errMsg = window.RUBY_LAST_PRODUCTS_ERROR || '';
       grid.innerHTML = `
         <div class="empty-state">
           <div class="es-icon">📡</div>
           <p>ໂຫຼດສິນຄ້າບໍ່ສຳເລັດ ກະລຸນາກວດສອບອິນເຕີເນັດ</p>
+          ${errMsg ? `<p style="font-size:.7rem;color:var(--muted);margin-top:6px;word-break:break-all;">${escHtml(errMsg)}</p>` : ''}
           <button class="btn btn-primary" style="margin-top:12px;" onclick="retryLoadProducts()">🔄 ລອງໃໝ່</button>
         </div>`;
     } else {

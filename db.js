@@ -208,7 +208,10 @@ async function fetchProducts() {
       window.PRODUCTS = prods;
       return prods;
     }
-  } catch(e) { console.warn('[RubyDB] fetchProducts:', e.message); }
+  } catch(e) {
+    console.warn('[RubyDB] fetchProducts:', e.message);
+    window.RUBY_LAST_PRODUCTS_ERROR = e.message;
+  }
   // Fallback: localStorage → window.PRODUCTS
   const local = localStorage.getItem('ruby_products');
   if (local) try { const p = JSON.parse(local); if (p.length) return p; } catch(e) {}
