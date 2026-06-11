@@ -2274,14 +2274,14 @@ function loadSettingsPanel() {
 function saveContactSettings() {
   const wa = document.getElementById('settingWaNumber').value.trim().replace(/\D/g,'');
   const msg = document.getElementById('settingMsgLink').value.trim();
-  if (!wa) { showAdminToast('ກະລຸນາໃສ່ເບີ WhatsApp', 'error'); return; }
+  if (!wa) { showToast('ກະລຸນາໃສ່ເບີ WhatsApp', 'error'); return; }
   localStorage.setItem('ruby_wa_number', wa);
   localStorage.setItem('ruby_msg_link', msg || 'https://m.me/rubystore');
   if (typeof RubyDB !== 'undefined' && RubyDB.saveSetting) {
     RubyDB.saveSetting('wa_number', wa).catch(()=>{});
     RubyDB.saveSetting('msg_link', msg).catch(()=>{});
   }
-  showAdminToast('ບັນທຶກສຳເລັດ ✓');
+  showToast('ບັນທຶກສຳເລັດ ✓');
 }
 
 function saveLowStockSetting() {
