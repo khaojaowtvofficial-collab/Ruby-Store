@@ -55,6 +55,9 @@ alter table products add column if not exists variants jsonb   default '[]'::jso
 alter table products add column if not exists images   jsonb   default '[]'::jsonb;
 alter table products add column if not exists brand    text;
 alter table products add column if not exists specs    text;
+alter table products add column if not exists barcode  text;
+
+create index if not exists products_barcode_idx on products (barcode);
 
 alter table products enable row level security;
 create policy "anon_all_products" on products
